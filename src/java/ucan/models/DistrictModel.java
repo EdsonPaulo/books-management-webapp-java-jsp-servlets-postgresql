@@ -1,4 +1,6 @@
-package ucan.model;
+package ucan.models;
+
+import java.time.LocalDate;
 
 /**
  *
@@ -7,13 +9,17 @@ package ucan.model;
 public class DistrictModel {
 
     private int communeId, districtId;
-    private String name, createdAt;
+    private String name;
+    private LocalDate creationDate;
 
-    public DistrictModel(int districtId, int communeId, String name, String createdAt) {
+    public DistrictModel() {
+    }
+
+    public DistrictModel(int districtId, int communeId, String name, LocalDate creationDate) {
         this.districtId = districtId;
         this.communeId = communeId;
         this.name = name;
-        this.createdAt = createdAt;
+        this.creationDate = creationDate;
     }
 
     public int getDistrictId() {
@@ -40,12 +46,12 @@ public class DistrictModel {
         this.name = name;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public LocalDate getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 
 }

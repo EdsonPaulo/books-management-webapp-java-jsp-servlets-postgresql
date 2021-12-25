@@ -1,4 +1,6 @@
-package ucan.model;
+package ucan.models;
+
+import java.time.LocalDate;
 
 /**
  *
@@ -7,18 +9,22 @@ package ucan.model;
 public class PersonModel {
 
     private int personId, genderId, addressId;
-    private String name, surname, phone, birthdate, email, createdAt;
+    private String name, surname, phone, email;
+    private LocalDate birthDate, creationDate;
 
-    public PersonModel(int personId, int addressId, int genderId, String name, String surname, String phone, String birthdate, String email, String createdAt) {
+    public PersonModel() {
+    }
+
+    public PersonModel(int personId, int addressId, int genderId, String name, String surname, String phone, LocalDate birthDate, String email, LocalDate creationDate) {
         this.personId = personId;
         this.addressId = addressId;
         this.genderId = genderId;
         this.name = name;
         this.surname = surname;
         this.phone = phone;
-        this.birthdate = birthdate;
+        this.birthDate = birthDate;
         this.email = email;
-        this.createdAt = createdAt;
+        this.creationDate = creationDate;
     }
 
     public int getPersonId() {
@@ -69,12 +75,12 @@ public class PersonModel {
         this.phone = phone;
     }
 
-    public String getBirthdate() {
-        return birthdate;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthdate(String birthdate) {
-        this.birthdate = birthdate;
+    public void setBirthDate(LocalDate birthdate) {
+        this.birthDate = birthdate;
     }
 
     public String getEmail() {
@@ -85,12 +91,11 @@ public class PersonModel {
         this.email = email;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public LocalDate getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
-
 }

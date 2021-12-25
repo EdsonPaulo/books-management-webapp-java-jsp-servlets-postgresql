@@ -1,4 +1,6 @@
-package ucan.model;
+package ucan.models;
+
+import java.time.LocalDate;
 
 /**
  *
@@ -7,12 +9,13 @@ package ucan.model;
 public class ReaderModel {
 
     private int readerId, personId;
-    private String createdAt;
+    private LocalDate creationDate;
 
-    public ReaderModel(int readerId, int personId, String createdAt) {
+    
+    public ReaderModel(int readerId, int personId, LocalDate creationDate) {
         this.readerId = readerId;
         this.personId = personId;
-        this.createdAt = createdAt;
+        this.creationDate = creationDate;
     }
 
     public int getReaderId() {
@@ -31,12 +34,12 @@ public class ReaderModel {
         this.personId = personId;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public LocalDate getCreationDate() {
+        return creationDate;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 
 }
