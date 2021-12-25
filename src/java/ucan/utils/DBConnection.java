@@ -21,7 +21,7 @@ public class DBConnection {
         try {
             Class.forName(JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException("Ocorreu um erro ao estabelecer conexão com a BD!");
         }
@@ -31,7 +31,7 @@ public class DBConnection {
         return connection;
     }
 
-    public static void closeConnection() {
+    public void closeConnection() {
         try {
             if (connection != null) {
                 connection.close();
