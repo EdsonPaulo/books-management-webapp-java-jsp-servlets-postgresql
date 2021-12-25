@@ -7,26 +7,27 @@ import java.time.LocalDate;
  * @author edsonpaulo
  */
 public class BookModel {
-    
+
     private int bookId;
-    private int pagesNum, copyNum, releaseYear;
-    private String isbn, nome;
+    private int numPages, numCopy, numEdition, releaseYear;
+    private String isbn, name;
     private int categoryId, classificationId, locationId, statusId;
     private LocalDate creationDate;
 
     public BookModel() {
     }
-      
-    public BookModel(int bookId, int pagesNum, int copyNum, int releaseYear, String isbn, String nome, LocalDate creationDate) {
+
+    public BookModel(int bookId, int numPages, int numCopy, int numEdition, int releaseYear, String isbn, String name, LocalDate creationDate) {
         this.bookId = bookId;
-        this.pagesNum = pagesNum;
-        this.copyNum = copyNum;
+        this.numPages = numPages;
+        this.numCopy = numCopy;
+        this.numEdition = numEdition;
         this.releaseYear = releaseYear;
         this.isbn = isbn;
-        this.nome = nome;
+        this.name = name;
         this.creationDate = creationDate;
     }
- 
+
     public int getBookId() {
         return bookId;
     }
@@ -35,20 +36,20 @@ public class BookModel {
         this.bookId = bookId;
     }
 
-    public int getPagesNum() {
-        return pagesNum;
+    public int getNumPages() {
+        return numPages;
     }
 
-    public void setPagesNum(int pagesNum) {
-        this.pagesNum = pagesNum;
+    public void setNumPages(int numPages) {
+        this.numPages = numPages;
     }
 
-    public int getCopyNum() {
-        return copyNum;
+    public int getNumCopy() {
+        return numCopy;
     }
 
-    public void setCopyNum(int copyNum) {
-        this.copyNum = copyNum;
+    public void setNumCopy(int numCopy) {
+        this.numCopy = numCopy;
     }
 
     public int getReleaseYear() {
@@ -67,12 +68,12 @@ public class BookModel {
         this.isbn = isbn;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getCategoryId() {
@@ -114,9 +115,13 @@ public class BookModel {
     public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
- 
-  
-    
-    
-    
+
+    public int getNumEdition() {
+        return numEdition;
+    }
+
+    public void setNumEdition(int numEdition) {
+        this.numEdition = numEdition;
+    }
+
 }

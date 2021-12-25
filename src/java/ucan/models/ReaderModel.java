@@ -11,6 +11,8 @@ public class ReaderModel {
     private int readerId, personId;
     private LocalDate creationDate;
 
+    public ReaderModel() {
+    }
     
     public ReaderModel(int readerId, int personId, LocalDate creationDate) {
         this.readerId = readerId;

@@ -6,15 +6,15 @@ import java.time.LocalDate;
  *
  * @author edsonpaulo
  */
-public class BookRequest {
+public class BookRequestModel {
 
     private int requestId, bookId, readerId;
     private LocalDate requestDate, returnDate, creationDate;
 
-    public BookRequest() {
+    public BookRequestModel() {
     }
 
-    public BookRequest(int requestId, int bookId, int readerId, LocalDate requestDate, LocalDate returnDate, LocalDate creationDate) {
+    public BookRequestModel(int requestId, int bookId, int readerId, LocalDate requestDate, LocalDate returnDate, LocalDate creationDate) {
         this.requestId = requestId;
         this.bookId = bookId;
         this.readerId = readerId;
