@@ -5,20 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.BookPublisherModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class BookPublisherDAO {
 
-    public ReaderDAO() {
-
+    public BookPublisherDAO() {
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(BookPublisherModel bookPublisher, DBConnection connection) {
+        String sql = "INSERT INTO livro_editora(fk_livro, fk_editora) values(?, ?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setInt(1, bookPublisher.getBookId());
+            ps.setInt(2, bookPublisher.getPublisherId());
 
             ps.executeUpdate();
             ps.close();
@@ -32,13 +32,14 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void update(BookPublisherModel bookPublisher, DBConnection connection) {
+        String sql = "UPDATE livro_editora SET fk_livro = ?, fk_editora = ? WHERE pk_livro_editora = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
+            ps.setInt(1, bookPublisher.getBookId());
+            ps.setInt(2, bookPublisher.getPublisherId());
+            ps.setInt(3, bookPublisher.getBookPublisherId());
 
             ps.executeUpdate();
             ps.close();
@@ -52,12 +53,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
+    public static void delete(int bookPublisherId, DBConnection connection) {
+        String sql = "DELETE FROM livro_editora WHERE pk_livro_editora = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
+            ps.setInt(1, bookPublisherId);
+
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +70,28 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<BookPublisherModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM livro_editora";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<BookPublisherModel> bookPublisherList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                BookPublisherModel location = new BookPublisherModel();
+                location.setBookPublisherId(resultSet.getInt(1));
+                location.setBookId(resultSet.getInt(2));
+                location.setPublisherId(resultSet.getInt(3));
+                location.setCreationDate(resultSet.getDate(4).toLocalDate());
 
-                readerList.add(reader);
+                bookPublisherList.add(location);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return bookPublisherList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +102,27 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static BookPublisherModel getBookPublisherById(int locationId, DBConnection connection) {
+        String sql = "SELECT * FROM livro_editora WHERE pk_livro_editora = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            BookPublisherModel location = new BookPublisherModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, locationId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                location.setBookPublisherId(resultSet.getInt(1));
+                location.setBookId(resultSet.getInt(2));
+                location.setPublisherId(resultSet.getInt(3));
+                location.setCreationDate(resultSet.getDate(4).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return location;
 
         } catch (SQLException e) {
             e.printStackTrace();

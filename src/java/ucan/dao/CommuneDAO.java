@@ -5,20 +5,40 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.CommuneModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class CommuneDAO {
 
-    public ReaderDAO() {
+    public CommuneDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(CommuneModel commune, DBConnection connection) {
+        String sql = "INSERT INTO comuna(nome, fk_municipio) values(?, ?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, commune.getName());
+            ps.setInt(2, commune.getMunicipalityId());
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
+        }
+    }
+
+    public static void update(CommuneModel commune, DBConnection connection) {
+        String sql = "UPDATE comuna SET nome = ?, fk_municipio = ? WHERE pk_comuna = ?";
+        try {
+            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ps.setString(1, commune.getName());
+            ps.setInt(2, commune.getMunicipalityId());
+            ps.setInt(3, commune.getCommuneId());
 
             ps.executeUpdate();
             ps.close();
@@ -32,32 +52,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void delete(int communeId, DBConnection connection) {
+        String sql = "DELETE FROM comuna WHERE pk_comuna = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ps.setInt(1, communeId);
 
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
-
-            ps.executeUpdate();
-            ps.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
-        }
-    }
-
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
-        try {
-            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +69,28 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<CommuneModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM comuna";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<CommuneModel> communeList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                CommuneModel commune = new CommuneModel();
+                commune.setCommuneId(resultSet.getInt(1));
+                commune.setName(resultSet.getString(2));
+                commune.setMunicipalityId(resultSet.getInt(3));
+                commune.setCreationDate(resultSet.getDate(4).toLocalDate());
 
-                readerList.add(reader);
+                communeList.add(commune);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return communeList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +101,27 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static CommuneModel getCommuneById(int communeId, DBConnection connection) {
+        String sql = "SELECT * FROM comuna WHERE pk_comuna = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            CommuneModel commune = new CommuneModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, communeId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                commune.setCommuneId(resultSet.getInt(1));
+                commune.setName(resultSet.getString(2));
+                commune.setMunicipalityId(resultSet.getInt(3));
+                commune.setCreationDate(resultSet.getDate(4).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return commune;
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -5,20 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.ClassificationModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class ClassificationDAO {
 
-    public ReaderDAO() {
+    public ClassificationDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(ClassificationModel classification, DBConnection connection) {
+        String sql = "INSERT INTO classificacao(nome) values(?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, classification.getName());
 
             ps.executeUpdate();
             ps.close();
@@ -32,13 +32,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void update(ClassificationModel classification, DBConnection connection) {
+        String sql = "UPDATE classificacao SET nome = ? WHERE pk_classificacao = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
+            ps.setString(1, classification.getName());
+            ps.setInt(2, classification.getClassificationId());
 
             ps.executeUpdate();
             ps.close();
@@ -52,12 +51,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
+    public static void delete(int classificationId, DBConnection connection) {
+        String sql = "DELETE FROM classificacao WHERE pk_classificacao = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
+            ps.setInt(1, classificationId);
+
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +68,27 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<ClassificationModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM classificacao";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<ClassificationModel> classificationList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                ClassificationModel classification = new ClassificationModel();
+                classification.setClassificationId(resultSet.getInt(1));
+                classification.setName(resultSet.getString(2));
+                classification.setCreationDate(resultSet.getDate(3).toLocalDate());
 
-                readerList.add(reader);
+                classificationList.add(classification);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return classificationList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +99,26 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static ClassificationModel getClassificationById(int classificationId, DBConnection connection) {
+        String sql = "SELECT * FROM classificacao WHERE pk_classificacao = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            ClassificationModel classification = new ClassificationModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, classificationId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                classification.setClassificationId(resultSet.getInt(1));
+                classification.setName(resultSet.getString(2));
+                classification.setCreationDate(resultSet.getDate(3).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return classification;
 
         } catch (SQLException e) {
             e.printStackTrace();

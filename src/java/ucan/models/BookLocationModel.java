@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class BookLocationModel {
 
     private int locationId;
-    private int numCorredor, numArmario, numPrateleira;
+    private int hallwayNum, cabinetNum, rackNum;
     private LocalDate creationDate;
 
     public BookLocationModel() {
@@ -17,9 +17,9 @@ public class BookLocationModel {
 
     public BookLocationModel(int locationId, int numCorredor, int numArmario, int numPrateleira, LocalDate creationDate) {
         this.locationId = locationId;
-        this.numCorredor = numCorredor;
-        this.numArmario = numArmario;
-        this.numPrateleira = numPrateleira;
+        this.hallwayNum = numCorredor;
+        this.cabinetNum = numArmario;
+        this.rackNum = numPrateleira;
         this.creationDate = creationDate;
     }
 
@@ -31,28 +31,28 @@ public class BookLocationModel {
         this.locationId = locationId;
     }
 
-    public int getNumCorredor() {
-        return numCorredor;
+    public int getHallwayNum() {
+        return hallwayNum;
     }
 
-    public void setNumCorredor(int numCorredor) {
-        this.numCorredor = numCorredor;
+    public void setHallwayNum(int hallwayNum) {
+        this.hallwayNum = hallwayNum;
     }
 
-    public int getNumArmario() {
-        return numArmario;
+    public int getCabinetNum() {
+        return cabinetNum;
     }
 
-    public void setNumArmario(int numArmario) {
-        this.numArmario = numArmario;
+    public void setCabinetNum(int cabinetNum) {
+        this.cabinetNum = cabinetNum;
     }
 
-    public int getNumPrateleira() {
-        return numPrateleira;
+    public int getRackNum() {
+        return rackNum;
     }
 
-    public void setNumPrateleira(int numPrateleira) {
-        this.numPrateleira = numPrateleira;
+    public void setRackNum(int rackNum) {
+        this.rackNum = rackNum;
     }
 
     public LocalDate getCreationDate() {

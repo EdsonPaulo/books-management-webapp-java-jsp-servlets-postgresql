@@ -5,20 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.StatusModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class StatusDAO {
 
-    public ReaderDAO() {
+    public StatusDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(StatusModel status, DBConnection connection) {
+        String sql = "INSERT INTO estado(nome) values(?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, status.getName());
 
             ps.executeUpdate();
             ps.close();
@@ -32,13 +32,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void update(StatusModel status, DBConnection connection) {
+        String sql = "UPDATE estado SET nome = ? WHERE pk_estado = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
+            ps.setString(1, status.getName());
+            ps.setInt(2, status.getStatusId());
 
             ps.executeUpdate();
             ps.close();
@@ -52,12 +51,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
+    public static void delete(int statusId, DBConnection connection) {
+        String sql = "DELETE FROM estado WHERE pk_estado = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
+            ps.setInt(1, statusId);
+
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +68,27 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<StatusModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM estado";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<StatusModel> statusList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                StatusModel status = new StatusModel();
+                status.setStatusId(resultSet.getInt(1));
+                status.setName(resultSet.getString(2));
+                status.setCreationDate(resultSet.getDate(3).toLocalDate());
 
-                readerList.add(reader);
+                statusList.add(status);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return statusList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +99,26 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static StatusModel getStatusById(int statusId, DBConnection connection) {
+        String sql = "SELECT * FROM estado WHERE pk_estado = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            StatusModel status = new StatusModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, statusId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                status.setStatusId(resultSet.getInt(1));
+                status.setName(resultSet.getString(2));
+                status.setCreationDate(resultSet.getDate(3).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return status;
 
         } catch (SQLException e) {
             e.printStackTrace();

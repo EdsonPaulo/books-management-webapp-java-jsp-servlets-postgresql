@@ -12,6 +12,9 @@ public class StatusModel {
     private String name;
     private LocalDate creationDate;
 
+    public StatusModel() {
+    }
+
     public StatusModel(int statusId, String name, LocalDate creationDate) {
         this.statusId = statusId;
         this.name = name;

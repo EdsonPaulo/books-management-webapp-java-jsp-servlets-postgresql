@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class BookModel {
 
     private int bookId;
-    private int numPages, numCopy, numEdition, releaseYear;
+    private int numPages, editionNum, releaseYear;
     private String isbn, name;
     private int categoryId, classificationId, locationId, statusId;
     private LocalDate creationDate;
@@ -17,11 +17,10 @@ public class BookModel {
     public BookModel() {
     }
 
-    public BookModel(int bookId, int numPages, int numCopy, int numEdition, int releaseYear, String isbn, String name, LocalDate creationDate) {
+    public BookModel(int bookId, int numPages, int editionNum, int releaseYear, String isbn, String name, LocalDate creationDate) {
         this.bookId = bookId;
         this.numPages = numPages;
-        this.numCopy = numCopy;
-        this.numEdition = numEdition;
+        this.editionNum = editionNum;
         this.releaseYear = releaseYear;
         this.isbn = isbn;
         this.name = name;
@@ -42,14 +41,6 @@ public class BookModel {
 
     public void setNumPages(int numPages) {
         this.numPages = numPages;
-    }
-
-    public int getNumCopy() {
-        return numCopy;
-    }
-
-    public void setNumCopy(int numCopy) {
-        this.numCopy = numCopy;
     }
 
     public int getReleaseYear() {
@@ -116,12 +107,12 @@ public class BookModel {
         this.creationDate = creationDate;
     }
 
-    public int getNumEdition() {
-        return numEdition;
+    public int getEditionNum() {
+        return editionNum;
     }
 
-    public void setNumEdition(int numEdition) {
-        this.numEdition = numEdition;
+    public void setEditionNum(int editionNum) {
+        this.editionNum = editionNum;
     }
 
 }

@@ -5,20 +5,40 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.DistrictModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class DistrictDAO {
 
-    public ReaderDAO() {
+    public DistrictDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(DistrictModel district, DBConnection connection) {
+        String sql = "INSERT INTO bairro(nome, fk_comuna) values(?, ?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, district.getName());
+            ps.setInt(2, district.getCommuneId());
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
+        }
+    }
+
+    public static void update(DistrictModel district, DBConnection connection) {
+        String sql = "UPDATE bairro SET nome = ?, fk_comuna = ? WHERE pk_bairro = ?";
+        try {
+            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ps.setString(1, district.getName());
+            ps.setInt(2, district.getCommuneId());
+            ps.setInt(3, district.getDistrictId());
 
             ps.executeUpdate();
             ps.close();
@@ -32,32 +52,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void delete(int districtId, DBConnection connection) {
+        String sql = "DELETE FROM bairro WHERE pk_bairro = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ps.setInt(1, districtId);
 
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
-
-            ps.executeUpdate();
-            ps.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
-        }
-    }
-
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
-        try {
-            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +69,28 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<DistrictModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM bairro";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<DistrictModel> districtList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                DistrictModel district = new DistrictModel();
+                district.setDistrictId(resultSet.getInt(1));
+                district.setName(resultSet.getString(2));
+                district.setCommuneId(resultSet.getInt(3));
+                district.setCreationDate(resultSet.getDate(4).toLocalDate());
 
-                readerList.add(reader);
+                districtList.add(district);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return districtList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +101,27 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static DistrictModel getDistrictById(int districtId, DBConnection connection) {
+        String sql = "SELECT * FROM bairro WHERE pk_bairro = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            DistrictModel district = new DistrictModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, districtId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                district.setDistrictId(resultSet.getInt(1));
+                district.setName(resultSet.getString(2));
+                district.setCommuneId(resultSet.getInt(3));
+                district.setCreationDate(resultSet.getDate(4).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return district;
 
         } catch (SQLException e) {
             e.printStackTrace();

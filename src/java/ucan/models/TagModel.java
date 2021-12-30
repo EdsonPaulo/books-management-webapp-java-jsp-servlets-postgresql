@@ -12,6 +12,9 @@ public class TagModel {
     private String name;
     private LocalDate creationDate;
 
+    public TagModel() {
+    }
+
     public TagModel(int tagId, String name, LocalDate creationDate) {
         this.tagId = tagId;
         this.name = name;

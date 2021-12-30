@@ -1,6 +1,5 @@
 DROP DATABASE IF EXISTS biblioteca_ucan;
 CREATE DATABASE biblioteca_ucan;
-USE biblioteca_ucan;
 
 DROP TABLE IF EXISTS pais CASCADE;
 
@@ -180,8 +179,7 @@ CREATE TABLE livro (
     pk_livro SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
     isbn INTEGER NOT NULL UNIQUE,
-    qtd_paginas INTEGER,
-    qtd_copias INTEGER,
+    num_paginas INTEGER,
     num_edicao INTEGER,    
     ano_lancamento INTEGER,
     fk_estado INTEGER,
@@ -191,7 +189,7 @@ CREATE TABLE livro (
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY( fk_estado ) REFERENCES estado(pk_estado) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_classificacao) REFERENCES classificacao(pk_classificacao) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (fk_localizacao) REFERENCES localizacao(pk_localizacao) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (fk_localizacao) REFERENCES localizacao_livro(pk_localizacao_livro) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_categoria) REFERENCES categoria(pk_categoria) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

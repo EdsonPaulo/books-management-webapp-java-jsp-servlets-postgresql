@@ -5,20 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.TagModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class TagDAO {
 
-    public ReaderDAO() {
+    public TagDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(TagModel tag, DBConnection connection) {
+        String sql = "INSERT INTO descritores(nome) values(?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, tag.getName());
 
             ps.executeUpdate();
             ps.close();
@@ -32,13 +32,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void update(TagModel tag, DBConnection connection) {
+        String sql = "UPDATE descritores SET nome = ? WHERE pk_descritores = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
+            ps.setString(1, tag.getName());            
+            ps.setInt(2, tag.getTagId());
 
             ps.executeUpdate();
             ps.close();
@@ -52,12 +51,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
+    public static void delete(int tagId, DBConnection connection) {
+        String sql = "DELETE FROM descritores WHERE pk_descritores = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
+            ps.setInt(1, tagId);
+
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +68,27 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<TagModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM descritores";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<TagModel> tagList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                TagModel tag = new TagModel();
+                tag.setTagId(resultSet.getInt(1));
+                tag.setName(resultSet.getString(2));
+                tag.setCreationDate(resultSet.getDate(3).toLocalDate());
 
-                readerList.add(reader);
+                tagList.add(tag);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return tagList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +99,26 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static TagModel getTagById(int tagId, DBConnection connection) {
+        String sql = "SELECT * FROM descritores WHERE pk_descritores = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            TagModel tag = new TagModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, tagId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                tag.setTagId(resultSet.getInt(1));
+                tag.setName(resultSet.getString(2));
+                tag.setCreationDate(resultSet.getDate(3).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return tag;
 
         } catch (SQLException e) {
             e.printStackTrace();

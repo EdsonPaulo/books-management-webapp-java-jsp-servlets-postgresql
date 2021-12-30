@@ -5,20 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.GenderModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class GenderDAO {
 
-    public ReaderDAO() {
+    public GenderDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(GenderModel gender, DBConnection connection) {
+        String sql = "INSERT INTO sexo(nome) values(?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, gender.getName());
 
             ps.executeUpdate();
             ps.close();
@@ -32,13 +32,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void update(GenderModel gender, DBConnection connection) {
+        String sql = "UPDATE sexo SET nome = ? WHERE pk_sexo = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
+            ps.setString(1, gender.getName());
+            ps.setInt(2, gender.getGenderId());
 
             ps.executeUpdate();
             ps.close();
@@ -52,12 +51,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
+    public static void delete(int genderId, DBConnection connection) {
+        String sql = "DELETE FROM sexo WHERE pk_sexo = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
+            ps.setInt(1, genderId);
+
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +68,27 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<GenderModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM sexo";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<GenderModel> genderList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                GenderModel gender = new GenderModel();
+                gender.setGenderId(resultSet.getInt(1));
+                gender.setName(resultSet.getString(2));
+                gender.setCreationDate(resultSet.getDate(3).toLocalDate());
 
-                readerList.add(reader);
+                genderList.add(gender);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return genderList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +99,26 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static GenderModel getGenderById(int genderId, DBConnection connection) {
+        String sql = "SELECT * FROM sexo WHERE pk_sexo = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            GenderModel gender = new GenderModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, genderId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                gender.setGenderId(resultSet.getInt(1));
+                gender.setName(resultSet.getString(2));
+                gender.setCreationDate(resultSet.getDate(3).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return gender;
 
         } catch (SQLException e) {
             e.printStackTrace();

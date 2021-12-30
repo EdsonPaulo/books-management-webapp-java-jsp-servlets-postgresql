@@ -5,20 +5,40 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.ProvinceModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class ProvinceDAO {
 
-    public ReaderDAO() {
+    public ProvinceDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(ProvinceModel province, DBConnection connection) {
+        String sql = "INSERT INTO provincia(nome, fk_pais) values(?, ?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, province.getName());
+            ps.setInt(2, province.getCountryId());
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
+        }
+    }
+
+    public static void update(ProvinceModel province, DBConnection connection) {
+        String sql = "UPDATE provincia SET nome = ?, fk_pais = ? WHERE pk_provincia = ?";
+        try {
+            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ps.setString(1, province.getName());
+            ps.setInt(2, province.getCountryId());            
+            ps.setInt(3, province.getProvinceId());
 
             ps.executeUpdate();
             ps.close();
@@ -32,32 +52,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void delete(int provinceId, DBConnection connection) {
+        String sql = "DELETE FROM provincia WHERE pk_provincia = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ps.setInt(1, provinceId);
 
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
-
-            ps.executeUpdate();
-            ps.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
-        }
-    }
-
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
-        try {
-            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +69,28 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<ProvinceModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM provincia";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<ProvinceModel> provinceList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                ProvinceModel province = new ProvinceModel();
+                province.setProvinceId(resultSet.getInt(1));
+                province.setName(resultSet.getString(2));
+                province.setCountryId(resultSet.getInt(3));
+                province.setCreationDate(resultSet.getDate(4).toLocalDate());
 
-                readerList.add(reader);
+                provinceList.add(province);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return provinceList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +101,27 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static ProvinceModel getProvinceById(int provinceId, DBConnection connection) {
+        String sql = "SELECT * FROM provincia WHERE pk_provincia = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            ProvinceModel province = new ProvinceModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, provinceId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                province.setProvinceId(resultSet.getInt(1));
+                province.setName(resultSet.getString(2));
+                province.setCountryId(resultSet.getInt(3));
+                province.setCreationDate(resultSet.getDate(4).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return province;
 
         } catch (SQLException e) {
             e.printStackTrace();

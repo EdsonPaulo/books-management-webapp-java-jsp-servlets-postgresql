@@ -5,20 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.CountryModel;
 import ucan.utils.DBConnection;
 
-public class ReaderDAO {
+public class CountryDAO {
 
-    public ReaderDAO() {
+    public CountryDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public static void create(CountryModel country, DBConnection connection) {
+        String sql = "INSERT INTO pais(nome) values(?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setString(1, country.getName());
 
             ps.executeUpdate();
             ps.close();
@@ -32,13 +32,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public static void update(CountryModel country, DBConnection connection) {
+        String sql = "UPDATE pais SET nome = ? WHERE pk_pais = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
+            ps.setString(1, country.getName());
+            ps.setInt(2, country.getCountryId());
 
             ps.executeUpdate();
             ps.close();
@@ -52,12 +51,12 @@ public class ReaderDAO {
         }
     }
 
-    public static void delete(int readerId, DBConnection connection) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
+    public static void delete(int countryId, DBConnection connection) {
+        String sql = "DELETE FROM pais WHERE pk_pais = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
-            
+            ps.setInt(1, countryId);
+
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -69,27 +68,27 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
-        String sql = "SELECT * FROM leitor";
+    public static List<CountryModel> getAll(DBConnection connection) {
+        String sql = "SELECT * FROM pais";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<CountryModel> countryList = new ArrayList<>();
 
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                CountryModel country = new CountryModel();
+                country.setCountryId(resultSet.getInt(1));
+                country.setName(resultSet.getString(2));
+                country.setCreationDate(resultSet.getDate(3).toLocalDate());
 
-                readerList.add(reader);
+                countryList.add(country);
             }
             ps.close();
             resultSet.close();
 
-            return readerList;
+            return countryList;
 
         } catch (SQLException e) {
             return null;
@@ -100,26 +99,26 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public static CountryModel getCountryById(int countryId, DBConnection connection) {
+        String sql = "SELECT * FROM pais WHERE pk_pais = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            CountryModel country = new CountryModel();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, countryId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                country.setCountryId(resultSet.getInt(1));
+                country.setName(resultSet.getString(2));
+                country.setCreationDate(resultSet.getDate(3).toLocalDate());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return country;
 
         } catch (SQLException e) {
             e.printStackTrace();
