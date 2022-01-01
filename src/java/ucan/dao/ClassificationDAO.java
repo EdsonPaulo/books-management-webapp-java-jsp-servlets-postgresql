@@ -9,14 +9,17 @@ import ucan.models.ClassificationModel;
 import ucan.utils.DBConnection;
 
 public class ClassificationDAO {
+    private DBConnection connection;
 
     public ClassificationDAO() {
 
     }
 
-    public static void create(ClassificationModel classification, DBConnection connection) {
+    public void create(ClassificationModel classification) {
         String sql = "INSERT INTO classificacao(nome) values(?)";
         try {
+            connection = new DBConnection();
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, classification.getName());
 
@@ -32,9 +35,11 @@ public class ClassificationDAO {
         }
     }
 
-    public static void update(ClassificationModel classification, DBConnection connection) {
+    public void update(ClassificationModel classification) {
         String sql = "UPDATE classificacao SET nome = ? WHERE pk_classificacao = ?";
         try {
+            connection = new DBConnection();
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, classification.getName());
             ps.setInt(2, classification.getClassificationId());
@@ -51,9 +56,10 @@ public class ClassificationDAO {
         }
     }
 
-    public static void delete(int classificationId, DBConnection connection) {
+    public void delete(int classificationId) {
         String sql = "DELETE FROM classificacao WHERE pk_classificacao = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, classificationId);
 
@@ -68,12 +74,13 @@ public class ClassificationDAO {
         }
     }
 
-    public static List<ClassificationModel> getAll(DBConnection connection) {
+    public List<ClassificationModel> getAll() {
         String sql = "SELECT * FROM classificacao";
 
         List<ClassificationModel> classificationList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -81,7 +88,7 @@ public class ClassificationDAO {
                 ClassificationModel classification = new ClassificationModel();
                 classification.setClassificationId(resultSet.getInt(1));
                 classification.setName(resultSet.getString(2));
-                classification.setCreationDate(resultSet.getDate(3).toLocalDate());
+                classification.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
 
                 classificationList.add(classification);
             }
@@ -99,12 +106,13 @@ public class ClassificationDAO {
         }
     }
 
-    public static ClassificationModel getClassificationById(int classificationId, DBConnection connection) {
+    public ClassificationModel getClassificationById(int classificationId) {
         String sql = "SELECT * FROM classificacao WHERE pk_classificacao = ?";
 
         try {
+            connection = new DBConnection();
             ClassificationModel classification = new ClassificationModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, classificationId);
 
@@ -113,7 +121,7 @@ public class ClassificationDAO {
             while (resultSet.next()) {
                 classification.setClassificationId(resultSet.getInt(1));
                 classification.setName(resultSet.getString(2));
-                classification.setCreationDate(resultSet.getDate(3).toLocalDate());
+                classification.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
             }
 
             ps.close();

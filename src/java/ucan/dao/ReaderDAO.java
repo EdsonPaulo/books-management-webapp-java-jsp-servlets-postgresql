@@ -9,14 +9,16 @@ import ucan.models.ReaderModel;
 import ucan.utils.DBConnection;
 
 public class ReaderDAO {
+    private DBConnection connection;
 
     public ReaderDAO() {
 
     }
 
-    public static void create(ReaderModel reader, DBConnection connection) {
+    public void create(ReaderModel reader) {
         String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, reader.getPersonId());
 
@@ -32,9 +34,10 @@ public class ReaderDAO {
         }
     }
 
-    public static void update(ReaderModel reader, DBConnection connection) {
+    public void update(ReaderModel reader) {
         String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, reader.getPersonId());
@@ -52,9 +55,10 @@ public class ReaderDAO {
         }
     }
 
-    public static void delete(int readerId, DBConnection connection) {
+    public void delete(int readerId) {
         String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, readerId);
             
@@ -69,12 +73,13 @@ public class ReaderDAO {
         }
     }
 
-    public static List<ReaderModel> getAll(DBConnection connection) {
+    public List<ReaderModel> getAll() {
         String sql = "SELECT * FROM leitor";
 
         List<ReaderModel> readerList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -82,7 +87,7 @@ public class ReaderDAO {
                 ReaderModel reader = new ReaderModel();
                 reader.setReaderId(resultSet.getInt(1));
                 reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                reader.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
 
                 readerList.add(reader);
             }
@@ -100,12 +105,12 @@ public class ReaderDAO {
         }
     }
 
-    public static ReaderModel getBookById(int readerId, DBConnection connection) {
+    public ReaderModel getBookById(int readerId) {
         String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
 
         try {
             ReaderModel reader = new ReaderModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, readerId);
 
@@ -114,7 +119,7 @@ public class ReaderDAO {
             while (resultSet.next()) {
                 reader.setReaderId(resultSet.getInt(1));
                 reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getDate(3).toLocalDate());
+                reader.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
             }
 
             ps.close();

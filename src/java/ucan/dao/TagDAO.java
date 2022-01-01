@@ -9,14 +9,16 @@ import ucan.models.TagModel;
 import ucan.utils.DBConnection;
 
 public class TagDAO {
+    private DBConnection connection;
 
     public TagDAO() {
 
     }
 
-    public static void create(TagModel tag, DBConnection connection) {
+    public void create(TagModel tag) {
         String sql = "INSERT INTO descritores(nome) values(?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, tag.getName());
 
@@ -32,9 +34,10 @@ public class TagDAO {
         }
     }
 
-    public static void update(TagModel tag, DBConnection connection) {
+    public void update(TagModel tag) {
         String sql = "UPDATE descritores SET nome = ? WHERE pk_descritores = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, tag.getName());            
             ps.setInt(2, tag.getTagId());
@@ -51,9 +54,10 @@ public class TagDAO {
         }
     }
 
-    public static void delete(int tagId, DBConnection connection) {
+    public void delete(int tagId) {
         String sql = "DELETE FROM descritores WHERE pk_descritores = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, tagId);
 
@@ -68,12 +72,13 @@ public class TagDAO {
         }
     }
 
-    public static List<TagModel> getAll(DBConnection connection) {
+    public List<TagModel> getAll() {
         String sql = "SELECT * FROM descritores";
 
         List<TagModel> tagList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -81,7 +86,7 @@ public class TagDAO {
                 TagModel tag = new TagModel();
                 tag.setTagId(resultSet.getInt(1));
                 tag.setName(resultSet.getString(2));
-                tag.setCreationDate(resultSet.getDate(3).toLocalDate());
+                tag.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
 
                 tagList.add(tag);
             }
@@ -99,12 +104,12 @@ public class TagDAO {
         }
     }
 
-    public static TagModel getTagById(int tagId, DBConnection connection) {
+    public TagModel getTagById(int tagId) {
         String sql = "SELECT * FROM descritores WHERE pk_descritores = ?";
 
         try {
             TagModel tag = new TagModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, tagId);
 
@@ -113,7 +118,7 @@ public class TagDAO {
             while (resultSet.next()) {
                 tag.setTagId(resultSet.getInt(1));
                 tag.setName(resultSet.getString(2));
-                tag.setCreationDate(resultSet.getDate(3).toLocalDate());
+                tag.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
             }
 
             ps.close();

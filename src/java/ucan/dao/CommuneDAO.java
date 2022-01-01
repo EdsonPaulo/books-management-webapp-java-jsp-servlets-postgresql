@@ -9,14 +9,16 @@ import ucan.models.CommuneModel;
 import ucan.utils.DBConnection;
 
 public class CommuneDAO {
+    private DBConnection connection;
 
     public CommuneDAO() {
 
     }
 
-    public static void create(CommuneModel commune, DBConnection connection) {
+    public void create(CommuneModel commune) {
         String sql = "INSERT INTO comuna(nome, fk_municipio) values(?, ?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, commune.getName());
             ps.setInt(2, commune.getMunicipalityId());
@@ -32,9 +34,10 @@ public class CommuneDAO {
         }
     }
 
-    public static void update(CommuneModel commune, DBConnection connection) {
+    public void update(CommuneModel commune) {
         String sql = "UPDATE comuna SET nome = ?, fk_municipio = ? WHERE pk_comuna = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, commune.getName());
             ps.setInt(2, commune.getMunicipalityId());
@@ -52,9 +55,10 @@ public class CommuneDAO {
         }
     }
 
-    public static void delete(int communeId, DBConnection connection) {
+    public void delete(int communeId) {
         String sql = "DELETE FROM comuna WHERE pk_comuna = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, communeId);
 
@@ -69,12 +73,13 @@ public class CommuneDAO {
         }
     }
 
-    public static List<CommuneModel> getAll(DBConnection connection) {
+    public List<CommuneModel> getAll() {
         String sql = "SELECT * FROM comuna";
 
         List<CommuneModel> communeList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -83,7 +88,7 @@ public class CommuneDAO {
                 commune.setCommuneId(resultSet.getInt(1));
                 commune.setName(resultSet.getString(2));
                 commune.setMunicipalityId(resultSet.getInt(3));
-                commune.setCreationDate(resultSet.getDate(4).toLocalDate());
+                commune.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
 
                 communeList.add(commune);
             }
@@ -101,12 +106,12 @@ public class CommuneDAO {
         }
     }
 
-    public static CommuneModel getCommuneById(int communeId, DBConnection connection) {
+    public CommuneModel getCommuneById(int communeId) {
         String sql = "SELECT * FROM comuna WHERE pk_comuna = ?";
 
         try {
             CommuneModel commune = new CommuneModel();
-
+            connection = new DBConnection();            
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, communeId);
 
@@ -116,7 +121,7 @@ public class CommuneDAO {
                 commune.setCommuneId(resultSet.getInt(1));
                 commune.setName(resultSet.getString(2));
                 commune.setMunicipalityId(resultSet.getInt(3));
-                commune.setCreationDate(resultSet.getDate(4).toLocalDate());
+                commune.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
             }
 
             ps.close();

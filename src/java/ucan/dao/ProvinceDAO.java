@@ -9,14 +9,16 @@ import ucan.models.ProvinceModel;
 import ucan.utils.DBConnection;
 
 public class ProvinceDAO {
+    private DBConnection connection;
 
     public ProvinceDAO() {
 
     }
 
-    public static void create(ProvinceModel province, DBConnection connection) {
+    public void create(ProvinceModel province) {
         String sql = "INSERT INTO provincia(nome, fk_pais) values(?, ?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, province.getName());
             ps.setInt(2, province.getCountryId());
@@ -32,9 +34,10 @@ public class ProvinceDAO {
         }
     }
 
-    public static void update(ProvinceModel province, DBConnection connection) {
+    public void update(ProvinceModel province) {
         String sql = "UPDATE provincia SET nome = ?, fk_pais = ? WHERE pk_provincia = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, province.getName());
             ps.setInt(2, province.getCountryId());            
@@ -52,9 +55,10 @@ public class ProvinceDAO {
         }
     }
 
-    public static void delete(int provinceId, DBConnection connection) {
+    public void delete(int provinceId) {
         String sql = "DELETE FROM provincia WHERE pk_provincia = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, provinceId);
 
@@ -69,12 +73,13 @@ public class ProvinceDAO {
         }
     }
 
-    public static List<ProvinceModel> getAll(DBConnection connection) {
+    public List<ProvinceModel> getAll() {
         String sql = "SELECT * FROM provincia";
 
         List<ProvinceModel> provinceList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -83,7 +88,7 @@ public class ProvinceDAO {
                 province.setProvinceId(resultSet.getInt(1));
                 province.setName(resultSet.getString(2));
                 province.setCountryId(resultSet.getInt(3));
-                province.setCreationDate(resultSet.getDate(4).toLocalDate());
+                province.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
 
                 provinceList.add(province);
             }
@@ -101,12 +106,12 @@ public class ProvinceDAO {
         }
     }
 
-    public static ProvinceModel getProvinceById(int provinceId, DBConnection connection) {
+    public ProvinceModel getProvinceById(int provinceId) {
         String sql = "SELECT * FROM provincia WHERE pk_provincia = ?";
 
         try {
             ProvinceModel province = new ProvinceModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, provinceId);
 
@@ -116,7 +121,7 @@ public class ProvinceDAO {
                 province.setProvinceId(resultSet.getInt(1));
                 province.setName(resultSet.getString(2));
                 province.setCountryId(resultSet.getInt(3));
-                province.setCreationDate(resultSet.getDate(4).toLocalDate());
+                province.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
             }
 
             ps.close();

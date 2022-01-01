@@ -9,13 +9,15 @@ import ucan.models.BookTagModel;
 import ucan.utils.DBConnection;
 
 public class BookTagDAO {
+    private DBConnection connection;
 
     public BookTagDAO() {
     }
 
-    public static void create(BookTagModel bookTag, DBConnection connection) {
+    public void create(BookTagModel bookTag) {
         String sql = "INSERT INTO livro_descritores(fk_livro, fk_descritores) values(?, ?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookTag.getBookId());
             ps.setInt(2, bookTag.getTagId());
@@ -32,9 +34,10 @@ public class BookTagDAO {
         }
     }
 
-    public static void update(BookTagModel bookTag, DBConnection connection) {
+    public void update(BookTagModel bookTag) {
         String sql = "UPDATE livro_descritores SET fk_livro = ?, fk_descritores = ? WHERE pk_livro_descritores = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, bookTag.getBookId());
@@ -53,9 +56,10 @@ public class BookTagDAO {
         }
     }
 
-    public static void delete(int bookTagId, DBConnection connection) {
+    public void delete(int bookTagId) {
         String sql = "DELETE FROM livro_descritores WHERE pk_livro_descritores = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookTagId);
 
@@ -70,12 +74,13 @@ public class BookTagDAO {
         }
     }
 
-    public static List<BookTagModel> getAll(DBConnection connection) {
+    public List<BookTagModel> getAll() {
         String sql = "SELECT * FROM livro_descritores";
 
         List<BookTagModel> bookTagList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -84,7 +89,7 @@ public class BookTagDAO {
                 location.setBookTagId(resultSet.getInt(1));
                 location.setBookId(resultSet.getInt(2));
                 location.setTagId(resultSet.getInt(3));
-                location.setCreationDate(resultSet.getDate(4).toLocalDate());
+                location.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
 
                 bookTagList.add(location);
             }
@@ -102,12 +107,12 @@ public class BookTagDAO {
         }
     }
 
-    public static BookTagModel getBookTagById(int locationId, DBConnection connection) {
+    public BookTagModel getBookTagById(int locationId) {
         String sql = "SELECT * FROM livro_descritores WHERE pk_livro_descritores = ?";
 
         try {
+            connection = new DBConnection();
             BookTagModel location = new BookTagModel();
-
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, locationId);
 
@@ -117,7 +122,7 @@ public class BookTagDAO {
                 location.setBookTagId(resultSet.getInt(1));
                 location.setBookId(resultSet.getInt(2));
                 location.setTagId(resultSet.getInt(3));
-                location.setCreationDate(resultSet.getDate(4).toLocalDate());
+                location.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
             }
 
             ps.close();

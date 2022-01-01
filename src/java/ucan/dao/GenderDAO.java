@@ -9,14 +9,16 @@ import ucan.models.GenderModel;
 import ucan.utils.DBConnection;
 
 public class GenderDAO {
+    private DBConnection connection;
 
     public GenderDAO() {
 
     }
 
-    public static void create(GenderModel gender, DBConnection connection) {
+    public void create(GenderModel gender) {
         String sql = "INSERT INTO sexo(nome) values(?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, gender.getName());
 
@@ -32,9 +34,10 @@ public class GenderDAO {
         }
     }
 
-    public static void update(GenderModel gender, DBConnection connection) {
+    public void update(GenderModel gender) {
         String sql = "UPDATE sexo SET nome = ? WHERE pk_sexo = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, gender.getName());
             ps.setInt(2, gender.getGenderId());
@@ -51,9 +54,10 @@ public class GenderDAO {
         }
     }
 
-    public static void delete(int genderId, DBConnection connection) {
+    public void delete(int genderId) {
         String sql = "DELETE FROM sexo WHERE pk_sexo = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, genderId);
 
@@ -68,12 +72,13 @@ public class GenderDAO {
         }
     }
 
-    public static List<GenderModel> getAll(DBConnection connection) {
+    public  List<GenderModel> getAll() {
         String sql = "SELECT * FROM sexo";
 
         List<GenderModel> genderList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -81,7 +86,7 @@ public class GenderDAO {
                 GenderModel gender = new GenderModel();
                 gender.setGenderId(resultSet.getInt(1));
                 gender.setName(resultSet.getString(2));
-                gender.setCreationDate(resultSet.getDate(3).toLocalDate());
+                gender.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
 
                 genderList.add(gender);
             }
@@ -99,12 +104,12 @@ public class GenderDAO {
         }
     }
 
-    public static GenderModel getGenderById(int genderId, DBConnection connection) {
+    public GenderModel getGenderById(int genderId) {
         String sql = "SELECT * FROM sexo WHERE pk_sexo = ?";
 
         try {
             GenderModel gender = new GenderModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, genderId);
 
@@ -113,7 +118,7 @@ public class GenderDAO {
             while (resultSet.next()) {
                 gender.setGenderId(resultSet.getInt(1));
                 gender.setName(resultSet.getString(2));
-                gender.setCreationDate(resultSet.getDate(3).toLocalDate());
+                gender.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
             }
 
             ps.close();

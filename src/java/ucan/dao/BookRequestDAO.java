@@ -1,27 +1,29 @@
 package ucan.dao;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.BookRequestModel;
 import ucan.utils.DBConnection;
 
 public class BookRequestDAO {
+    private DBConnection connection;
 
     public BookRequestDAO() {
     }
 
-    public static void create(BookRequestModel bookRequest, DBConnection connection) {
+    public void create(BookRequestModel bookRequest) {
         String sql = "INSERT INTO requisicao(fk_livro, fk_leitor, data_requisicao, data_entrega) values(?, ?, ?, ?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookRequest.getBookId());
             ps.setInt(2, bookRequest.getReaderId());
-            ps.setDate(3, Date.valueOf(bookRequest.getRequestDate()));
-            ps.setDate(4, Date.valueOf(bookRequest.getReturnDate()));
+            ps.setTimestamp(3, Timestamp.valueOf(bookRequest.getRequestDate()));
+            ps.setTimestamp(4, Timestamp.valueOf(bookRequest.getReturnDate()));
 
             ps.executeUpdate();
             ps.close();
@@ -35,15 +37,16 @@ public class BookRequestDAO {
         }
     }
 
-    public static void update(BookRequestModel bookRequest, DBConnection connection) {
+    public void update(BookRequestModel bookRequest) {
         String sql = "UPDATE requisicao SET fk_livro = ?, fk_leitor = ?, data_requisicao = ?, data_entrega = ? WHERE pk_requisicao = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, bookRequest.getBookId());
             ps.setInt(2, bookRequest.getReaderId());
-            ps.setDate(3, Date.valueOf(bookRequest.getRequestDate()));
-            ps.setDate(4, Date.valueOf(bookRequest.getReturnDate()));
+            ps.setTimestamp(3, Timestamp.valueOf(bookRequest.getRequestDate()));
+            ps.setTimestamp(4, Timestamp.valueOf(bookRequest.getReturnDate()));
             ps.setInt(5, bookRequest.getRequestId());
 
             ps.executeUpdate();
@@ -58,9 +61,10 @@ public class BookRequestDAO {
         }
     }
 
-    public static void delete(int requestId, DBConnection connection) {
+    public void delete(int requestId) {
         String sql = "DELETE FROM requisicao WHERE pk_requisicao = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, requestId);
 
@@ -75,12 +79,13 @@ public class BookRequestDAO {
         }
     }
 
-    public static List<BookRequestModel> getAll(DBConnection connection) {
+    public List<BookRequestModel> getAll() {
         String sql = "SELECT * FROM requisicao";
 
         List<BookRequestModel> requestList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -89,9 +94,9 @@ public class BookRequestDAO {
                 request.setRequestId(resultSet.getInt(1));
                 request.setBookId(resultSet.getInt(2));
                 request.setReaderId(resultSet.getInt(3));
-                request.setRequestDate(resultSet.getDate(4).toLocalDate());
-                request.setReturnDate(resultSet.getDate(5).toLocalDate());
-                request.setCreationDate(resultSet.getDate(6).toLocalDate());
+                request.setRequestDate(resultSet.getTimestamp(4).toLocalDateTime());
+                request.setReturnDate(resultSet.getTimestamp(5).toLocalDateTime());
+                request.setCreationDate(resultSet.getTimestamp(6).toLocalDateTime());
 
                 requestList.add(request);
             }
@@ -109,12 +114,13 @@ public class BookRequestDAO {
         }
     }
 
-    public static BookRequestModel getBookRequestById(int requestId, DBConnection connection) {
+    public BookRequestModel getBookRequestById(int requestId) {
         String sql = "SELECT * FROM requisicao WHERE pk_requisicao = ?";
 
         try {
+            connection = new DBConnection();
             BookRequestModel request = new BookRequestModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, requestId);
 
@@ -124,9 +130,9 @@ public class BookRequestDAO {
                 request.setRequestId(resultSet.getInt(1));
                 request.setBookId(resultSet.getInt(2));
                 request.setReaderId(resultSet.getInt(3));
-                request.setRequestDate(resultSet.getDate(4).toLocalDate());
-                request.setReturnDate(resultSet.getDate(5).toLocalDate());
-                request.setCreationDate(resultSet.getDate(6).toLocalDate());
+                request.setRequestDate(resultSet.getTimestamp(4).toLocalDateTime());
+                request.setReturnDate(resultSet.getTimestamp(5).toLocalDateTime());
+                request.setCreationDate(resultSet.getTimestamp(6).toLocalDateTime());
             }
 
             ps.close();

@@ -9,14 +9,16 @@ import ucan.models.StatusModel;
 import ucan.utils.DBConnection;
 
 public class StatusDAO {
+    private DBConnection connection;
 
     public StatusDAO() {
 
     }
 
-    public static void create(StatusModel status, DBConnection connection) {
+    public void create(StatusModel status) {
         String sql = "INSERT INTO estado(nome) values(?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, status.getName());
 
@@ -32,9 +34,10 @@ public class StatusDAO {
         }
     }
 
-    public static void update(StatusModel status, DBConnection connection) {
+    public void update(StatusModel status) {
         String sql = "UPDATE estado SET nome = ? WHERE pk_estado = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, status.getName());
             ps.setInt(2, status.getStatusId());
@@ -51,9 +54,10 @@ public class StatusDAO {
         }
     }
 
-    public static void delete(int statusId, DBConnection connection) {
+    public void delete(int statusId) {
         String sql = "DELETE FROM estado WHERE pk_estado = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, statusId);
 
@@ -68,12 +72,13 @@ public class StatusDAO {
         }
     }
 
-    public static List<StatusModel> getAll(DBConnection connection) {
+    public List<StatusModel> getAll() {
         String sql = "SELECT * FROM estado";
 
         List<StatusModel> statusList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -81,7 +86,7 @@ public class StatusDAO {
                 StatusModel status = new StatusModel();
                 status.setStatusId(resultSet.getInt(1));
                 status.setName(resultSet.getString(2));
-                status.setCreationDate(resultSet.getDate(3).toLocalDate());
+                status.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
 
                 statusList.add(status);
             }
@@ -99,12 +104,12 @@ public class StatusDAO {
         }
     }
 
-    public static StatusModel getStatusById(int statusId, DBConnection connection) {
+    public StatusModel getStatusById(int statusId) {
         String sql = "SELECT * FROM estado WHERE pk_estado = ?";
 
         try {
             StatusModel status = new StatusModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, statusId);
 
@@ -113,7 +118,7 @@ public class StatusDAO {
             while (resultSet.next()) {
                 status.setStatusId(resultSet.getInt(1));
                 status.setName(resultSet.getString(2));
-                status.setCreationDate(resultSet.getDate(3).toLocalDate());
+                status.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
             }
 
             ps.close();

@@ -9,14 +9,16 @@ import ucan.models.BookModel;
 import ucan.utils.DBConnection;
 
 public class BookDAO {
+    private DBConnection connection;
 
     public BookDAO() {
 
     }
 
-    public static void create(BookModel book, DBConnection connection) {
+    public void create(BookModel book) {
         String sql = "INSERT INTO livro(nome, isbn, num_paginas, num_edicao, ano_lancamento, fk_estado, fk_classificacao, fk_localizacao, fk_categoria) values(?,?,?,?,?,?,?,?,?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, book.getName());
@@ -41,9 +43,10 @@ public class BookDAO {
         }
     }
 
-    public static void update(BookModel book, DBConnection connection) {
+    public void update(BookModel book) {
         String sql = "UPDATE livro SET nome  = ?, isbn = ?, num_paginas = ?, num_edicao = ?, ano_lancamento = ?, fk_estado = ?, fk_classificacao = ?, fk_localizacao = ?, fk_categoria = ? WHERE pk_livro = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, book.getName());
@@ -69,9 +72,10 @@ public class BookDAO {
         }
     }
 
-    public static void delete(int livroId, DBConnection connection) {
+    public void delete(int livroId) {
         String sql = "DELETE FROM livro WHERE pk_livro = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, livroId);
 
@@ -86,12 +90,11 @@ public class BookDAO {
         }
     }
 
-    public static List<BookModel> getAll(DBConnection connection) {
+    public List<BookModel> getAll() {
         String sql = "SELECT * FROM livro";
-
         List<BookModel> bookList = new ArrayList<>();
-
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -107,7 +110,7 @@ public class BookDAO {
                 book.setClassificationId(resultSet.getInt(8));
                 book.setLocationId(resultSet.getInt(9));
                 book.setCategoryId(resultSet.getInt(10));
-                book.setCreationDate(resultSet.getDate(11).toLocalDate());
+                book.setCreationDate(resultSet.getTimestamp(11).toLocalDateTime());
 
                 bookList.add(book);
             }
@@ -125,13 +128,14 @@ public class BookDAO {
         }
     }
 
-    public static BookModel getBookById(int bookId, DBConnection connection) {
+    public BookModel getBookById(int bookId) {
 
         String sql = "SELECT * FROM livro WHERE pk_livro = ?";
 
         try {
+            connection = new DBConnection();
             BookModel book = new BookModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookId);
 
@@ -148,7 +152,7 @@ public class BookDAO {
                 book.setClassificationId(resultSet.getInt(8));
                 book.setLocationId(resultSet.getInt(9));
                 book.setCategoryId(resultSet.getInt(10));
-                book.setCreationDate(resultSet.getDate(11).toLocalDate());
+                book.setCreationDate(resultSet.getTimestamp(11).toLocalDateTime());
             }
 
             ps.close();

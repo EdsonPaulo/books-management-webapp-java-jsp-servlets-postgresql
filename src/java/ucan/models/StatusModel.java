@@ -1,6 +1,6 @@
 package ucan.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -10,12 +10,12 @@ public class StatusModel {
 
     private int statusId;
     private String name;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     public StatusModel() {
     }
 
-    public StatusModel(int statusId, String name, LocalDate creationDate) {
+    public StatusModel(int statusId, String name, LocalDateTime creationDate) {
         this.statusId = statusId;
         this.name = name;
         this.creationDate = creationDate;
@@ -37,11 +37,11 @@ public class StatusModel {
         this.name = name;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

@@ -1,6 +1,6 @@
 package ucan.dao;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,21 +10,23 @@ import ucan.models.PersonModel;
 import ucan.utils.DBConnection;
 
 public class PersonDAO {
+    private DBConnection connection;
 
     public PersonDAO() {
 
     }
 
-    public static void create(PersonModel person, DBConnection connection) {
+    public void create(PersonModel person) {
         String sql = "INSERT INTO pessoa(nome, sobrenome, telefone, email, data_nasc, fk_morada, fk_sexo) values(?,?,?,?,?,?,?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
             ps.setString(2, person.getSurname());
             ps.setString(3, person.getPhone());
             ps.setString(4, person.getEmail());
-            ps.setDate(5, Date.valueOf(person.getBirthDate()));
+            ps.setTimestamp(5, Timestamp.valueOf(person.getBirthDate()));
             ps.setInt(6, person.getAddressId());
             ps.setInt(7, person.getGenderId());
 
@@ -40,16 +42,17 @@ public class PersonDAO {
         }
     }
 
-    public static void update(PersonModel person, DBConnection connection) {
+    public void update(PersonModel person) {
         String sql = "UPDATE pessoa SET name = ?, surname = ?, telefone = ?, email = ?, data_nasc = ?, fk_morada = ?, fk_sexo = ? WHERE pk_pessoa = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
             ps.setString(2, person.getSurname());
             ps.setString(3, person.getPhone());
             ps.setString(4, person.getEmail());
-            ps.setDate(5, Date.valueOf(person.getBirthDate()));
+            ps.setTimestamp(5, Timestamp.valueOf(person.getBirthDate()));
             ps.setInt(6, person.getAddressId());
             ps.setInt(7, person.getGenderId());
             ps.setInt(8, person.getPersonId());
@@ -66,9 +69,10 @@ public class PersonDAO {
         }
     }
 
-    public static void delete(int personId, DBConnection connection) {
+    public void delete(int personId) {
         String sql = "DELETE FROM pessoa WHERE pk_pessoa = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, personId);
 
@@ -83,12 +87,13 @@ public class PersonDAO {
         }
     }
 
-    public static List<PersonModel> getAll(DBConnection connection) {
+    public List<PersonModel> getAll() {
         String sql = "SELECT * FROM pessoa";
 
         List<PersonModel> personList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -98,11 +103,11 @@ public class PersonDAO {
                 person.setName(resultSet.getString(2));
                 person.setSurname(resultSet.getString(3));
                 person.setPhone(resultSet.getString(4));
-                person.setBirthDate(resultSet.getDate(5).toLocalDate());
+                person.setBirthDate(resultSet.getTimestamp(5).toLocalDateTime());
                 person.setEmail(resultSet.getString(6));
                 person.setAddressId(resultSet.getInt(7));
                 person.setGenderId(resultSet.getInt(8));
-                person.setCreationDate(resultSet.getDate(9).toLocalDate());
+                person.setCreationDate(resultSet.getTimestamp(9).toLocalDateTime());
 
                 personList.add(person);
             }
@@ -120,13 +125,13 @@ public class PersonDAO {
         }
     }
 
-    public static PersonModel getPersonById(int personId, DBConnection connection) {
+    public PersonModel getPersonById(int personId) {
 
         String sql = "SELECT * FROM pessoa WHERE pk_pessoa = ?";
 
         try {
             PersonModel person = new PersonModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, personId);
 
@@ -137,11 +142,11 @@ public class PersonDAO {
                 person.setName(resultSet.getString(2));
                 person.setSurname(resultSet.getString(3));
                 person.setPhone(resultSet.getString(4));
-                person.setBirthDate(resultSet.getDate(5).toLocalDate());
+                person.setBirthDate(resultSet.getTimestamp(5).toLocalDateTime());
                 person.setEmail(resultSet.getString(6));
                 person.setAddressId(resultSet.getInt(7));
                 person.setGenderId(resultSet.getInt(8));
-                person.setCreationDate(resultSet.getDate(9).toLocalDate());
+                person.setCreationDate(resultSet.getTimestamp(9).toLocalDateTime());
             }
 
             ps.close();

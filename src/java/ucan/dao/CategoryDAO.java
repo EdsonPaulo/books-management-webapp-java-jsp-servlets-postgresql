@@ -9,14 +9,16 @@ import ucan.models.CategoryModel;
 import ucan.utils.DBConnection;
 
 public class CategoryDAO {
+    private DBConnection connection;
 
     public CategoryDAO() {
 
     }
 
-    public static void create(CategoryModel category, DBConnection connection) {
+    public void create(CategoryModel category) {
         String sql = "INSERT INTO categoria(nome) values(?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, category.getName());
 
@@ -32,9 +34,10 @@ public class CategoryDAO {
         }
     }
 
-    public static void update(CategoryModel category, DBConnection connection) {
+    public void update(CategoryModel category) {
         String sql = "UPDATE categoria SET nome = ? WHERE pk_categoria = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, category.getName());
             ps.setInt(2, category.getCategoryId());
@@ -51,9 +54,10 @@ public class CategoryDAO {
         }
     }
 
-    public static void delete(int categoryId, DBConnection connection) {
+    public void delete(int categoryId) {
         String sql = "DELETE FROM categoria WHERE pk_categoria = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, categoryId);
 
@@ -68,12 +72,13 @@ public class CategoryDAO {
         }
     }
 
-    public static List<CategoryModel> getAll(DBConnection connection) {
+    public List<CategoryModel> getAll() {
         String sql = "SELECT * FROM categoria";
 
         List<CategoryModel> categoryList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -81,7 +86,7 @@ public class CategoryDAO {
                 CategoryModel category = new CategoryModel();
                 category.setCategoryId(resultSet.getInt(1));
                 category.setName(resultSet.getString(2));
-                category.setCreationDate(resultSet.getDate(3).toLocalDate());
+                category.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
 
                 categoryList.add(category);
             }
@@ -99,12 +104,13 @@ public class CategoryDAO {
         }
     }
 
-    public static CategoryModel getCategoryById(int categoryId, DBConnection connection) {
+    public CategoryModel getCategoryById(int categoryId) {
         String sql = "SELECT * FROM categoria WHERE pk_categoria = ?";
 
         try {
+            connection = new DBConnection();
             CategoryModel category = new CategoryModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, categoryId);
 
@@ -113,7 +119,7 @@ public class CategoryDAO {
             while (resultSet.next()) {
                 category.setCategoryId(resultSet.getInt(1));
                 category.setName(resultSet.getString(2));
-                category.setCreationDate(resultSet.getDate(3).toLocalDate());
+                category.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
             }
 
             ps.close();

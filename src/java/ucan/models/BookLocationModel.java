@@ -1,6 +1,6 @@
 package ucan.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -10,12 +10,12 @@ public class BookLocationModel {
 
     private int locationId;
     private int hallwayNum, cabinetNum, rackNum;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     public BookLocationModel() {
     }
 
-    public BookLocationModel(int locationId, int numCorredor, int numArmario, int numPrateleira, LocalDate creationDate) {
+    public BookLocationModel(int locationId, int numCorredor, int numArmario, int numPrateleira, LocalDateTime creationDate) {
         this.locationId = locationId;
         this.hallwayNum = numCorredor;
         this.cabinetNum = numArmario;
@@ -55,11 +55,11 @@ public class BookLocationModel {
         this.rackNum = rackNum;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

@@ -9,14 +9,16 @@ import ucan.models.CountryModel;
 import ucan.utils.DBConnection;
 
 public class CountryDAO {
+    private DBConnection connection;
 
     public CountryDAO() {
 
     }
 
-    public static void create(CountryModel country, DBConnection connection) {
+    public void create(CountryModel country) {
         String sql = "INSERT INTO pais(nome) values(?)";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, country.getName());
 
@@ -32,9 +34,10 @@ public class CountryDAO {
         }
     }
 
-    public static void update(CountryModel country, DBConnection connection) {
+    public void update(CountryModel country) {
         String sql = "UPDATE pais SET nome = ? WHERE pk_pais = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, country.getName());
             ps.setInt(2, country.getCountryId());
@@ -51,9 +54,10 @@ public class CountryDAO {
         }
     }
 
-    public static void delete(int countryId, DBConnection connection) {
+    public void delete(int countryId) {
         String sql = "DELETE FROM pais WHERE pk_pais = ?";
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, countryId);
 
@@ -68,12 +72,13 @@ public class CountryDAO {
         }
     }
 
-    public static List<CountryModel> getAll(DBConnection connection) {
+    public List<CountryModel> getAll() {
         String sql = "SELECT * FROM pais";
 
         List<CountryModel> countryList = new ArrayList<>();
 
         try {
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -81,7 +86,7 @@ public class CountryDAO {
                 CountryModel country = new CountryModel();
                 country.setCountryId(resultSet.getInt(1));
                 country.setName(resultSet.getString(2));
-                country.setCreationDate(resultSet.getDate(3).toLocalDate());
+                country.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
 
                 countryList.add(country);
             }
@@ -99,12 +104,12 @@ public class CountryDAO {
         }
     }
 
-    public static CountryModel getCountryById(int countryId, DBConnection connection) {
+    public CountryModel getCountryById(int countryId) {
         String sql = "SELECT * FROM pais WHERE pk_pais = ?";
 
         try {
             CountryModel country = new CountryModel();
-
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, countryId);
 
@@ -113,7 +118,7 @@ public class CountryDAO {
             while (resultSet.next()) {
                 country.setCountryId(resultSet.getInt(1));
                 country.setName(resultSet.getString(2));
-                country.setCreationDate(resultSet.getDate(3).toLocalDate());
+                country.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
             }
 
             ps.close();
