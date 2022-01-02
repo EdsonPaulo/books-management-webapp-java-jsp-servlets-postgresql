@@ -133,7 +133,6 @@ public class BookDAO {
         String sql = "SELECT * FROM livro WHERE pk_livro = ?";
 
         try {
-            connection = new DBConnection();
             BookModel book = new BookModel();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);

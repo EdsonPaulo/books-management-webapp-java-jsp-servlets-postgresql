@@ -1,0 +1,31 @@
+/* 
+    Created on : 01/01/2022, 23:19:25
+    Author     : edsonpaulo
+*/
+
+* {
+    box-sizing: border-box;
+    outline: none;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+    background: wheat;   
+}
+
+main {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.menu {
+    width: 80%;
+    height: 80%;
+    background: whitesmoke;   
+    border-radius: 20px;
+}

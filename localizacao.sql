@@ -1,8 +1,6 @@
-/*Adicionando Provincias*/
 INSERT INTO pais(nome) VALUES ('Angola');
 
 INSERT INTO provincia(nome, fk_pais) VALUES ('Luanda', 1);
-
 INSERT INTO provincia(nome, fk_pais) VALUES ('Bengo', 1);
 INSERT INTO provincia(nome, fk_pais) VALUES ('Benguela', 1);
 INSERT INTO provincia(nome, fk_pais) VALUES ('Bie', 1);

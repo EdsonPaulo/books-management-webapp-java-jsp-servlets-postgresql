@@ -19,7 +19,6 @@ public class ClassificationDAO {
         String sql = "INSERT INTO classificacao(nome) values(?)";
         try {
             connection = new DBConnection();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, classification.getName());
 
@@ -38,7 +37,6 @@ public class ClassificationDAO {
     public void update(ClassificationModel classification) {
         String sql = "UPDATE classificacao SET nome = ? WHERE pk_classificacao = ?";
         try {
-            connection = new DBConnection();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, classification.getName());
@@ -110,7 +108,6 @@ public class ClassificationDAO {
         String sql = "SELECT * FROM classificacao WHERE pk_classificacao = ?";
 
         try {
-            connection = new DBConnection();
             ClassificationModel classification = new ClassificationModel();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);

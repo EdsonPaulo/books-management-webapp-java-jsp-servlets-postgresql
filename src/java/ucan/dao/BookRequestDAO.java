@@ -118,7 +118,6 @@ public class BookRequestDAO {
         String sql = "SELECT * FROM requisicao WHERE pk_requisicao = ?";
 
         try {
-            connection = new DBConnection();
             BookRequestModel request = new BookRequestModel();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);

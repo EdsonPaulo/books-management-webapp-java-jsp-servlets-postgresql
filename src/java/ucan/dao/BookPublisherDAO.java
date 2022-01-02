@@ -111,7 +111,6 @@ public class BookPublisherDAO {
         String sql = "SELECT * FROM livro_editora WHERE pk_livro_editora = ?";
 
         try {
-            connection = new DBConnection();
             BookPublisherModel location = new BookPublisherModel();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);

@@ -10,12 +10,12 @@ import java.sql.SQLException;
  */
 public class DBConnection {
 
-    private static final String JDBC_DRIVER = "org.postgresql.Driver";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/biblioteca_ucan";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "edson942682194";
+    private final String JDBC_DRIVER = "org.postgresql.Driver";
+    private final String DB_URL = "jdbc:postgresql://localhost:5432/biblioteca_ucan";
+    private final String DB_USER = "postgres";
+    private final String DB_PASSWORD = "edson942682194";
 
-    private static Connection connection = null;
+    private Connection connection = null;
 
     public DBConnection() {
         try {

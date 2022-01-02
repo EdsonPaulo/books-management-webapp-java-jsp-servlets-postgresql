@@ -108,7 +108,6 @@ public class CategoryDAO {
         String sql = "SELECT * FROM categoria WHERE pk_categoria = ?";
 
         try {
-            connection = new DBConnection();
             CategoryModel category = new CategoryModel();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);

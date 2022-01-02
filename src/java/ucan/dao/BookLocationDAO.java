@@ -114,7 +114,6 @@ public class BookLocationDAO {
         String sql = "SELECT * FROM localizacao_livro WHERE pk_localizacao_livro = ?";
 
         try {
-            connection = new DBConnection();
             BookLocationModel location = new BookLocationModel();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
