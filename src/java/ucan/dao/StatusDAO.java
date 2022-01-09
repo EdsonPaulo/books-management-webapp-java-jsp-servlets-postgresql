@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.StatusModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class StatusDAO {
+
     private DBConnection connection;
 
     public StatusDAO() {
@@ -93,15 +94,14 @@ public class StatusDAO {
             ps.close();
             resultSet.close();
 
-            return statusList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return statusList;
     }
 
     public StatusModel getStatusById(int statusId) {

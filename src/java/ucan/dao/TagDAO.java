@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.TagModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class TagDAO {
+
     private DBConnection connection;
 
     public TagDAO() {
@@ -39,7 +40,7 @@ public class TagDAO {
         try {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setString(1, tag.getName());            
+            ps.setString(1, tag.getName());
             ps.setInt(2, tag.getTagId());
 
             ps.executeUpdate();
@@ -93,15 +94,14 @@ public class TagDAO {
             ps.close();
             resultSet.close();
 
-            return tagList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return tagList;
     }
 
     public TagModel getTagById(int tagId) {

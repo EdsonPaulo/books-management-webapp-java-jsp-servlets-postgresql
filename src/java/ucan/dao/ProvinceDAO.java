@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.ProvinceModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class ProvinceDAO {
+
     private DBConnection connection;
 
     public ProvinceDAO() {
@@ -40,7 +41,7 @@ public class ProvinceDAO {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, province.getName());
-            ps.setInt(2, province.getCountryId());            
+            ps.setInt(2, province.getCountryId());
             ps.setInt(3, province.getProvinceId());
 
             ps.executeUpdate();
@@ -95,15 +96,14 @@ public class ProvinceDAO {
             ps.close();
             resultSet.close();
 
-            return provinceList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return provinceList;
     }
 
     public ProvinceModel getProvinceById(int provinceId) {

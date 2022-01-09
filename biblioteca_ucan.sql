@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS biblioteca_ucan;
-CREATE DATABASE biblioteca_ucan;
-USE biblioteca_ucan;
-
 DROP TABLE IF EXISTS pais CASCADE;
 
 CREATE TABLE pais (
@@ -71,7 +67,7 @@ DROP TABLE IF EXISTS sexo CASCADE;
 
 CREATE TABLE sexo (
     pk_sexo SERIAL NOT NULL PRIMARY KEY,
-    nome CHAR(1) NOT NULL,
+    nome VARCHAR(10) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -82,6 +78,7 @@ CREATE TABLE pessoa (
     pk_pessoa SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     sobrenome VARCHAR(50) NOT NULL,
+    bi VARCHAR(50) NOT NULL,
     telefone VARCHAR(14) NOT NULL,
     data_nasc DATE,
     email VARCHAR(50),
@@ -147,10 +144,10 @@ CREATE TABLE classificacao (
 );
 
 
-DROP TABLE IF EXISTS Livro CASCADE;
+DROP TABLE IF EXISTS estado CASCADE;
 
-CREATE TABLE Livro (
-    pk_Livro SERIAL NOT NULL PRIMARY KEY,
+CREATE TABLE estado (
+    pk_estado SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

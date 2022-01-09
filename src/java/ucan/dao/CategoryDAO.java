@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.CategoryModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class CategoryDAO {
+
     private DBConnection connection;
 
     public CategoryDAO() {
@@ -93,15 +94,14 @@ public class CategoryDAO {
             ps.close();
             resultSet.close();
 
-            return categoryList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return categoryList;
     }
 
     public CategoryModel getCategoryById(int categoryId) {

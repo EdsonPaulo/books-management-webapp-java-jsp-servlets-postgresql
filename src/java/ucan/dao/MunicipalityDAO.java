@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.MunicipalityModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class MunicipalityDAO {
+
     private DBConnection connection;
 
     public MunicipalityDAO() {
@@ -95,15 +96,14 @@ public class MunicipalityDAO {
             ps.close();
             resultSet.close();
 
-            return municipalityList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return municipalityList;
     }
 
     public MunicipalityModel getMunicipalityById(int municipalityId) {

@@ -7,9 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.PersonModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class PersonDAO {
+
     private DBConnection connection;
 
     public PersonDAO() {
@@ -17,18 +18,19 @@ public class PersonDAO {
     }
 
     public void create(PersonModel person) {
-        String sql = "INSERT INTO pessoa(nome, sobrenome, telefone, email, data_nasc, fk_morada, fk_sexo) values(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO pessoa(nome, sobrenome, bi, telefone, email, data_nasc, fk_morada, fk_sexo) values(?,?,?,?,?,?,?,?)";
         try {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
             ps.setString(2, person.getSurname());
-            ps.setString(3, person.getPhone());
-            ps.setString(4, person.getEmail());
-            ps.setTimestamp(5, Timestamp.valueOf(person.getBirthDate()));
-            ps.setInt(6, person.getAddressId());
-            ps.setInt(7, person.getGenderId());
+            ps.setString(3, person.getBi());
+            ps.setString(4, person.getPhone());
+            ps.setString(5, person.getEmail());
+            ps.setTimestamp(6, Timestamp.valueOf(person.getBirthDate()));
+            ps.setInt(7, person.getAddressId());
+            ps.setInt(8, person.getGenderId());
 
             ps.executeUpdate();
             ps.close();
@@ -43,19 +45,20 @@ public class PersonDAO {
     }
 
     public void update(PersonModel person) {
-        String sql = "UPDATE pessoa SET name = ?, surname = ?, telefone = ?, email = ?, data_nasc = ?, fk_morada = ?, fk_sexo = ? WHERE pk_pessoa = ?";
+        String sql = "UPDATE pessoa SET nome = ?, sobrenome = ?, bi = ?, telefone = ?, email = ?, data_nasc = ?, fk_morada = ?, fk_sexo = ? WHERE pk_pessoa = ?";
         try {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
             ps.setString(2, person.getSurname());
-            ps.setString(3, person.getPhone());
-            ps.setString(4, person.getEmail());
-            ps.setTimestamp(5, Timestamp.valueOf(person.getBirthDate()));
-            ps.setInt(6, person.getAddressId());
-            ps.setInt(7, person.getGenderId());
-            ps.setInt(8, person.getPersonId());
+            ps.setString(3, person.getSurname());
+            ps.setString(4, person.getPhone());
+            ps.setString(5, person.getEmail());
+            ps.setTimestamp(6, Timestamp.valueOf(person.getBirthDate()));
+            ps.setInt(7, person.getAddressId());
+            ps.setInt(8, person.getGenderId());
+            ps.setInt(9, person.getPersonId());
 
             ps.executeUpdate();
             ps.close();
@@ -102,27 +105,27 @@ public class PersonDAO {
                 person.setPersonId(resultSet.getInt(1));
                 person.setName(resultSet.getString(2));
                 person.setSurname(resultSet.getString(3));
-                person.setPhone(resultSet.getString(4));
-                person.setBirthDate(resultSet.getTimestamp(5).toLocalDateTime());
-                person.setEmail(resultSet.getString(6));
-                person.setAddressId(resultSet.getInt(7));
-                person.setGenderId(resultSet.getInt(8));
-                person.setCreationDate(resultSet.getTimestamp(9).toLocalDateTime());
+                person.setBi(resultSet.getString(4));
+                person.setPhone(resultSet.getString(5));
+                person.setBirthDate(resultSet.getTimestamp(6).toLocalDateTime());
+                person.setEmail(resultSet.getString(7));
+                person.setAddressId(resultSet.getInt(8));
+                person.setGenderId(resultSet.getInt(9));
+                person.setCreationDate(resultSet.getTimestamp(10).toLocalDateTime());
 
                 personList.add(person);
             }
             ps.close();
             resultSet.close();
 
-            return personList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return personList;
     }
 
     public PersonModel getPersonById(int personId) {
@@ -138,15 +141,16 @@ public class PersonDAO {
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                 person.setPersonId(resultSet.getInt(1));
+                person.setPersonId(resultSet.getInt(1));
                 person.setName(resultSet.getString(2));
                 person.setSurname(resultSet.getString(3));
-                person.setPhone(resultSet.getString(4));
-                person.setBirthDate(resultSet.getTimestamp(5).toLocalDateTime());
-                person.setEmail(resultSet.getString(6));
-                person.setAddressId(resultSet.getInt(7));
-                person.setGenderId(resultSet.getInt(8));
-                person.setCreationDate(resultSet.getTimestamp(9).toLocalDateTime());
+                person.setBi(resultSet.getString(4));
+                person.setPhone(resultSet.getString(5));
+                person.setBirthDate(resultSet.getTimestamp(6).toLocalDateTime());
+                person.setEmail(resultSet.getString(7));
+                person.setAddressId(resultSet.getInt(8));
+                person.setGenderId(resultSet.getInt(9));
+                person.setCreationDate(resultSet.getTimestamp(10).toLocalDateTime());
             }
 
             ps.close();

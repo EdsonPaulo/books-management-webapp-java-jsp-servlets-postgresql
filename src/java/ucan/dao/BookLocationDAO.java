@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.BookLocationModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class BookLocationDAO {
+
     private DBConnection connection;
 
     public BookLocationDAO() {
@@ -20,7 +21,7 @@ public class BookLocationDAO {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookLocation.getHallwayNum());
-            ps.setInt(2, bookLocation.getCabinetNum());            
+            ps.setInt(2, bookLocation.getCabinetNum());
             ps.setInt(3, bookLocation.getRackNum());
 
             ps.executeUpdate();
@@ -42,7 +43,7 @@ public class BookLocationDAO {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, bookLocation.getHallwayNum());
-            ps.setInt(2, bookLocation.getCabinetNum());            
+            ps.setInt(2, bookLocation.getCabinetNum());
             ps.setInt(3, bookLocation.getRackNum());
             ps.setInt(4, bookLocation.getLocationId());
 
@@ -99,15 +100,15 @@ public class BookLocationDAO {
             ps.close();
             resultSet.close();
 
-            return locationList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
+
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return locationList;
     }
 
     public BookLocationModel getBookLocationById(int locationId) {

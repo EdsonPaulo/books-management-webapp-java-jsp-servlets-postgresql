@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.CommuneModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class CommuneDAO {
+
     private DBConnection connection;
 
     public CommuneDAO() {
@@ -95,15 +96,14 @@ public class CommuneDAO {
             ps.close();
             resultSet.close();
 
-            return communeList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return communeList;
     }
 
     public CommuneModel getCommuneById(int communeId) {
@@ -111,7 +111,7 @@ public class CommuneDAO {
 
         try {
             CommuneModel commune = new CommuneModel();
-            connection = new DBConnection();            
+            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, communeId);
 

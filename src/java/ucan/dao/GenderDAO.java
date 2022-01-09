@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.GenderModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class GenderDAO {
+
     private DBConnection connection;
 
     public GenderDAO() {
@@ -72,7 +73,7 @@ public class GenderDAO {
         }
     }
 
-    public  List<GenderModel> getAll() {
+    public List<GenderModel> getAll() {
         String sql = "SELECT * FROM sexo";
 
         List<GenderModel> genderList = new ArrayList<>();
@@ -93,15 +94,14 @@ public class GenderDAO {
             ps.close();
             resultSet.close();
 
-            return genderList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return genderList;
     }
 
     public GenderModel getGenderById(int genderId) {

@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.AuthorModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class AuthorDAO {
+
     private DBConnection connection;
 
     public AuthorDAO() {
@@ -61,7 +62,7 @@ public class AuthorDAO {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, authorId);
-            
+
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -75,11 +76,12 @@ public class AuthorDAO {
 
     public List<AuthorModel> getAll() {
         String sql = "SELECT * FROM autor";
+        List<AuthorModel> readerList = new ArrayList<>();
+
         try {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
-            List<AuthorModel> readerList = new ArrayList<>();
 
             while (resultSet.next()) {
                 AuthorModel reader = new AuthorModel();
@@ -92,15 +94,14 @@ public class AuthorDAO {
             ps.close();
             resultSet.close();
 
-            return readerList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return readerList;
     }
 
     public AuthorModel getAuthorById(int authorId) {
@@ -108,7 +109,7 @@ public class AuthorDAO {
 
         try {
             AuthorModel author = new AuthorModel();
-            connection = new DBConnection();            
+            connection = new DBConnection();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, authorId);

@@ -5,23 +5,46 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import ucan.models.ReaderModel;
+import ucan.models.AddressModel;
 import ucan.conection.DBConnection;
 
-public class ReaderDAO {
+public class AddressDAO {
 
     private DBConnection connection;
 
-    public ReaderDAO() {
+    public AddressDAO() {
 
     }
 
-    public void create(ReaderModel reader) {
-        String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
+    public void create(AddressModel address) {
+        String sql = "INSERT INTO morada(num_casa, rua, fk_bairro) values(?, ?, ?)";
         try {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, reader.getPersonId());
+            ps.setInt(1, address.getHouseNum());
+            ps.setString(2, address.getStreet());
+            ps.setInt(3, address.getDistrictId());
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
+        }
+    }
+
+    public void update(AddressModel address) {
+        String sql = "UPDATE morada SET num_casa = ?, rua = ?, fk_bairro = ? WHERE pk_morada = ?";
+        try {
+            connection = new DBConnection();
+            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ps.setInt(1, address.getHouseNum());
+            ps.setString(2, address.getStreet());
+            ps.setInt(3, address.getDistrictId());
+            ps.setInt(4, address.getAddressId());
 
             ps.executeUpdate();
             ps.close();
@@ -35,33 +58,12 @@ public class ReaderDAO {
         }
     }
 
-    public void update(ReaderModel reader) {
-        String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
+    public void delete(int addressId) {
+        String sql = "DELETE FROM morada WHERE pk_morada = ?";
         try {
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-
-            ps.setInt(1, reader.getPersonId());
-            ps.setInt(2, reader.getReaderId());
-
-            ps.executeUpdate();
-            ps.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
-        }
-    }
-
-    public void delete(int readerId) {
-        String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
-        try {
-            connection = new DBConnection();
-            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, addressId);
 
             ps.executeUpdate();
             ps.close();
@@ -74,10 +76,10 @@ public class ReaderDAO {
         }
     }
 
-    public List<ReaderModel> getAll() {
-        String sql = "SELECT * FROM leitor";
+    public List<AddressModel> getAll() {
+        String sql = "SELECT * FROM morada";
 
-        List<ReaderModel> readerList = new ArrayList<>();
+        List<AddressModel> addressList = new ArrayList<>();
 
         try {
             connection = new DBConnection();
@@ -85,12 +87,14 @@ public class ReaderDAO {
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                ReaderModel reader = new ReaderModel();
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
+                AddressModel address = new AddressModel();
+                address.setAddressId(resultSet.getInt(1));
+                address.setStreet(resultSet.getString(2));
+                address.setHouseNum(resultSet.getInt(3));
+                address.setDistrictId(resultSet.getInt(4));
+                address.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
 
-                readerList.add(reader);
+                addressList.add(address);
             }
             ps.close();
             resultSet.close();
@@ -102,29 +106,31 @@ public class ReaderDAO {
                 connection.closeConnection();
             }
         }
-        return readerList;
+        return addressList;
     }
 
-    public ReaderModel getBookById(int readerId) {
-        String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
+    public AddressModel getaddressById(int addressId) {
+        String sql = "SELECT * FROM morada WHERE pk_morada = ?";
 
         try {
-            ReaderModel reader = new ReaderModel();
+            AddressModel address = new AddressModel();
             connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-            ps.setInt(1, readerId);
+            ps.setInt(1, addressId);
 
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
-                reader.setReaderId(resultSet.getInt(1));
-                reader.setPersonId(resultSet.getInt(2));
-                reader.setCreationDate(resultSet.getTimestamp(3).toLocalDateTime());
+                address.setAddressId(resultSet.getInt(1));
+                address.setStreet(resultSet.getString(2));
+                address.setHouseNum(resultSet.getInt(3));
+                address.setDistrictId(resultSet.getInt(4));
+                address.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
             }
 
             ps.close();
             resultSet.close();
-            return reader;
+            return address;
 
         } catch (SQLException e) {
             e.printStackTrace();

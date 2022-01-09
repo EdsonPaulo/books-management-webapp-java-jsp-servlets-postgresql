@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.PublisherModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class PublisherDAO {
+
     private DBConnection connection;
 
     public PublisherDAO() {
@@ -107,15 +108,14 @@ public class PublisherDAO {
             ps.close();
             resultSet.close();
 
-            return publisherList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return publisherList;
     }
 
     public PublisherModel getPublisherById(int publisherId) {

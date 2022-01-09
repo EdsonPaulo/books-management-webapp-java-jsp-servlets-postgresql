@@ -7,9 +7,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.BookRequestModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class BookRequestDAO {
+
     private DBConnection connection;
 
     public BookRequestDAO() {
@@ -103,15 +104,15 @@ public class BookRequestDAO {
             ps.close();
             resultSet.close();
 
-            return requestList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
+
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return requestList;
     }
 
     public BookRequestModel getBookRequestById(int requestId) {

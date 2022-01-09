@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.CountryModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class CountryDAO {
+
     private DBConnection connection;
 
     public CountryDAO() {
@@ -93,15 +94,14 @@ public class CountryDAO {
             ps.close();
             resultSet.close();
 
-            return countryList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return countryList;
     }
 
     public CountryModel getCountryById(int countryId) {

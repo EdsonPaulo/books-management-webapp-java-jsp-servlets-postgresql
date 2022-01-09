@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.BookPublisherModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class BookPublisherDAO {
+
     private DBConnection connection;
 
     public BookPublisherDAO() {
@@ -96,15 +97,14 @@ public class BookPublisherDAO {
             ps.close();
             resultSet.close();
 
-            return bookPublisherList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return bookPublisherList;
     }
 
     public BookPublisherModel getBookPublisherById(int locationId) {

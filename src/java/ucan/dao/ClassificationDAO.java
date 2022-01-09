@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import ucan.models.ClassificationModel;
-import ucan.utils.DBConnection;
+import ucan.conection.DBConnection;
 
 public class ClassificationDAO {
+
     private DBConnection connection;
 
     public ClassificationDAO() {
@@ -93,15 +94,14 @@ public class ClassificationDAO {
             ps.close();
             resultSet.close();
 
-            return classificationList;
-
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.closeConnection();
             }
         }
+        return classificationList;
     }
 
     public ClassificationModel getClassificationById(int classificationId) {

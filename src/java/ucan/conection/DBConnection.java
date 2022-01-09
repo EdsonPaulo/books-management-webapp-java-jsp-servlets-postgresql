@@ -1,4 +1,4 @@
-package ucan.utils;
+package ucan.conection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
