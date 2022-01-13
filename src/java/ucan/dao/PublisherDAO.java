@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class PublisherDAO {
 
-    private DBConnection connection;
-
     public PublisherDAO() {
 
     }
 
-    public void create(PublisherModel publisher) {
+    public void create(PublisherModel publisher, DBConnection connection) {
         String sql = "INSERT INTO editora(nome, telefone, email, fax, fk_morada) values(?,?,?,?,?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, publisher.getName());
@@ -33,17 +30,12 @@ public class PublisherDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(PublisherModel publisher) {
+    public void update(PublisherModel publisher, DBConnection connection) {
         String sql = "UPDATE editora SET name = ?, telefone = ?, email = ?, fax = ?, fk_morada = ? WHERE pk_editora = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, publisher.getName());
@@ -58,17 +50,12 @@ public class PublisherDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int publisherId) {
+    public void delete(int publisherId, DBConnection connection) {
         String sql = "DELETE FROM editora WHERE pk_editora = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, publisherId);
 
@@ -76,20 +63,15 @@ public class PublisherDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<PublisherModel> getAll() {
+    public List<PublisherModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM editora";
 
         List<PublisherModel> publisherList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -110,21 +92,16 @@ public class PublisherDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return publisherList;
     }
 
-    public PublisherModel getPublisherById(int publisherId) {
+    public PublisherModel getPublisherById(int publisherId, DBConnection connection) {
 
         String sql = "SELECT * FROM editora WHERE pk_editora = ?";
 
         try {
             PublisherModel publisher = new PublisherModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, publisherId);
 
@@ -146,10 +123,6 @@ public class PublisherDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

@@ -22,13 +22,11 @@ public class Helpers {
         return LocalDateTime.parse(value, formatter);
     }
 
-    public static int getIdOfLastRow(String table) {
-        DBConnection connection = null;
+    public static int getIdOfLastRow(String table, DBConnection connection) {
         String pKey = "pk_" + table;
         String sql = "SELECT " + pKey + " FROM " + table + " ORDER BY " + pKey + " DESC LIMIT 1";
         int elementId = 0;
         try {
-            connection = new DBConnection();
             ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
 
             while (resultSet.next()) {

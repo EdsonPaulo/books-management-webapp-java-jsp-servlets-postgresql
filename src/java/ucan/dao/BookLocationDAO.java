@@ -10,15 +10,12 @@ import ucan.conection.DBConnection;
 
 public class BookLocationDAO {
 
-    private DBConnection connection;
-
     public BookLocationDAO() {
     }
 
-    public void create(BookLocationModel bookLocation) {
+    public void create(BookLocationModel bookLocation, DBConnection connection) {
         String sql = "INSERT INTO localizacao_livro(num_corredor, num_armario, num_prateleira) values(?, ?, ?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookLocation.getHallwayNum());
             ps.setInt(2, bookLocation.getCabinetNum());
@@ -29,17 +26,12 @@ public class BookLocationDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(BookLocationModel bookLocation) {
+    public void update(BookLocationModel bookLocation, DBConnection connection) {
         String sql = "UPDATE localizacao_livro SET num_corredor = ?, num_armario = ?, num_prateleira = ? WHERE pk_localizacao_livro = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, bookLocation.getHallwayNum());
@@ -52,17 +44,12 @@ public class BookLocationDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int locationId) {
+    public void delete(int locationId, DBConnection connection) {
         String sql = "DELETE FROM localizacao_livro WHERE pk_localizacao_livro = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, locationId);
 
@@ -70,20 +57,15 @@ public class BookLocationDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<BookLocationModel> getAll() {
+    public List<BookLocationModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM localizacao_livro";
 
         List<BookLocationModel> locationList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -103,20 +85,15 @@ public class BookLocationDAO {
         } catch (SQLException e) {
             e.printStackTrace();
 
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return locationList;
     }
 
-    public BookLocationModel getBookLocationById(int locationId) {
+    public BookLocationModel getBookLocationById(int locationId, DBConnection connection) {
         String sql = "SELECT * FROM localizacao_livro WHERE pk_localizacao_livro = ?";
 
         try {
             BookLocationModel location = new BookLocationModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, locationId);
 
@@ -136,10 +113,6 @@ public class BookLocationDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

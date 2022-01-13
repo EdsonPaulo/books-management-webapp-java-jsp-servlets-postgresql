@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class StatusDAO {
 
-    private DBConnection connection;
-
     public StatusDAO() {
 
     }
 
-    public void create(StatusModel status) {
+    public void create(StatusModel status, DBConnection connection) {
         String sql = "INSERT INTO estado(nome) values(?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, status.getName());
 
@@ -28,17 +25,12 @@ public class StatusDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(StatusModel status) {
+    public void update(StatusModel status, DBConnection connection) {
         String sql = "UPDATE estado SET nome = ? WHERE pk_estado = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, status.getName());
             ps.setInt(2, status.getStatusId());
@@ -48,17 +40,12 @@ public class StatusDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int statusId) {
+    public void delete(int statusId, DBConnection connection) {
         String sql = "DELETE FROM estado WHERE pk_estado = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, statusId);
 
@@ -66,20 +53,15 @@ public class StatusDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<StatusModel> getAll() {
+    public List<StatusModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM estado";
 
         List<StatusModel> statusList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -96,20 +78,15 @@ public class StatusDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return statusList;
     }
 
-    public StatusModel getStatusById(int statusId) {
+    public StatusModel getStatusById(int statusId, DBConnection connection) {
         String sql = "SELECT * FROM estado WHERE pk_estado = ?";
 
         try {
             StatusModel status = new StatusModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, statusId);
 
@@ -127,10 +104,6 @@ public class StatusDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

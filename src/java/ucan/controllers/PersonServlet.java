@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import ucan.conection.DBConnection;
 import ucan.dao.AddressDAO;
 import ucan.dao.CommuneDAO;
 import ucan.dao.CountryDAO;
@@ -30,6 +31,8 @@ import ucan.models.ProvinceModel;
 @WebServlet(name = "PersonServlet", urlPatterns = {"/pessoa"})
 public class PersonServlet extends HttpServlet {
 
+    private DBConnection connection;
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -40,33 +43,45 @@ public class PersonServlet extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
 
-        CountryDAO countryDao = new CountryDAO();
-        ProvinceDAO provinceDao = new ProvinceDAO();
-        MunicipalityDAO muniDao = new MunicipalityDAO();
-        CommuneDAO communeDao = new CommuneDAO();
+        try {
+            connection = new DBConnection();
 
-        Gson json = new Gson();
-        PrintWriter writer = response.getWriter();
-        response.setContentType("text/html");
-        String op = request.getParameter("operation");
+            if (request.getParameter("operation") != null) {
+                CountryDAO countryDao = new CountryDAO();
+                ProvinceDAO provinceDao = new ProvinceDAO();
+                MunicipalityDAO muniDao = new MunicipalityDAO();
+                CommuneDAO communeDao = new CommuneDAO();
 
-        if (op.equals("country")) {
-            List<CountryModel> clist = countryDao.getAll();
-            response.getWriter().write(json.toJson(clist));
-        } else {
-            int id = Integer.parseInt(request.getParameter("id"));
+                Gson json = new Gson();
+                PrintWriter writer = response.getWriter();
+                response.setContentType("text/html");
+                String op = request.getParameter("operation");
 
-            if (op.equals("province")) {
-                List<ProvinceModel> provinceList = provinceDao.getProvincesByCountryId(id);
-                writer.write(json.toJson(provinceList));
+                if (op.equals("country")) {
+                    List<CountryModel> clist = countryDao.getAll(connection);
+                    response.getWriter().write(json.toJson(clist));
+                } else {
+                    int id = Integer.parseInt(request.getParameter("id"));
 
-            } else if (op.equals("municipality")) {
-                List<MunicipalityModel> muniList = muniDao.getMunicipalitiesByProvinceId(id);
-                writer.write(json.toJson(muniList));
+                    if (op.equals("province")) {
+                        List<ProvinceModel> provinceList = provinceDao.getProvincesByCountryId(id, connection);
+                        writer.write(json.toJson(provinceList));
 
-            } else if (op.equals("commune")) {
-                List<CommuneModel> communeList = communeDao.getCommunesByMunicipalityId(id);
-                writer.write(json.toJson(communeList));
+                    } else if (op.equals("municipality")) {
+                        List<MunicipalityModel> muniList = muniDao.getMunicipalitiesByProvinceId(id, connection);
+                        writer.write(json.toJson(muniList));
+
+                    } else if (op.equals("commune")) {
+                        List<CommuneModel> communeList = communeDao.getCommunesByMunicipalityId(id, connection);
+                        writer.write(json.toJson(communeList));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
             }
         }
     }
@@ -77,6 +92,7 @@ public class PersonServlet extends HttpServlet {
         processRequest(request, response);
 
         try {
+            connection = new DBConnection();
             PersonModel person = new PersonModel();
             PersonDAO personDao = new PersonDAO();
 
@@ -98,19 +114,20 @@ public class PersonServlet extends HttpServlet {
             address.setHouseNum(Integer.parseInt(request.getParameter("houseNum")));
             address.setDistrict(request.getParameter("district"));
 
-            System.out.println(address);
+            addressDao.create(address, connection);
 
-            addressDao.create(address);
+            person.setAddressId(Helpers.getIdOfLastRow("morada", connection));
 
-            person.setAddressId(Helpers.getIdOfLastRow("morada"));
-
-            System.out.println(person);
-
-            personDao.create(person);
-            response.sendRedirect(request.getContextPath() + "/index.jsp");
+            personDao.create(person, connection);
+            
+            response.sendRedirect(request.getContextPath() + "/listar-pessoas.jsp");
 
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
         }
     }
 

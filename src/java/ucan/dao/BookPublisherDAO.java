@@ -10,12 +10,10 @@ import ucan.conection.DBConnection;
 
 public class BookPublisherDAO {
 
-    private DBConnection connection;
-
     public BookPublisherDAO() {
     }
 
-    public void create(BookPublisherModel bookPublisher) {
+    public void create(BookPublisherModel bookPublisher, DBConnection connection) {
         String sql = "INSERT INTO livro_editora(fk_livro, fk_editora) values(?, ?)";
         try {
             connection = new DBConnection();
@@ -35,7 +33,7 @@ public class BookPublisherDAO {
         }
     }
 
-    public void update(BookPublisherModel bookPublisher) {
+    public void update(BookPublisherModel bookPublisher, DBConnection connection) {
         String sql = "UPDATE livro_editora SET fk_livro = ?, fk_editora = ? WHERE pk_livro_editora = ?";
         try {
             connection = new DBConnection();
@@ -57,7 +55,7 @@ public class BookPublisherDAO {
         }
     }
 
-    public void delete(int bookPublisherId) {
+    public void delete(int bookPublisherId, DBConnection connection) {
         String sql = "DELETE FROM livro_editora WHERE pk_livro_editora = ?";
         try {
             connection = new DBConnection();
@@ -75,7 +73,7 @@ public class BookPublisherDAO {
         }
     }
 
-    public List<BookPublisherModel> getAll() {
+    public List<BookPublisherModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM livro_editora";
 
         List<BookPublisherModel> bookPublisherList = new ArrayList<>();
@@ -107,7 +105,7 @@ public class BookPublisherDAO {
         return bookPublisherList;
     }
 
-    public BookPublisherModel getBookPublisherById(int locationId) {
+    public BookPublisherModel getBookPublisherById(int locationId, DBConnection connection) {
         String sql = "SELECT * FROM livro_editora WHERE pk_livro_editora = ?";
 
         try {

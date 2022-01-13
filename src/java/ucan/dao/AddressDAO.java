@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class AddressDAO {
 
-    private DBConnection connection;
-
     public AddressDAO() {
 
     }
 
-    public void create(AddressModel address) {
+    public void create(AddressModel address, DBConnection connection) {
         String sql = "INSERT INTO morada(num_casa, rua, fk_bairro) values(?, ?, ?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, address.getHouseNum());
             ps.setString(2, address.getStreet());
@@ -29,17 +26,12 @@ public class AddressDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(AddressModel address) {
+    public void update(AddressModel address, DBConnection connection) {
         String sql = "UPDATE morada SET num_casa = ?, rua = ?, fk_bairro = ? WHERE pk_morada = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, address.getHouseNum());
             ps.setString(2, address.getStreet());
@@ -51,17 +43,12 @@ public class AddressDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int addressId) {
+    public void delete(int addressId, DBConnection connection) {
         String sql = "DELETE FROM morada WHERE pk_morada = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, addressId);
 
@@ -69,20 +56,15 @@ public class AddressDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<AddressModel> getAll() {
+    public List<AddressModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM morada";
 
         List<AddressModel> addressList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -101,20 +83,15 @@ public class AddressDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return addressList;
     }
 
-    public AddressModel getaddressById(int addressId) {
+    public AddressModel getaddressById(int addressId, DBConnection connection) {
         String sql = "SELECT * FROM morada WHERE pk_morada = ?";
 
         try {
             AddressModel address = new AddressModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, addressId);
 
@@ -134,10 +111,6 @@ public class AddressDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

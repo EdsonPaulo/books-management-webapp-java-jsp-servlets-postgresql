@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class CategoryDAO {
 
-    private DBConnection connection;
-
     public CategoryDAO() {
 
     }
 
-    public void create(CategoryModel category) {
+    public void create(CategoryModel category, DBConnection connection) {
         String sql = "INSERT INTO categoria(nome) values(?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, category.getName());
 
@@ -28,17 +25,12 @@ public class CategoryDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(CategoryModel category) {
+    public void update(CategoryModel category, DBConnection connection) {
         String sql = "UPDATE categoria SET nome = ? WHERE pk_categoria = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, category.getName());
             ps.setInt(2, category.getCategoryId());
@@ -48,17 +40,12 @@ public class CategoryDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int categoryId) {
+    public void delete(int categoryId, DBConnection connection) {
         String sql = "DELETE FROM categoria WHERE pk_categoria = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, categoryId);
 
@@ -66,20 +53,15 @@ public class CategoryDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<CategoryModel> getAll() {
+    public List<CategoryModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM categoria";
 
         List<CategoryModel> categoryList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -96,20 +78,15 @@ public class CategoryDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return categoryList;
     }
 
-    public CategoryModel getCategoryById(int categoryId) {
+    public CategoryModel getCategoryById(int categoryId, DBConnection connection) {
         String sql = "SELECT * FROM categoria WHERE pk_categoria = ?";
 
         try {
             CategoryModel category = new CategoryModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, categoryId);
 
@@ -127,10 +104,6 @@ public class CategoryDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

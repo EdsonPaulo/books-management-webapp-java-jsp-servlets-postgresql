@@ -11,16 +11,13 @@ import ucan.conection.DBConnection;
 
 public class PersonDAO {
 
-    private DBConnection connection;
-
     public PersonDAO() {
 
     }
 
-    public void create(PersonModel person) {
+    public void create(PersonModel person, DBConnection connection) {
         String sql = "INSERT INTO pessoa(nome, sobrenome, bi, telefone, email, data_nasc, fk_morada, fk_sexo) values(?,?,?,?,?,?,?,?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
@@ -37,17 +34,12 @@ public class PersonDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(PersonModel person) {
+    public void update(PersonModel person, DBConnection connection) {
         String sql = "UPDATE pessoa SET nome = ?, sobrenome = ?, bi = ?, telefone = ?, email = ?, data_nasc = ?, fk_morada = ?, fk_sexo = ? WHERE pk_pessoa = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
@@ -65,17 +57,12 @@ public class PersonDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int personId) {
+    public void delete(int personId, DBConnection connection) {
         String sql = "DELETE FROM pessoa WHERE pk_pessoa = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, personId);
 
@@ -83,20 +70,15 @@ public class PersonDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<PersonModel> getAll() {
+    public List<PersonModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM pessoa";
 
         List<PersonModel> personList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -120,21 +102,16 @@ public class PersonDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return personList;
     }
 
-    public PersonModel getPersonById(int personId) {
+    public PersonModel getPersonById(int personId, DBConnection connection) {
 
         String sql = "SELECT * FROM pessoa WHERE pk_pessoa = ?";
 
         try {
             PersonModel person = new PersonModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, personId);
 
@@ -159,10 +136,6 @@ public class PersonDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

@@ -10,16 +10,14 @@ import ucan.models.BookRequestModel;
 import ucan.conection.DBConnection;
 
 public class BookRequestDAO {
-
-    private DBConnection connection;
+ 
 
     public BookRequestDAO() {
     }
 
-    public void create(BookRequestModel bookRequest) {
+    public void create(BookRequestModel bookRequest, DBConnection connection) {
         String sql = "INSERT INTO requisicao(fk_livro, fk_leitor, data_requisicao, data_entrega) values(?, ?, ?, ?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookRequest.getBookId());
             ps.setInt(2, bookRequest.getReaderId());
@@ -31,17 +29,12 @@ public class BookRequestDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(BookRequestModel bookRequest) {
+    public void update(BookRequestModel bookRequest, DBConnection connection) {
         String sql = "UPDATE requisicao SET fk_livro = ?, fk_leitor = ?, data_requisicao = ?, data_entrega = ? WHERE pk_requisicao = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, bookRequest.getBookId());
@@ -55,17 +48,12 @@ public class BookRequestDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int requestId) {
+    public void delete(int requestId, DBConnection connection) {
         String sql = "DELETE FROM requisicao WHERE pk_requisicao = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, requestId);
 
@@ -73,20 +61,15 @@ public class BookRequestDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<BookRequestModel> getAll() {
+    public List<BookRequestModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM requisicao";
 
         List<BookRequestModel> requestList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -107,20 +90,15 @@ public class BookRequestDAO {
         } catch (SQLException e) {
             e.printStackTrace();
 
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return requestList;
     }
 
-    public BookRequestModel getBookRequestById(int requestId) {
+    public BookRequestModel getBookRequestById(int requestId, DBConnection connection) {
         String sql = "SELECT * FROM requisicao WHERE pk_requisicao = ?";
 
         try {
             BookRequestModel request = new BookRequestModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, requestId);
 
@@ -141,10 +119,6 @@ public class BookRequestDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

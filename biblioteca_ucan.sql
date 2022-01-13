@@ -45,8 +45,9 @@ CREATE TABLE morada (
     rua VARCHAR(50) NOT NULL,
     num_casa INTEGER,
     bairro VARCHAR(50) NOT NULL,
+    fk_comuna INTEGER NOT NULL
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (fk_bairro) REFERENCES bairro(pk_bairro) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (fk_comuna) REFERENCES comuna(pk_comuna) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
@@ -172,7 +173,7 @@ CREATE TABLE livro (
     fk_localizacao INTEGER NOT NULL,
     fk_categoria INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY( fk_Livro ) REFERENCES Livro(pk_Livro) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY( fk_estado ) REFERENCES estado(pk_estado) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_classificacao) REFERENCES classificacao(pk_classificacao) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_localizacao) REFERENCES localizacao_livro(pk_localizacao_livro) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_categoria) REFERENCES categoria(pk_categoria) ON UPDATE CASCADE ON DELETE CASCADE

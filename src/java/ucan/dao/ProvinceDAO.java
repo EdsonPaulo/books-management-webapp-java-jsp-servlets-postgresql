@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class ProvinceDAO {
 
-    private DBConnection connection;
-
     public ProvinceDAO() {
 
     }
 
-    public void create(ProvinceModel province) {
+    public void create(ProvinceModel province, DBConnection connection) {
         String sql = "INSERT INTO provincia(nome, fk_pais) values(?, ?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, province.getName());
             ps.setInt(2, province.getCountryId());
@@ -28,17 +25,12 @@ public class ProvinceDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(ProvinceModel province) {
+    public void update(ProvinceModel province, DBConnection connection) {
         String sql = "UPDATE provincia SET nome = ?, fk_pais = ? WHERE pk_provincia = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, province.getName());
             ps.setInt(2, province.getCountryId());
@@ -49,17 +41,12 @@ public class ProvinceDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int provinceId) {
+    public void delete(int provinceId, DBConnection connection) {
         String sql = "DELETE FROM provincia WHERE pk_provincia = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, provinceId);
 
@@ -67,20 +54,15 @@ public class ProvinceDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<ProvinceModel> getAll() {
+    public List<ProvinceModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM provincia";
 
         List<ProvinceModel> provinceList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -98,20 +80,15 @@ public class ProvinceDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return provinceList;
     }
 
-    public ProvinceModel getProvinceById(int provinceId) {
+    public ProvinceModel getProvinceById(int provinceId, DBConnection connection) {
         String sql = "SELECT * FROM provincia WHERE pk_provincia = ?";
 
         try {
             ProvinceModel province = new ProvinceModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, provinceId);
 
@@ -130,21 +107,16 @@ public class ProvinceDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }
-    
-      public List<ProvinceModel> getProvincesByCountryId(int countryId) {
+
+    public List<ProvinceModel> getProvincesByCountryId(int countryId, DBConnection connection) {
         String sql = "SELECT * FROM provincia WHERE fk_pais = " + countryId;
 
         List<ProvinceModel> provinceList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -162,10 +134,6 @@ public class ProvinceDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return provinceList;
     }

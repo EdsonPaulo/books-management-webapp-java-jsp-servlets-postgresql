@@ -10,16 +10,14 @@ import ucan.conection.DBConnection;
 
 public class BookDAO {
 
-    private DBConnection connection;
-
     public BookDAO() {
 
     }
 
-    public void create(BookModel book) {
-        String sql = "INSERT INTO livro(nome, isbn, num_paginas, num_edicao, ano_lancamento, fk_estado, fk_classificacao, fk_localizacao, fk_categoria) values(?,?,?,?,?,?,?,?,?)";
+    public void create(BookModel book, DBConnection connection) {
+        String sql = "INSERT INTO livro(nome, isbn, num_paginas, num_edicao, ano_lancamento, "
+                + "fk_estado, fk_classificacao, fk_localizacao, fk_categoria) values(?,?,?,?,?,?,?,?,?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, book.getName());
@@ -37,17 +35,13 @@ public class BookDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(BookModel book) {
-        String sql = "UPDATE livro SET nome  = ?, isbn = ?, num_paginas = ?, num_edicao = ?, ano_lancamento = ?, fk_estado = ?, fk_classificacao = ?, fk_localizacao = ?, fk_categoria = ? WHERE pk_livro = ?";
+    public void update(BookModel book, DBConnection connection) {
+        String sql = "UPDATE livro SET nome  = ?, isbn = ?, num_paginas = ?, num_edicao = ?, ano_lancamento = ?, " +
+                "fk_estado = ?, fk_classificacao = ?, fk_localizacao = ?, fk_categoria = ? WHERE pk_livro = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, book.getName());
@@ -66,17 +60,12 @@ public class BookDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int livroId) {
+    public void delete(int livroId, DBConnection connection) {
         String sql = "DELETE FROM livro WHERE pk_livro = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, livroId);
 
@@ -84,18 +73,13 @@ public class BookDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<BookModel> getAll() {
+    public List<BookModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM livro";
         List<BookModel> bookList = new ArrayList<>();
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -120,21 +104,16 @@ public class BookDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return bookList;
     }
 
-    public BookModel getBookById(int bookId) {
+    public BookModel getBookById(int bookId, DBConnection connection) {
 
         String sql = "SELECT * FROM livro WHERE pk_livro = ?";
 
         try {
             BookModel book = new BookModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, bookId);
 
@@ -160,10 +139,6 @@ public class BookDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

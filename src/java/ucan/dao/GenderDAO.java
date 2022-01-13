@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class GenderDAO {
 
-    private DBConnection connection;
-
     public GenderDAO() {
 
     }
 
-    public void create(GenderModel gender) {
+    public void create(GenderModel gender, DBConnection connection) {
         String sql = "INSERT INTO sexo(nome) values(?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, gender.getName());
 
@@ -28,17 +25,12 @@ public class GenderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(GenderModel gender) {
+    public void update(GenderModel gender, DBConnection connection) {
         String sql = "UPDATE sexo SET nome = ? WHERE pk_sexo = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, gender.getName());
             ps.setInt(2, gender.getGenderId());
@@ -48,17 +40,12 @@ public class GenderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int genderId) {
+    public void delete(int genderId, DBConnection connection) {
         String sql = "DELETE FROM sexo WHERE pk_sexo = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, genderId);
 
@@ -66,20 +53,15 @@ public class GenderDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<GenderModel> getAll() {
+    public List<GenderModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM sexo";
 
         List<GenderModel> genderList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -96,20 +78,15 @@ public class GenderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return genderList;
     }
 
-    public GenderModel getGenderById(int genderId) {
+    public GenderModel getGenderById(int genderId, DBConnection connection) {
         String sql = "SELECT * FROM sexo WHERE pk_sexo = ?";
 
         try {
             GenderModel gender = new GenderModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, genderId);
 
@@ -127,10 +104,6 @@ public class GenderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

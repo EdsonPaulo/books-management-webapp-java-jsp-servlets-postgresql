@@ -10,35 +10,26 @@ import ucan.conection.DBConnection;
 
 public class CountryDAO {
 
-    private DBConnection connection;
-
     public CountryDAO() {
 
     }
 
-    public void create(CountryModel country) {
+    public void create(CountryModel country, DBConnection connection ) {
         String sql = "INSERT INTO pais(nome) values(?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, country.getName());
 
             ps.executeUpdate();
             ps.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
-        }
+        } 
     }
 
-    public void update(CountryModel country) {
+    public void update(CountryModel country, DBConnection connection) {
         String sql = "UPDATE pais SET nome = ? WHERE pk_pais = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, country.getName());
             ps.setInt(2, country.getCountryId());
@@ -55,10 +46,9 @@ public class CountryDAO {
         }
     }
 
-    public void delete(int countryId) {
+    public void delete(int countryId, DBConnection connection) {
         String sql = "DELETE FROM pais WHERE pk_pais = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, countryId);
 
@@ -73,13 +63,12 @@ public class CountryDAO {
         }
     }
 
-    public List<CountryModel> getAll() {
+    public List<CountryModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM pais";
 
         List<CountryModel> countryList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -104,12 +93,11 @@ public class CountryDAO {
         return countryList;
     }
 
-    public CountryModel getCountryById(int countryId) {
+    public CountryModel getCountryById(int countryId, DBConnection connection) {
         String sql = "SELECT * FROM pais WHERE pk_pais = ?";
 
         try {
             CountryModel country = new CountryModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, countryId);
 
@@ -127,11 +115,7 @@ public class CountryDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
-        }
+        }  
         return null;
     }
 }

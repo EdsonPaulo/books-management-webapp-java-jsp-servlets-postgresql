@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class TagDAO {
 
-    private DBConnection connection;
-
     public TagDAO() {
 
     }
 
-    public void create(TagModel tag) {
+    public void create(TagModel tag, DBConnection connection) {
         String sql = "INSERT INTO descritores(nome) values(?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, tag.getName());
 
@@ -28,17 +25,12 @@ public class TagDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(TagModel tag) {
+    public void update(TagModel tag, DBConnection connection) {
         String sql = "UPDATE descritores SET nome = ? WHERE pk_descritores = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, tag.getName());
             ps.setInt(2, tag.getTagId());
@@ -48,17 +40,12 @@ public class TagDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int tagId) {
+    public void delete(int tagId, DBConnection connection) {
         String sql = "DELETE FROM descritores WHERE pk_descritores = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, tagId);
 
@@ -66,20 +53,15 @@ public class TagDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<TagModel> getAll() {
+    public List<TagModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM descritores";
 
         List<TagModel> tagList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -96,20 +78,15 @@ public class TagDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return tagList;
     }
 
-    public TagModel getTagById(int tagId) {
+    public TagModel getTagById(int tagId, DBConnection connection) {
         String sql = "SELECT * FROM descritores WHERE pk_descritores = ?";
 
         try {
             TagModel tag = new TagModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, tagId);
 
@@ -127,10 +104,6 @@ public class TagDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

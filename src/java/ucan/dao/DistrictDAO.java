@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class DistrictDAO {
 
-    private DBConnection connection;
-
     public DistrictDAO() {
 
     }
 
-    public void create(DistrictModel district) {
+    public void create(DistrictModel district, DBConnection connection) {
         String sql = "INSERT INTO bairro(nome, fk_comuna) values(?, ?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, district.getName());
             ps.setInt(2, district.getCommuneId());
@@ -28,17 +25,12 @@ public class DistrictDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(DistrictModel district) {
+    public void update(DistrictModel district, DBConnection connection) {
         String sql = "UPDATE bairro SET nome = ?, fk_comuna = ? WHERE pk_bairro = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, district.getName());
             ps.setInt(2, district.getCommuneId());
@@ -49,17 +41,12 @@ public class DistrictDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int districtId) {
+    public void delete(int districtId, DBConnection connection) {
         String sql = "DELETE FROM bairro WHERE pk_bairro = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, districtId);
 
@@ -67,20 +54,15 @@ public class DistrictDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<DistrictModel> getAll() {
+    public List<DistrictModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM bairro";
 
         List<DistrictModel> districtList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -98,20 +80,15 @@ public class DistrictDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return districtList;
     }
 
-    public DistrictModel getDistrictById(int districtId) {
+    public DistrictModel getDistrictById(int districtId, DBConnection connection) {
         String sql = "SELECT * FROM bairro WHERE pk_bairro = ?";
 
         try {
             DistrictModel district = new DistrictModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, districtId);
 
@@ -130,13 +107,8 @@ public class DistrictDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }
-    
-     
+
 }

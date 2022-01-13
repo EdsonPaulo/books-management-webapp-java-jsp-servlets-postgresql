@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class AuthorDAO {
 
-    private DBConnection connection;
-
     public AuthorDAO() {
 
     }
 
-    public void create(AuthorModel author) {
+    public void create(AuthorModel author, DBConnection connection) {
         String sql = "INSERT INTO autor(fk_pessoa) values(?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, author.getPersonId());
 
@@ -28,17 +25,12 @@ public class AuthorDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(AuthorModel author) {
+    public void update(AuthorModel author,DBConnection connection) {
         String sql = "UPDATE autor SET fk_pessoa = ? WHERE pk_autor = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, author.getPersonId());
@@ -49,17 +41,12 @@ public class AuthorDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int authorId) {
+    public void delete(int authorId,DBConnection connection) {
         String sql = "DELETE FROM autor WHERE pk_autor = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, authorId);
 
@@ -67,19 +54,14 @@ public class AuthorDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<AuthorModel> getAll() {
+    public List<AuthorModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM autor";
         List<AuthorModel> readerList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -96,20 +78,15 @@ public class AuthorDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return readerList;
     }
 
-    public AuthorModel getAuthorById(int authorId) {
+    public AuthorModel getAuthorById(int authorId,DBConnection connection) {
         String sql = "SELECT * FROM autor WHERE pk_autor = ?";
 
         try {
             AuthorModel author = new AuthorModel();
-            connection = new DBConnection();
 
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, authorId);
@@ -128,10 +105,6 @@ public class AuthorDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }

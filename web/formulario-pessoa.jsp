@@ -1,5 +1,6 @@
 <%-- Document : person Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
 
+<%@page import="ucan.conection.DBConnection"%>
 <%@page import="ucan.utils.HtmlObj" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -15,7 +16,10 @@
         <script src="./js/bootstrap.min.js"></script>
     </head>
 
-    <% HtmlObj obj = new HtmlObj();%>
+    <%
+        HtmlObj obj = new HtmlObj();
+        DBConnection connection = new DBConnection();
+    %>
 
     <body>
         <button type="button" class="btn btn-primary btn-sm m-4">
@@ -47,7 +51,7 @@
                         </div> 
                         <div class="form-group col-3">
                             <label for="gender" class="required">Genero</label>
-                            <%=obj.getSelectBox("sexo", "gender")%>
+                            <%=obj.getSelectBox(connection, "sexo", "gender")%>
                         </div>
                         <div class="form-group col-3">
                             <label for="email" class="required">Email</label>
@@ -64,7 +68,7 @@
                     <div class="row mt-3">
                         <div class="form-group col-4">
                             <label for="country" class="required">Pais</label>
-                            <%=obj.getSelectBox("pais", "country")%>
+                            <%=obj.getSelectBox(connection, "pais", "country")%>
                         </div>
                         <div class="form-group col-4">
                             <label for="province" class="required">Provincia</label>
@@ -108,12 +112,15 @@
             </div>
         </div>
     </body>
+    
+    <%  connection.closeConnection();  %>
+         
     <script type="text/javascript">
 
         function fetchList(operation, id) {
             const selectElement = document.getElementById(operation);
 
-            fetch('pessoa?' + new URLSearchParams({operation, id}), {
+            fetch('pessoa?' + new URLSearchParams({ operation, id }), {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'},
             })
@@ -123,50 +130,49 @@
                             selectElement.options[selectElement.options.length] = new Option(item.name, item[operation + 'Id']);
                         });
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         selectElement.options[0] = new Option('Sem dados disponíveis', '');
                     });
         }
 
-        document.getElementById('country').addEventListener('change', function (event) {
+        function clearProvinceSelect() {
             const provinceNode = document.getElementById("province");
             while (provinceNode.firstChild)
                 provinceNode.removeChild(provinceNode.lastChild);
-            provinceNode.options[provinceNode.options.length] = new Option('-- Selecione uma provincia --');
+            provinceNode.options[provinceNode.options.length] = new Option('Selecione uma provincia');
+        }
 
+        function clearMunicipalitySelect() {
             const municipalityNode = document.getElementById("municipality");
             while (municipalityNode.firstChild)
                 municipalityNode.removeChild(municipalityNode.lastChild);
-            municipalityNode.options[municipalityNode.options.length] = new Option('-- Selecione um município --');
+            municipalityNode.options[municipalityNode.options.length] = new Option('Selecione um município');
+        }
 
+        function clearCommuneSelect() {
             const communeNode = document.getElementById("commune");
             while (communeNode.firstChild)
                 communeNode.removeChild(communeNode.lastChild);
-            communeNode.options[communeNode.options.length] = new Option('-- Selecione uma comuna --');
+            communeNode.options[communeNode.options.length] = new Option('Selecione uma comuna');
+        }
 
+        // -- Handle changes for selectboxes --
+
+        document.getElementById('country').addEventListener('change', function (event) {
+            clearProvinceSelect();
+            clearMunicipalitySelect();
+            clearCommuneSelect();
             fetchList('province', event.target.value);
         });
 
         document.getElementById('province').addEventListener('change', function (event) {
-            const municipalityNode = document.getElementById("municipality");
-            while (municipalityNode.firstChild)
-                municipalityNode.removeChild(municipalityNode.lastChild);
-            municipalityNode.options[municipalityNode.options.length] = new Option('-- Selecione um município --');
-
-            const communeNode = document.getElementById("commune");
-            while (communeNode.firstChild)
-                communeNode.removeChild(communeNode.lastChild);
-            communeNode.options[communeNode.options.length] = new Option('-- Selecione uma comuna --');
-
+            clearMunicipalitySelect();
+            clearCommuneSelect();
             fetchList('municipality', event.target.value);
         });
 
         document.getElementById('municipality').addEventListener('change', function (event) {
-            const communeNode = document.getElementById("commune");
-            while (communeNode.firstChild)
-                communeNode.removeChild(communeNode.lastChild);
-            communeNode.options[communeNode.options.length] = new Option('-- Selecione uma comuna --');
-
+            clearCommuneSelect();
             fetchList('commune', event.target.value);
         });
     </script>

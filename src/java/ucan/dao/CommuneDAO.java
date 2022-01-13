@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class CommuneDAO {
 
-    private DBConnection connection;
-
     public CommuneDAO() {
 
     }
 
-    public void create(CommuneModel commune) {
+    public void create(CommuneModel commune, DBConnection connection) {
         String sql = "INSERT INTO comuna(nome, fk_municipio) values(?, ?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, commune.getName());
             ps.setInt(2, commune.getMunicipalityId());
@@ -28,17 +25,12 @@ public class CommuneDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(CommuneModel commune) {
+    public void update(CommuneModel commune, DBConnection connection) {
         String sql = "UPDATE comuna SET nome = ?, fk_municipio = ? WHERE pk_comuna = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, commune.getName());
             ps.setInt(2, commune.getMunicipalityId());
@@ -49,17 +41,12 @@ public class CommuneDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int communeId) {
+    public void delete(int communeId, DBConnection connection) {
         String sql = "DELETE FROM comuna WHERE pk_comuna = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, communeId);
 
@@ -67,20 +54,15 @@ public class CommuneDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<CommuneModel> getAll() {
+    public List<CommuneModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM comuna";
 
         List<CommuneModel> communeList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -98,20 +80,15 @@ public class CommuneDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return communeList;
     }
 
-    public CommuneModel getCommuneById(int communeId) {
+    public CommuneModel getCommuneById(int communeId, DBConnection connection) {
         String sql = "SELECT * FROM comuna WHERE pk_comuna = ?";
 
         try {
             CommuneModel commune = new CommuneModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, communeId);
 
@@ -130,21 +107,16 @@ public class CommuneDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }
-    
-      public List<CommuneModel> getCommunesByMunicipalityId(int municipalityId ) {
+
+    public List<CommuneModel> getCommunesByMunicipalityId(int municipalityId, DBConnection connection) {
         String sql = "SELECT * FROM comuna WHERE fk_municipio = " + municipalityId;
 
         List<CommuneModel> communeList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -162,10 +134,6 @@ public class CommuneDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return communeList;
     }

@@ -10,16 +10,13 @@ import ucan.conection.DBConnection;
 
 public class ReaderDAO {
 
-    private DBConnection connection;
-
     public ReaderDAO() {
 
     }
 
-    public void create(ReaderModel reader) {
+    public void create(ReaderModel reader, DBConnection connection) {
         String sql = "INSERT INTO leitor(fk_pessoa) values(?)";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, reader.getPersonId());
 
@@ -28,17 +25,12 @@ public class ReaderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void update(ReaderModel reader) {
+    public void update(ReaderModel reader, DBConnection connection) {
         String sql = "UPDATE leitor SET fk_pessoa = ? WHERE pk_leitor = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setInt(1, reader.getPersonId());
@@ -49,17 +41,12 @@ public class ReaderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public void delete(int readerId) {
+    public void delete(int readerId, DBConnection connection) {
         String sql = "DELETE FROM leitor WHERE pk_leitor = ?";
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, readerId);
 
@@ -67,20 +54,15 @@ public class ReaderDAO {
             ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
     }
 
-    public List<ReaderModel> getAll() {
+    public List<ReaderModel> getAll(DBConnection connection) {
         String sql = "SELECT * FROM leitor";
 
         List<ReaderModel> readerList = new ArrayList<>();
 
         try {
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
 
@@ -97,20 +79,15 @@ public class ReaderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return readerList;
     }
 
-    public ReaderModel getBookById(int readerId) {
+    public ReaderModel getBookById(int readerId, DBConnection connection) {
         String sql = "SELECT * FROM leitor WHERE pk_leitor = ?";
 
         try {
             ReaderModel reader = new ReaderModel();
-            connection = new DBConnection();
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, readerId);
 
@@ -128,10 +105,6 @@ public class ReaderDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
         }
         return null;
     }
