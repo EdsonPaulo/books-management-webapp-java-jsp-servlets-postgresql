@@ -23,7 +23,7 @@ public class AddressDAO {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, address.getHouseNum());
             ps.setString(2, address.getStreet());
-            ps.setInt(3, address.getDistrictId());
+            ps.setString(3, address.getDistrict());
 
             ps.executeUpdate();
             ps.close();
@@ -43,7 +43,7 @@ public class AddressDAO {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, address.getHouseNum());
             ps.setString(2, address.getStreet());
-            ps.setInt(3, address.getDistrictId());
+            ps.setString(3, address.getDistrict());
             ps.setInt(4, address.getAddressId());
 
             ps.executeUpdate();
@@ -91,7 +91,7 @@ public class AddressDAO {
                 address.setAddressId(resultSet.getInt(1));
                 address.setStreet(resultSet.getString(2));
                 address.setHouseNum(resultSet.getInt(3));
-                address.setDistrictId(resultSet.getInt(4));
+                address.setDistrict(resultSet.getString(4));
                 address.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
 
                 addressList.add(address);
@@ -124,7 +124,7 @@ public class AddressDAO {
                 address.setAddressId(resultSet.getInt(1));
                 address.setStreet(resultSet.getString(2));
                 address.setHouseNum(resultSet.getInt(3));
-                address.setDistrictId(resultSet.getInt(4));
+                address.setDistrict(resultSet.getString(4));
                 address.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
             }
 

@@ -137,4 +137,36 @@ public class CommuneDAO {
         }
         return null;
     }
+    
+      public List<CommuneModel> getCommunesByMunicipalityId(int municipalityId ) {
+        String sql = "SELECT * FROM comuna WHERE fk_municipio = " + municipalityId;
+
+        List<CommuneModel> communeList = new ArrayList<>();
+
+        try {
+            connection = new DBConnection();
+            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                CommuneModel commune = new CommuneModel();
+                commune.setCommuneId(resultSet.getInt(1));
+                commune.setName(resultSet.getString(2));
+                commune.setMunicipalityId(resultSet.getInt(3));
+                commune.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
+
+                communeList.add(commune);
+            }
+            ps.close();
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
+        }
+        return communeList;
+    }
 }

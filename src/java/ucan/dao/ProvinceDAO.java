@@ -137,4 +137,36 @@ public class ProvinceDAO {
         }
         return null;
     }
+    
+      public List<ProvinceModel> getProvincesByCountryId(int countryId) {
+        String sql = "SELECT * FROM provincia WHERE fk_pais = " + countryId;
+
+        List<ProvinceModel> provinceList = new ArrayList<>();
+
+        try {
+            connection = new DBConnection();
+            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                ProvinceModel province = new ProvinceModel();
+                province.setProvinceId(resultSet.getInt(1));
+                province.setName(resultSet.getString(2));
+                province.setCountryId(resultSet.getInt(3));
+                province.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
+
+                provinceList.add(province);
+            }
+            ps.close();
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
+        }
+        return provinceList;
+    }
 }

@@ -68,23 +68,29 @@
                         </div>
                         <div class="form-group col-4">
                             <label for="province" class="required">Provincia</label>
-                            <%=obj.getSelectBox("provincia", "province")%>
+                            <select id="province" name="province" class="form-control"> 
+                                <option>-- Selecione um pais primeiro --</option>
+                            </select>
                         </div>     
                         <div class="form-group  col-4">
                             <label for="municipality" class="required">Municipio</label>
-                            <%=obj.getSelectBox("municipio", "municipality")%>
+                            <select id="municipality" name="municipality" class="form-control"> 
+                                <option>-- Selecione uma provincia primeiro --</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="form-group  col-3">
                             <label for="commune" class="required">Comuna</label>
-                            <%=obj.getSelectBox("comuna", "commune")%>
+                            <select id="commune" name="commune" class="form-control"> 
+                                <option>-- Selecione um municipio primeiro --</option>
+                            </select>
                         </div>
-                        <div class="form-group  col-3">
-                            <label for="district" class="required">Bairro</label>
-                            <%=obj.getSelectBox("bairro", "district")%>
-                        </div>                    
+                        <div class="form-group col-3">
+                            <label for="district">Bairro</label>
+                            <input name="district" id="district" type="text" class="form-control">
+                        </div>
                         <div class="form-group col-3">
                             <label for="street">Rua</label>
                             <input name="street" id="street" type="text" class="form-control">
@@ -102,4 +108,66 @@
             </div>
         </div>
     </body>
+    <script type="text/javascript">
+
+        function fetchList(operation, id) {
+            const selectElement = document.getElementById(operation);
+
+            fetch('pessoa?' + new URLSearchParams({operation, id}), {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach((item) => {
+                            selectElement.options[selectElement.options.length] = new Option(item.name, item[operation + 'Id']);
+                        });
+                    })
+                    .catch((error) => {
+                        selectElement.options[0] = new Option('Sem dados disponíveis', '');
+                    });
+        }
+
+        document.getElementById('country').addEventListener('change', function (event) {
+            const provinceNode = document.getElementById("province");
+            while (provinceNode.firstChild)
+                provinceNode.removeChild(provinceNode.lastChild);
+            provinceNode.options[provinceNode.options.length] = new Option('-- Selecione uma provincia --');
+
+            const municipalityNode = document.getElementById("municipality");
+            while (municipalityNode.firstChild)
+                municipalityNode.removeChild(municipalityNode.lastChild);
+            municipalityNode.options[municipalityNode.options.length] = new Option('-- Selecione um município --');
+
+            const communeNode = document.getElementById("commune");
+            while (communeNode.firstChild)
+                communeNode.removeChild(communeNode.lastChild);
+            communeNode.options[communeNode.options.length] = new Option('-- Selecione uma comuna --');
+
+            fetchList('province', event.target.value);
+        });
+
+        document.getElementById('province').addEventListener('change', function (event) {
+            const municipalityNode = document.getElementById("municipality");
+            while (municipalityNode.firstChild)
+                municipalityNode.removeChild(municipalityNode.lastChild);
+            municipalityNode.options[municipalityNode.options.length] = new Option('-- Selecione um município --');
+
+            const communeNode = document.getElementById("commune");
+            while (communeNode.firstChild)
+                communeNode.removeChild(communeNode.lastChild);
+            communeNode.options[communeNode.options.length] = new Option('-- Selecione uma comuna --');
+
+            fetchList('municipality', event.target.value);
+        });
+
+        document.getElementById('municipality').addEventListener('change', function (event) {
+            const communeNode = document.getElementById("commune");
+            while (communeNode.firstChild)
+                communeNode.removeChild(communeNode.lastChild);
+            communeNode.options[communeNode.options.length] = new Option('-- Selecione uma comuna --');
+
+            fetchList('commune', event.target.value);
+        });
+    </script>
 </html>

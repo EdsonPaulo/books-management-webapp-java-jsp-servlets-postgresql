@@ -6,7 +6,6 @@ CREATE TABLE pais (
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS provincia CASCADE;
 
 CREATE TABLE provincia (
@@ -39,25 +38,13 @@ CREATE TABLE comuna (
     FOREIGN KEY (fk_municipio) REFERENCES municipio(pk_municipio) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
-DROP TABLE IF EXISTS bairro CASCADE;
-
-CREATE TABLE bairro (
-    pk_bairro SERIAL NOT NULL PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL,
-    fk_comuna INTEGER NOT NULL,
-    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (fk_comuna) REFERENCES comuna(pk_comuna) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-
 DROP TABLE IF EXISTS morada CASCADE;
 
 CREATE TABLE morada (
     pk_morada SERIAL NOT NULL PRIMARY KEY,
     rua VARCHAR(50) NOT NULL,
     num_casa INTEGER,
-    fk_bairro INTEGER NOT NULL,
+    bairro VARCHAR(50) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fk_bairro) REFERENCES bairro(pk_bairro) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -180,7 +167,7 @@ CREATE TABLE livro (
     num_paginas INTEGER,
     num_edicao INTEGER,    
     ano_lancamento INTEGER,
-    fk_Livro INTEGER,
+    fk_estado INTEGER,
     fk_classificacao INTEGER,
     fk_localizacao INTEGER NOT NULL,
     fk_categoria INTEGER NOT NULL,

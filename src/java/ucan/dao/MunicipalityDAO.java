@@ -137,4 +137,37 @@ public class MunicipalityDAO {
         }
         return null;
     }
+    
+    
+       public List<MunicipalityModel> getMunicipalitiesByProvinceId(int provinceId) {
+        String sql = "SELECT * FROM municipio WHERE fk_provincia = " + provinceId;
+
+        List<MunicipalityModel> municipalityList = new ArrayList<>();
+
+        try {
+            connection = new DBConnection();
+            PreparedStatement ps = connection.getConnection().prepareStatement(sql);
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                MunicipalityModel municipality = new MunicipalityModel();
+                municipality.setMunicipalityId(resultSet.getInt(1));
+                municipality.setName(resultSet.getString(2));
+                municipality.setProvinceId(resultSet.getInt(3));
+                municipality.setCreationDate(resultSet.getTimestamp(4).toLocalDateTime());
+
+                municipalityList.add(municipality);
+            }
+            ps.close();
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.closeConnection();
+            }
+        }
+        return municipalityList;
+    }
 }
