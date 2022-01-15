@@ -15,12 +15,13 @@ public class AddressDAO {
     }
 
     public void create(AddressModel address, DBConnection connection) {
-        String sql = "INSERT INTO morada(num_casa, rua, fk_bairro) values(?, ?, ?)";
+        String sql = "INSERT INTO morada(num_casa, rua, bairro, fk_comuna) values(?, ?, ?, ?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, address.getHouseNum());
             ps.setString(2, address.getStreet());
             ps.setString(3, address.getDistrict());
+            ps.setInt(4, address.getCommuneId());
 
             ps.executeUpdate();
             ps.close();
@@ -30,13 +31,14 @@ public class AddressDAO {
     }
 
     public void update(AddressModel address, DBConnection connection) {
-        String sql = "UPDATE morada SET num_casa = ?, rua = ?, fk_bairro = ? WHERE pk_morada = ?";
+        String sql = "UPDATE morada SET num_casa = ?, rua = ?, bairro = ?, fk_comuna = ? WHERE pk_morada = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setInt(1, address.getHouseNum());
             ps.setString(2, address.getStreet());
-            ps.setString(3, address.getDistrict());
-            ps.setInt(4, address.getAddressId());
+            ps.setString(3, address.getDistrict());            
+            ps.setInt(4, address.getCommuneId());
+            ps.setInt(5, address.getAddressId());
 
             ps.executeUpdate();
             ps.close();
@@ -74,7 +76,8 @@ public class AddressDAO {
                 address.setStreet(resultSet.getString(2));
                 address.setHouseNum(resultSet.getInt(3));
                 address.setDistrict(resultSet.getString(4));
-                address.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
+                address.setCommuneId(resultSet.getInt(5));
+                address.setCreationDate(resultSet.getTimestamp(6).toLocalDateTime());
 
                 addressList.add(address);
             }
@@ -102,7 +105,8 @@ public class AddressDAO {
                 address.setStreet(resultSet.getString(2));
                 address.setHouseNum(resultSet.getInt(3));
                 address.setDistrict(resultSet.getString(4));
-                address.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
+                address.setCommuneId(resultSet.getInt(5));
+                address.setCreationDate(resultSet.getTimestamp(6).toLocalDateTime());
             }
 
             ps.close();

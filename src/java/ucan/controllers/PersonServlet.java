@@ -113,6 +113,7 @@ public class PersonServlet extends HttpServlet {
             address.setStreet(request.getParameter("street"));
             address.setHouseNum(Integer.parseInt(request.getParameter("houseNum")));
             address.setDistrict(request.getParameter("district"));
+            address.setCommuneId(Integer.parseInt(request.getParameter("commune")));
 
             addressDao.create(address, connection);
 

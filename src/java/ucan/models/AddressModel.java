@@ -8,16 +8,17 @@ import java.time.LocalDateTime;
  */
 public class AddressModel {
 
-    private int addressId, houseNum;
+    private int addressId, houseNum, communeId;
     private String street, district;
     private LocalDateTime creationDate;
 
     public AddressModel() {
     }
 
-    public AddressModel(int addressId, String district, int houseNum, String street, LocalDateTime creationDate) {
+    public AddressModel(int addressId, String district, int houseNum, int communeId, String street, LocalDateTime creationDate) {
         this.addressId = addressId;
         this.district = district;
+        this.communeId = communeId;
         this.houseNum = houseNum;
         this.street = street;
         this.creationDate = creationDate;
@@ -54,6 +55,14 @@ public class AddressModel {
     public void setStreet(String street) {
         this.street = street;
     }
+    
+    public int getCommuneId() {
+        return communeId;
+    }
+
+    public void setCommuneId(int communeId) {
+        this.communeId = communeId;
+    }
 
     public LocalDateTime getCreationDate() {
         return creationDate;
@@ -62,5 +71,6 @@ public class AddressModel {
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
+
 
 }

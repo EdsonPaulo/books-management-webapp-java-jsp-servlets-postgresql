@@ -27,8 +27,8 @@ public class MainTest {
             person.setBirthDate(LocalDateTime.parse("26-03-2000 12:33", dateFormatter));
 
             person.setEmail("edsonpaulo24@gmail.com");
-            person.setAddressId(0);
-            person.setGenderId(3);
+            person.setAddressId(1);
+            person.setGenderId(1);
             personDAO.create(person, connection);
         } catch (Exception ex) {
             ex.printStackTrace();
