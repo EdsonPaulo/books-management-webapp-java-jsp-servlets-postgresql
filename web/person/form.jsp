@@ -4,21 +4,20 @@
 <%@page import="ucan.utils.HtmlObj" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
+<%@ include file="../partials/html-head.jsp" %>  
 <html>
-    <%@ include file="HtmlHead.jsp" %>  
     <%
         HtmlObj obj = new HtmlObj();
         DBConnection connection = new DBConnection();
     %>
-
     <body>
-        <button type="button" class="btn btn-primary btn-sm m-4">
-            <a href="." class="text-light text-decoration-none"><< Voltar</a>
-        </button>
+        <%@ include file="../partials/navbar.jsp" %>  
+
+        <a href="<%=request.getContextPath()%>/person/list.jsp" class="btn btn-primary btn-sm m-4"><< Voltar</a>
 
         <div class="h-100 container d-flex justify-content-center align-items-start">
             <div class="card p-5" style="width: 100%;">
-                <form class="form-container" action="pessoa" method="POST">
+                <form class="form-container" action="person" method="POST">
                     <div class="row">
                         <div class="form-group col-4">
                             <label for="name" class="required">Nome</label>
@@ -96,24 +95,26 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary my-2 float-right">
-                        Adicionar
+                        √ Adicionar
                     </button>
                 </form>
             </div>
         </div>
     </body>
-    
-    <%  connection.closeConnection();  %>
-         
+
+    <%  connection.closeConnection();%>
+
     <script type="text/javascript">
+
+        // get current context path or base url path name 
+        function getContextPath() {
+            return window.location.pathname.substring(0, window.location.pathname.indexOf("/", 2));
+        }
 
         function fetchList(operation, id) {
             const selectElement = document.getElementById(operation);
 
-            fetch('pessoa?' + new URLSearchParams({ operation, id }), {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-            })
+            fetch(getContextPath() + '/person-servlet?' + new URLSearchParams({operation, id}), {method: 'GET'})
                     .then(response => response.json())
                     .then(data => {
                         data.forEach((item) => {
@@ -146,7 +147,7 @@
             communeNode.options[communeNode.options.length] = new Option('Selecione uma comuna');
         }
 
-        // -- Handle changes for selectboxes --
+        // -- Handling changes of selectboxes --
 
         document.getElementById('country').addEventListener('change', function (event) {
             clearProvinceSelect();

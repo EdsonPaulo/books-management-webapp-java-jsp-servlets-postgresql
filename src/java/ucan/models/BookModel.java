@@ -11,14 +11,15 @@ public class BookModel {
     private int bookId;
     private int numPages, editionNum, releaseYear;
     private String isbn, name;
-    private int categoryId, classificationId, locationId, statusId;
+    private int publisherId, categoryId, classificationId, locationId, statusId;
     private LocalDateTime creationDate;
 
     public BookModel() {
     }
 
-    public BookModel(int bookId, int numPages, int editionNum, int releaseYear, String isbn, String name, LocalDateTime creationDate) {
+    public BookModel(int bookId, int publisherId, int numPages, int editionNum, int releaseYear, String isbn, String name, LocalDateTime creationDate) {
         this.bookId = bookId;
+        this.publisherId = publisherId;
         this.numPages = numPages;
         this.editionNum = editionNum;
         this.releaseYear = releaseYear;
@@ -33,6 +34,14 @@ public class BookModel {
 
     public void setBookId(int bookId) {
         this.bookId = bookId;
+    }
+
+    public int getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(int publisherId) {
+        this.publisherId = publisherId;
     }
 
     public int getNumPages() {
@@ -114,5 +123,4 @@ public class BookModel {
     public void setEditionNum(int editionNum) {
         this.editionNum = editionNum;
     }
-
 }

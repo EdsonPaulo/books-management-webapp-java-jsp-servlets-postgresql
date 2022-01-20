@@ -16,7 +16,7 @@ public class BookDAO {
 
     public void create(BookModel book, DBConnection connection) {
         String sql = "INSERT INTO livro(nome, isbn, num_paginas, num_edicao, ano_lancamento, "
-                + "fk_estado, fk_classificacao, fk_localizacao, fk_categoria) values(?,?,?,?,?,?,?,?,?)";
+                + "fk_editora, fk_estado, fk_classificacao, fk_localizacao, fk_categoria) values(?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
@@ -25,10 +25,11 @@ public class BookDAO {
             ps.setInt(3, book.getNumPages());
             ps.setInt(4, book.getEditionNum());
             ps.setInt(5, book.getReleaseYear());
-            ps.setInt(6, book.getStatusId());
-            ps.setInt(7, book.getClassificationId());
-            ps.setInt(8, book.getLocationId());
-            ps.setInt(9, book.getCategoryId());
+            ps.setInt(6, book.getPublisherId());
+            ps.setInt(7, book.getStatusId());
+            ps.setInt(8, book.getClassificationId());
+            ps.setInt(9, book.getLocationId());
+            ps.setInt(10, book.getCategoryId());
 
             ps.executeUpdate();
             ps.close();
@@ -39,8 +40,8 @@ public class BookDAO {
     }
 
     public void update(BookModel book, DBConnection connection) {
-        String sql = "UPDATE livro SET nome  = ?, isbn = ?, num_paginas = ?, num_edicao = ?, ano_lancamento = ?, " +
-                "fk_estado = ?, fk_classificacao = ?, fk_localizacao = ?, fk_categoria = ? WHERE pk_livro = ?";
+        String sql = "UPDATE livro SET nome  = ?, isbn = ?, num_paginas = ?, num_edicao = ?, ano_lancamento = ?, "
+                + "fk_estado = ?, fk_classificacao = ?, fk_localizacao = ?, fk_categoria = ? WHERE pk_livro = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
@@ -49,12 +50,12 @@ public class BookDAO {
             ps.setInt(3, book.getNumPages());
             ps.setInt(4, book.getEditionNum());
             ps.setInt(5, book.getReleaseYear());
-            ps.setInt(6, book.getStatusId());
-            ps.setInt(7, book.getClassificationId());
-            ps.setInt(8, book.getLocationId());
-            ps.setInt(9, book.getCategoryId());
-            ps.setInt(10, book.getBookId());
-
+            ps.setInt(6, book.getPublisherId());
+            ps.setInt(7, book.getStatusId());
+            ps.setInt(8, book.getClassificationId());
+            ps.setInt(9, book.getLocationId());
+            ps.setInt(10, book.getCategoryId());
+            ps.setInt(11, book.getBookId());
             ps.executeUpdate();
             ps.close();
 
@@ -91,11 +92,12 @@ public class BookDAO {
                 book.setNumPages(resultSet.getInt(4));
                 book.setEditionNum(resultSet.getInt(5));
                 book.setReleaseYear(resultSet.getInt(6));
-                book.setStatusId(resultSet.getInt(7));
-                book.setClassificationId(resultSet.getInt(8));
-                book.setLocationId(resultSet.getInt(9));
-                book.setCategoryId(resultSet.getInt(10));
-                book.setCreationDate(resultSet.getTimestamp(11).toLocalDateTime());
+                book.setPublisherId(resultSet.getInt(7));
+                book.setStatusId(resultSet.getInt(8));
+                book.setClassificationId(resultSet.getInt(9));
+                book.setLocationId(resultSet.getInt(10));
+                book.setCategoryId(resultSet.getInt(11));
+                book.setCreationDate(resultSet.getTimestamp(12).toLocalDateTime());
 
                 bookList.add(book);
             }
@@ -126,11 +128,12 @@ public class BookDAO {
                 book.setNumPages(resultSet.getInt(4));
                 book.setEditionNum(resultSet.getInt(5));
                 book.setReleaseYear(resultSet.getInt(6));
-                book.setStatusId(resultSet.getInt(7));
-                book.setClassificationId(resultSet.getInt(8));
-                book.setLocationId(resultSet.getInt(9));
-                book.setCategoryId(resultSet.getInt(10));
-                book.setCreationDate(resultSet.getTimestamp(11).toLocalDateTime());
+                book.setPublisherId(resultSet.getInt(7));
+                book.setStatusId(resultSet.getInt(8));
+                book.setClassificationId(resultSet.getInt(9));
+                book.setLocationId(resultSet.getInt(10));
+                book.setCategoryId(resultSet.getInt(11));
+                book.setCreationDate(resultSet.getTimestamp(12).toLocalDateTime());
             }
 
             ps.close();

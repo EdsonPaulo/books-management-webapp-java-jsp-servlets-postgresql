@@ -16,7 +16,6 @@ CREATE TABLE provincia (
     FOREIGN KEY (fk_pais) REFERENCES pais(pk_pais)  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS municipio CASCADE;
 
 CREATE TABLE municipio (
@@ -26,7 +25,6 @@ CREATE TABLE municipio (
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fk_provincia) REFERENCES provincia(pk_provincia) ON UPDATE CASCADE ON DELETE CASCADE
 );
-
 
 DROP TABLE IF EXISTS comuna CASCADE;
 
@@ -45,7 +43,7 @@ CREATE TABLE morada (
     rua VARCHAR(50) NOT NULL,
     num_casa INTEGER,
     bairro VARCHAR(50) NOT NULL,
-    fk_comuna INTEGER NOT NULL
+    fk_comuna INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fk_comuna) REFERENCES comuna(pk_comuna) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -164,15 +162,17 @@ DROP TABLE IF EXISTS livro CASCADE;
 CREATE TABLE livro (
     pk_livro SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
-    isbn INTEGER NOT NULL UNIQUE,
+    isbn  VARCHAR(50) NOT NULL UNIQUE,
     num_paginas INTEGER,
     num_edicao INTEGER,    
     ano_lancamento INTEGER,
+    fk_editora INTEGER NOT NULL,
     fk_estado INTEGER,
     fk_classificacao INTEGER,
     fk_localizacao INTEGER NOT NULL,
     fk_categoria INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fk_editora) REFERENCES editora(pk_editora) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY( fk_estado ) REFERENCES estado(pk_estado) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_classificacao) REFERENCES classificacao(pk_classificacao) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_localizacao) REFERENCES localizacao_livro(pk_localizacao_livro) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -207,14 +207,14 @@ CREATE TABLE livro_autor (
 
 DROP TABLE IF EXISTS livro_editora CASCADE;
 
-CREATE TABLE livro_editora(
+/*CREATE TABLE livro_editora(
     pk_livro_editora SERIAL NOT NULL PRIMARY KEY,
     fk_livro INTEGER NOT NULL,
     fk_editora INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fk_livro) REFERENCES livro(pk_livro) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_editora) REFERENCES editora(pk_editora) ON UPDATE CASCADE ON DELETE CASCADE
-);
+);*/
 
 
 DROP TABLE IF EXISTS livro_descritores CASCADE;

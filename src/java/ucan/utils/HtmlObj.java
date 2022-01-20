@@ -59,4 +59,15 @@ public class HtmlObj {
         }
         return htmlBuilder.toString();
     }
+
+    public static String generateHomeSectionLink(String label, String url) {
+        StringBuilder htmlBuilder = new StringBuilder();
+        htmlBuilder.append("<div class=\"col m-3\">");
+        htmlBuilder.append("<a href=\"" + url + "\"");
+        htmlBuilder.append(" class=\"h2 d-flex border rounded btn btn-light p-2 justify-content-center align-items-center\"");
+        htmlBuilder.append(" style=\"width: 100%; height: 150px\" > ");
+        htmlBuilder.append("<h4>" + label + "</h4>");
+        htmlBuilder.append("</a></div>");
+        return htmlBuilder.toString();
+    }
 }

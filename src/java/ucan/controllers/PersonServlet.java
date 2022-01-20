@@ -28,7 +28,7 @@ import ucan.models.ProvinceModel;
  *
  * @author edsonpaulo
  */
-@WebServlet(name = "PersonServlet", urlPatterns = {"/pessoa"})
+@WebServlet(name = "PersonServlet", urlPatterns = {"/person-servlet"})
 public class PersonServlet extends HttpServlet {
 
     private DBConnection connection;
@@ -41,7 +41,6 @@ public class PersonServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
 
         try {
             connection = new DBConnection();
@@ -63,21 +62,53 @@ public class PersonServlet extends HttpServlet {
                 } else {
                     int id = Integer.parseInt(request.getParameter("id"));
 
-                    if (op.equals("province")) {
-                        List<ProvinceModel> provinceList = provinceDao.getProvincesByCountryId(id, connection);
-                        writer.write(json.toJson(provinceList));
-
-                    } else if (op.equals("municipality")) {
-                        List<MunicipalityModel> muniList = muniDao.getMunicipalitiesByProvinceId(id, connection);
-                        writer.write(json.toJson(muniList));
-
-                    } else if (op.equals("commune")) {
-                        List<CommuneModel> communeList = communeDao.getCommunesByMunicipalityId(id, connection);
-                        writer.write(json.toJson(communeList));
+                    switch (op) {
+                        case "province":
+                            List<ProvinceModel> provinceList = provinceDao.getProvincesByCountryId(id, connection);
+                            writer.write(json.toJson(provinceList));
+                            break;
+                            
+                        case "municipality":
+                            List<MunicipalityModel> muniList = muniDao.getMunicipalitiesByProvinceId(id, connection);
+                            writer.write(json.toJson(muniList));
+                            break;
+                            
+                        case "commune":
+                            List<CommuneModel> communeList = communeDao.getCommunesByMunicipalityId(id, connection);
+                            writer.write(json.toJson(communeList));
+                            break;
+                            
+                        default:
+                            break;
                     }
                 }
             }
-        } catch (Exception e) {
+
+            if (request.getParameter("action") != null) {
+                PersonDAO personDao = new PersonDAO();
+                int id = Integer.parseInt(request.getParameter("id"));
+                String action = request.getParameter("action");
+
+                switch (action) {
+                    case "delete":
+                        personDao.delete(id, connection);
+                        response.sendRedirect(request.getContextPath() + "/person/list.jsp");
+                        //RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("person/list.jsp");
+                        //dispatcher.forward(request, response);
+                        break;
+                        
+                    case "edit":
+                        break;
+                        
+                    case "view":
+                        response.sendRedirect(request.getContextPath() + "/person/view.jsp?id=" + id);
+                        break;
+                        
+                    default:
+                        break;
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         } finally {
             if (connection != null) {
@@ -89,8 +120,6 @@ public class PersonServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-
         try {
             connection = new DBConnection();
             PersonModel person = new PersonModel();
@@ -120,10 +149,10 @@ public class PersonServlet extends HttpServlet {
             person.setAddressId(Helpers.getIdOfLastRow("morada", connection));
 
             personDao.create(person, connection);
-            
-            response.sendRedirect(request.getContextPath() + "/listar-pessoas.jsp");
 
-        } catch (Exception ex) {
+            response.sendRedirect(request.getContextPath() + "/person/list.jsp");
+
+        } catch (IOException | NumberFormatException ex) {
             ex.printStackTrace();
         } finally {
             if (connection != null) {

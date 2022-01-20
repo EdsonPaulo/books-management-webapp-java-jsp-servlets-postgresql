@@ -2,18 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/src/java/ucan/controllers/BookServlet.java</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/src/java/ucan/dao/ProvinceDAO.java</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/localizacao.sql</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/src/java/ucan/models/AddressModel.java</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/web/formulario-pessoa.jsp</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/src/java/ucan/dao/PersonDAO.java</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/src/java/ucan/controllers/PersonServlet.java</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/web/listar-pessoas.jsp</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/biblioteca_ucan.sql</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/src/java/MainTest.java</file>
-            <file>file:/Users/edsonpaulo/EDSONFILES/DESENVOLVIMENTO/JAVA/P2-EdsonGregorio20973/src/java/ucan/dao/AddressDAO.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
