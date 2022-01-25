@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import ucan.utils.Helpers;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,17 +13,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ucan.conection.DBConnection;
 import ucan.dao.AddressDAO;
+import ucan.dao.AuthorDAO;
 import ucan.dao.CommuneDAO;
 import ucan.dao.CountryDAO;
 import ucan.dao.MunicipalityDAO;
 import ucan.dao.PersonDAO;
+import ucan.dao.PersonEmailDAO;
+import ucan.dao.PersonPhoneDAO;
 import ucan.dao.ProvinceDAO;
+import ucan.dao.ReaderDAO;
 import ucan.models.AddressModel;
+import ucan.models.AuthorModel;
 import ucan.models.CommuneModel;
 import ucan.models.CountryModel;
 import ucan.models.MunicipalityModel;
+import ucan.models.PersonEmailModel;
 import ucan.models.PersonModel;
+import ucan.models.PersonPhoneModel;
 import ucan.models.ProvinceModel;
+import ucan.models.ReaderModel;
 
 /**
  *
@@ -32,11 +41,6 @@ import ucan.models.ProvinceModel;
 public class PersonServlet extends HttpServlet {
 
     private DBConnection connection;
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -93,15 +97,6 @@ public class PersonServlet extends HttpServlet {
                     case "delete":
                         personDao.delete(id, connection);
                         response.sendRedirect(request.getContextPath() + "/person/list.jsp");
-                        //RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("person/list.jsp");
-                        //dispatcher.forward(request, response);
-                        break;
-                        
-                    case "edit":
-                        break;
-                        
-                    case "view":
-                        response.sendRedirect(request.getContextPath() + "/person/view.jsp?id=" + id);
                         break;
                         
                     default:
@@ -116,11 +111,10 @@ public class PersonServlet extends HttpServlet {
             }
         }
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    
+    private void processUpdateRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+     try {
             connection = new DBConnection();
             PersonModel person = new PersonModel();
             PersonDAO personDao = new PersonDAO();
@@ -128,8 +122,6 @@ public class PersonServlet extends HttpServlet {
             person.setName(request.getParameter("name"));
             person.setSurname(request.getParameter("surname"));
             person.setBi(request.getParameter("bi"));
-            person.setPhone(request.getParameter("phone"));
-            person.setEmail(request.getParameter("email"));
             person.setBirthDate(Helpers.stringToDateTime(request.getParameter("birthDate"), true));
             person.setGenderId(Integer.parseInt(request.getParameter("gender")));
 
@@ -143,14 +135,64 @@ public class PersonServlet extends HttpServlet {
             address.setHouseNum(Integer.parseInt(request.getParameter("houseNum")));
             address.setDistrict(request.getParameter("district"));
             address.setCommuneId(Integer.parseInt(request.getParameter("commune")));
+            
+            if("POST".equals(request.getMethod())) { 
+                addressDao.create(address, connection);
+                person.setAddressId(Helpers.getIdOfLastRow("morada", connection));
+                personDao.create(person, connection);
+                
+                int personId = Helpers.getIdOfLastRow("pessoa", connection);
+                
+                /**
+                * INSERT EMAIL AFTER CREATE PERSON
+                */
+                PersonPhoneDAO personPhoneDao = new PersonPhoneDAO();
+                PersonPhoneModel personPhone = new PersonPhoneModel();
+                personPhone.setPersonId(personId);
+                personPhone.setPhone(request.getParameter("phone1"));
+                personPhoneDao.create(personPhone, connection);
+                
+                if(request.getParameter("phone2") != null){
+                    personPhone.setPhone(request.getParameter("phone2"));
+                    personPhoneDao.create(personPhone, connection);
+                }
+                
+                /**
+                * INSERT PHONE BEFORE CREATE PERSON
+                */
+                PersonEmailDAO personEmailDao = new PersonEmailDAO();
+                PersonEmailModel personEmail = new PersonEmailModel();
+                personEmail.setPersonId(personId);
+                personEmail.setEmail(request.getParameter("email1"));
+                personPhoneDao.create(personPhone, connection);
+                
+                if(request.getParameter("email2") != null){
+                    personEmail.setEmail(request.getParameter("email2"));
+                    personEmailDao.create(personEmail, connection);
+                }
+                
+                /**
+                 * SAVE PERSON AS AUTHOR OR READER
+                 */
+                if("AUTHOR".equals(request.getParameter("personType"))) {
+                    AuthorDAO authorDao = new AuthorDAO();
+                    AuthorModel author = new AuthorModel();
+                    author.setPersonId(personId);
+                    authorDao.create(author, connection);
+                } else {
+                    ReaderDAO readerDao = new ReaderDAO();
+                    ReaderModel reader = new ReaderModel();
+                    reader.setPersonId(personId);
+                    readerDao.create(reader, connection);
+                }
+            }
+            else
+                if("PUT".equals(request.getMethod())) { 
+                    addressDao.update(address, connection);
+                    personDao.update(person, connection);
+                }
 
-            addressDao.create(address, connection);
-
-            person.setAddressId(Helpers.getIdOfLastRow("morada", connection));
-
-            personDao.create(person, connection);
-
-            response.sendRedirect(request.getContextPath() + "/person/list.jsp");
+           response.sendRedirect(request.getContextPath() + "/person/list.jsp");
 
         } catch (IOException | NumberFormatException ex) {
             ex.printStackTrace();
@@ -162,8 +204,19 @@ public class PersonServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processUpdateRequest(request, response);
+    }
+    
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processUpdateRequest(request, response);
+    }
+
+    @Override
     public String getServletInfo() {
         return "Short description";
     }
-
 }

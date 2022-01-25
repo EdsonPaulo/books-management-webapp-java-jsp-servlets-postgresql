@@ -17,8 +17,10 @@
         DBConnection connection = null;
         try {
             String query = "SELECT pessoa.pk_pessoa, pessoa.nome, pessoa.sobrenome, sexo.nome AS genero,"
-                    + "pessoa.bi, pessoa.telefone, pessoa.email, pessoa.data_nasc "
-                    + "FROM pessoa INNER JOIN sexo ON pessoa.fk_sexo = sexo.pk_sexo;";
+                    + "pessoa.bi, telefone_pessoa.numero, email_pessoa.email, pessoa.data_nasc FROM pessoa "
+                    + "INNER JOIN telefone_pessoa ON pessoa.pk_pessoa = telefone_pessoa.fk_pessoa "
+                    + "INNER JOIN email_pessoa ON pessoa.pk_pessoa = email_pessoa.fk_pessoa "
+                    + "INNER JOIN sexo ON pessoa.fk_sexo = sexo.pk_sexo;";
 
             connection = new DBConnection();
             ResultSet resultSet = connection.getConnection().createStatement().executeQuery(query);
@@ -27,10 +29,9 @@
     <body>
         <%@ include file="../partials/navbar.jsp" %>  
 
-        
         <a href="<%=request.getContextPath()%>" class="btn btn-primary btn-sm m-4"><< Voltar</a>
         <a href="<%=request.getContextPath()%>/person/form.jsp" class="btn btn-primary m-4 float-right">+ Adicionar nova pessoa</a>
- 
+
         <div class="h-100 container-fluid d-flex justify-content-center align-items-start">
             <div class="card p-5 table-responsive-lg" style="width: 100%;">
                 <table class="table table-striped table-sm">
@@ -63,11 +64,11 @@
                                 htmlBuilder.append("<td>" + resultSet.getString(7) + "</td>");
                                 htmlBuilder.append("<td>" + resultSet.getTimestamp(8).toLocalDateTime().toLocalDate() + "</td>");
 
-                                htmlBuilder.append("<td><a class=\"btn btn-info btn-sm text-white\" href=\"" + request.getContextPath() + "/person-servlet?id="
-                                        + resultSet.getInt(1) + "&action=view\">Visualizar</a></td>");
+                                htmlBuilder.append("<td><a class=\"btn btn-secondary btn-sm text-white\" href=\"" + request.getContextPath() + "/person/view.jsp?id="
+                                        + resultSet.getInt(1) + "\">Visualizar</a></td>");
 
-                                htmlBuilder.append("<td><a class=\"btn btn-warning btn-sm text-white\" href=\"" + request.getContextPath() + "/person-servlet?id="
-                                        + resultSet.getInt(1) + "&action=edit\">Editar</a></td>");
+                                htmlBuilder.append("<td><a class=\"btn btn-warning btn-sm text-white\" href=\"" + request.getContextPath() + "/person/form.jsp?id="
+                                        + resultSet.getInt(1) + "\">Editar</a></td>");
 
                                 htmlBuilder.append("<td><a class=\"btn btn-danger btn-sm text-white\" href=\"" + request.getContextPath() + "/person-servlet?id="
                                         + resultSet.getInt(1) + "&action=delete\">Remover</a></td>");

@@ -90,7 +90,7 @@ public class AddressDAO {
         return addressList;
     }
 
-    public AddressModel getaddressById(int addressId, DBConnection connection) {
+    public AddressModel getAddressById(int addressId, DBConnection connection) {
         String sql = "SELECT * FROM morada WHERE pk_morada = ?";
 
         try {

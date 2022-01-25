@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import ucan.models.PersonModel;
 import ucan.conection.DBConnection;
 
@@ -16,18 +17,16 @@ public class PersonDAO {
     }
 
     public void create(PersonModel person, DBConnection connection) {
-        String sql = "INSERT INTO pessoa(nome, sobrenome, bi, telefone, email, data_nasc, fk_morada, fk_sexo) values(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO pessoa(nome, sobrenome, bi, data_nasc, fk_morada, fk_sexo) values(?,?,?,?,?,?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
             ps.setString(2, person.getSurname());
             ps.setString(3, person.getBi());
-            ps.setString(4, person.getPhone());
-            ps.setString(5, person.getEmail());
-            ps.setTimestamp(6, Timestamp.valueOf(person.getBirthDate()));
-            ps.setInt(7, person.getAddressId());
-            ps.setInt(8, person.getGenderId());
+            ps.setTimestamp(4, Timestamp.valueOf(person.getBirthDate()));
+            ps.setInt(5, person.getAddressId());
+            ps.setInt(6, person.getGenderId());
 
             ps.executeUpdate();
             ps.close();
@@ -38,19 +37,17 @@ public class PersonDAO {
     }
 
     public void update(PersonModel person, DBConnection connection) {
-        String sql = "UPDATE pessoa SET nome = ?, sobrenome = ?, bi = ?, telefone = ?, email = ?, data_nasc = ?, fk_morada = ?, fk_sexo = ? WHERE pk_pessoa = ?";
+        String sql = "UPDATE pessoa SET nome = ?, sobrenome = ?, bi = ?, data_nasc = ?, fk_morada = ?, fk_sexo = ? WHERE pk_pessoa = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
             ps.setString(2, person.getSurname());
             ps.setString(3, person.getSurname());
-            ps.setString(4, person.getPhone());
-            ps.setString(5, person.getEmail());
-            ps.setTimestamp(6, Timestamp.valueOf(person.getBirthDate()));
-            ps.setInt(7, person.getAddressId());
-            ps.setInt(8, person.getGenderId());
-            ps.setInt(9, person.getPersonId());
+            ps.setTimestamp(4, Timestamp.valueOf(person.getBirthDate()));
+            ps.setInt(5, person.getAddressId());
+            ps.setInt(6, person.getGenderId());
+            ps.setInt(7, person.getPersonId());
 
             ps.executeUpdate();
             ps.close();
@@ -88,12 +85,10 @@ public class PersonDAO {
                 person.setName(resultSet.getString(2));
                 person.setSurname(resultSet.getString(3));
                 person.setBi(resultSet.getString(4));
-                person.setPhone(resultSet.getString(5));
-                person.setBirthDate(resultSet.getTimestamp(6).toLocalDateTime());
-                person.setEmail(resultSet.getString(7));
-                person.setAddressId(resultSet.getInt(8));
-                person.setGenderId(resultSet.getInt(9));
-                person.setCreationDate(resultSet.getTimestamp(10).toLocalDateTime());
+                person.setBirthDate(resultSet.getTimestamp(5).toLocalDateTime());
+                person.setAddressId(resultSet.getInt(6));
+                person.setGenderId(resultSet.getInt(7));
+                person.setCreationDate(resultSet.getTimestamp(8).toLocalDateTime());
 
                 personList.add(person);
             }
@@ -122,12 +117,10 @@ public class PersonDAO {
                 person.setName(resultSet.getString(2));
                 person.setSurname(resultSet.getString(3));
                 person.setBi(resultSet.getString(4));
-                person.setPhone(resultSet.getString(5));
-                person.setBirthDate(resultSet.getTimestamp(6).toLocalDateTime());
-                person.setEmail(resultSet.getString(7));
-                person.setAddressId(resultSet.getInt(8));
-                person.setGenderId(resultSet.getInt(9));
-                person.setCreationDate(resultSet.getTimestamp(10).toLocalDateTime());
+                person.setBirthDate(resultSet.getTimestamp(5).toLocalDateTime());
+                person.setAddressId(resultSet.getInt(6));
+                person.setGenderId(resultSet.getInt(7));
+                person.setCreationDate(resultSet.getTimestamp(8).toLocalDateTime());
             }
 
             ps.close();
@@ -138,5 +131,39 @@ public class PersonDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Vector<String> getPersonEmails(int personId, DBConnection connection) {
+        Vector<String> emails = new Vector<>();
+        String sql = "SELECT email FROM email_pessoa WHERE pk_pessoa = " + personId;
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+
+            while (resultSet.next()) {
+                emails.add(resultSet.getString(1));
+            }
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return emails;
+    }
+
+    public Vector<String> getPersonPhones(int personId, DBConnection connection) {
+        Vector<String> phones = new Vector<>();
+        String sql = "SELECT numero FROM telefone_pessoa WHERE pk_pessoa = " + personId;
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+
+            while (resultSet.next()) {
+                phones.add(resultSet.getString(1));
+            }
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return phones;
     }
 }

@@ -494,10 +494,10 @@ INSERT INTO comuna(nome, fk_municipio) VALUES ('Impulso',68);
 
 INSERT INTO comuna(nome, fk_municipio) VALUES ('Quilengues',68);
 INSERT INTO comuna(nome, fk_municipio) VALUES ('Quipungo',69);
-INSERT INTO comuna(nome, fk_municipio) VALUES ('Ambaca',79);
-INSERT INTO comuna(nome, fk_municipio) VALUES ('Bindo',79);
-INSERT INTO comuna(nome, fk_municipio) VALUES ('Luinga',79);
-INSERT INTO comuna(nome, fk_municipio) VALUES ('Maua',79);
-INSERT INTO comuna(nome, fk_municipio) VALUES ('Tango',79);
+INSERT INTO comuna(nome, fk_municipio) VALUES ('Ambaca',69);
+INSERT INTO comuna(nome, fk_municipio) VALUES ('Bindo',69);
+INSERT INTO comuna(nome, fk_municipio) VALUES ('Luinga',69);
+INSERT INTO comuna(nome, fk_municipio) VALUES ('Maua',69);
+INSERT INTO comuna(nome, fk_municipio) VALUES ('Tango',69);
 
 /*Parei na linha 280 em comunas*/

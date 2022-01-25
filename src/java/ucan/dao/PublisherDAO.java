@@ -15,15 +15,13 @@ public class PublisherDAO {
     }
 
     public void create(PublisherModel publisher, DBConnection connection) {
-        String sql = "INSERT INTO editora(nome, telefone, email, fax, fk_morada) values(?,?,?,?,?)";
+        String sql = "INSERT INTO editora(nome, fax, fk_morada) values(?,?,?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, publisher.getName());
-            ps.setString(2, publisher.getPhone());
-            ps.setString(3, publisher.getEmail());
             ps.setString(4, publisher.getFax());
-            ps.setInt(5, publisher.getAddressId());
+            ps.setInt(3, publisher.getAddressId());
 
             ps.executeUpdate();
             ps.close();
@@ -34,13 +32,11 @@ public class PublisherDAO {
     }
 
     public void update(PublisherModel publisher, DBConnection connection) {
-        String sql = "UPDATE editora SET name = ?, telefone = ?, email = ?, fax = ?, fk_morada = ? WHERE pk_editora = ?";
+        String sql = "UPDATE editora SET name = ?, fax = ?, fk_morada = ? WHERE pk_editora = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, publisher.getName());
-            ps.setString(2, publisher.getPhone());
-            ps.setString(3, publisher.getEmail());
             ps.setString(4, publisher.getFax());
             ps.setInt(5, publisher.getAddressId());
             ps.setInt(6, publisher.getPublisherId());
@@ -79,11 +75,9 @@ public class PublisherDAO {
                 PublisherModel publisher = new PublisherModel();
                 publisher.setPublisherId(resultSet.getInt(1));
                 publisher.setName(resultSet.getString(2));
-                publisher.setPhone(resultSet.getString(3));
-                publisher.setEmail(resultSet.getString(4));
-                publisher.setFax(resultSet.getString(5));
-                publisher.setAddressId(resultSet.getInt(6));
-                publisher.setCreationDate(resultSet.getTimestamp(7).toLocalDateTime());
+                publisher.setFax(resultSet.getString(3));
+                publisher.setAddressId(resultSet.getInt(4));
+                publisher.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
 
                 publisherList.add(publisher);
             }
@@ -110,11 +104,9 @@ public class PublisherDAO {
             while (resultSet.next()) {
                 publisher.setPublisherId(resultSet.getInt(1));
                 publisher.setName(resultSet.getString(2));
-                publisher.setPhone(resultSet.getString(3));
-                publisher.setEmail(resultSet.getString(4));
-                publisher.setFax(resultSet.getString(5));
-                publisher.setAddressId(resultSet.getInt(6));
-                publisher.setCreationDate(resultSet.getTimestamp(7).toLocalDateTime());
+                publisher.setFax(resultSet.getString(3));
+                publisher.setAddressId(resultSet.getInt(4));
+                publisher.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
             }
 
             ps.close();

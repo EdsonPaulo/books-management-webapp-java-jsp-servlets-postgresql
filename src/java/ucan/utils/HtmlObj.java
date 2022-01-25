@@ -11,53 +11,30 @@ import ucan.conection.DBConnection;
  */
 public class HtmlObj {
 
-    private Statement statement;
-
     public HtmlObj() {
     }
 
-    public String getSelectBox(DBConnection conn, String nomeTabela, String nomeCampo) {
+    public String getSelectBox(DBConnection conn, String nomeTabela, String nomeCampo, int optionSelected) {
         StringBuilder htmlCombo = new StringBuilder();
+
         htmlCombo.append("<select name=\"").append(nomeCampo).append("\" id=\"").append(nomeCampo)
                 .append("\" class=\"form-control\" >");
 
-        htmlCombo.append("<option value=\"\">Selecione uma opção</option>\n");
+        htmlCombo.append("<option value=\"\">Selecione</option>\n");
         try {
-            statement = conn.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + nomeTabela);
+            ResultSet resultSet = conn.getConnection().createStatement().executeQuery("SELECT * FROM " + nomeTabela);
 
             while (resultSet.next()) {
-                htmlCombo.append("<option value=\"").append(resultSet.getInt(1)).append("\">")
+                htmlCombo.append("<option value=\"" + resultSet.getInt(1) + "\" ")
+                        .append(resultSet.getInt(1) == optionSelected ? "selected>" : ">")
                         .append(resultSet.getString(2)).append("</option>");
             }
             resultSet.close();
-            statement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
         htmlCombo.append("</select>");
         return htmlCombo.toString();
-    }
-
-    public String getTableRow(DBConnection conn, String nomeTabela) {
-        StringBuilder htmlBuilder = new StringBuilder();
-        try {
-            statement = conn.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + nomeTabela);
-
-            while (resultSet.next()) {
-                htmlBuilder.append("<tr>");
-                htmlBuilder.append("<th scope=\"row\">" + resultSet.getInt(1) + "</th>");
-                htmlBuilder.append("<td>" + resultSet.getString(2) + "</td>");
-                htmlBuilder.append("</tr>");
-            }
-            resultSet.close();
-            statement.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return htmlBuilder.toString();
     }
 
     public static String generateHomeSectionLink(String label, String url) {

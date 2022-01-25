@@ -1,5 +1,19 @@
 <%-- Document : person Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
 
+<%@page import="ucan.models.CountryModel"%>
+<%@page import="ucan.dao.CountryDAO"%>
+<%@page import="ucan.dao.CountryDAO"%>
+<%@page import="ucan.dao.ProvinceDAO"%>
+<%@page import="ucan.models.ProvinceModel"%>
+<%@page import="ucan.dao.MunicipalityDAO"%>
+<%@page import="ucan.models.MunicipalityModel"%>
+<%@page import="ucan.dao.CommuneDAO"%>
+<%@page import="ucan.models.CommuneModel"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="ucan.dao.AddressDAO"%>
+<%@page import="ucan.models.AddressModel"%>
+<%@page import="ucan.dao.PersonDAO"%>
+<%@page import="ucan.models.PersonModel"%>
 <%@page import="ucan.conection.DBConnection"%>
 <%@page import="ucan.utils.HtmlObj" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
@@ -9,55 +23,98 @@
     <%
         HtmlObj obj = new HtmlObj();
         DBConnection connection = new DBConnection();
+        Boolean isEditing = request.getParameter("id") != null;
+
+        PersonModel person = null;
+        PersonDAO personDao = null;
+
+        AddressModel address = null;
+        AddressDAO addressDao = null;
+
+        if (isEditing) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                personDao = new PersonDAO();
+                person = personDao.getPersonById(id, connection);
+
+                addressDao = new AddressDAO();
+                address = addressDao.getAddressById(person.getAddressId(), connection);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     %>
     <body>
-        <%@ include file="../partials/navbar.jsp" %>  
-
         <a href="<%=request.getContextPath()%>/person/list.jsp" class="btn btn-primary btn-sm m-4"><< Voltar</a>
 
         <div class="h-100 container d-flex justify-content-center align-items-start">
             <div class="card p-5" style="width: 100%;">
-                <form class="form-container" action="person" method="POST">
+                <form class="form-container" 
+                      action="<%=request.getContextPath()%>/person-servlet" 
+                      method="<%= isEditing ? "PUT" : "POST"%>">
+
                     <div class="row">
                         <div class="form-group col-4">
+                            <label for="personType" class="required">Tipo</label>
+                            <select id="personType" name="personType" class="form-control"> 
+                                <option>Selecione a funcão da pessoa</option>                                
+                                <option value="AUTHOR">1 - Autor</option>
+                                <option value="READER">2 - Leitor</option>
+                            </select>
+                        </div> 
+                        <div class="form-group col-4">
                             <label for="name" class="required">Nome</label>
-                            <input name="name" id="name" type="text" class="form-control" required>
+                            <input name="name" id="name" value="<%=isEditing && person != null ? person.getName() : ""%>"  type="text" class="form-control" required>
                         </div>
                         <div class="form-group  col-4">
                             <label for="surname" class="required">Sobrenome</label>
-                            <input name="surname" id="surname" type="text" class="form-control" required>
+                            <input name="surname" id="surname" value="<%=isEditing && person != null ? person.getSurname() : ""%>" type="text" class="form-control" required>
                         </div> 
+                    </div>
+
+                    <div class="row d-flex justify-content-between">
                         <div class="form-group col-4">
                             <label for="bi" class="required">BI</label>
-                            <input name="bi" id="bi" type="text" class="form-control" required>
+                            <input name="bi" id="bi" value="<%=isEditing && person != null ? person.getBi() : ""%>" type="text" class="form-control" required>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group col-3">
+                        <div class="form-group col-4">
                             <label for="birthDate" class="required">Data Nascimento</label>
-                            <input name="birthDate" id="birthDate" type="date" class="form-control" required>
+                            <input name="birthDate" id="birthDate" type="date" value="<%=isEditing && person != null ? person.getBirthDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : ""%>" class="form-control" required>
                         </div> 
-                        <div class="form-group col-3">
+                        <div class="form-group col-4">
                             <label for="gender" class="required">Genero</label>
-                            <%=obj.getSelectBox(connection, "sexo", "gender")%>
-                        </div>
-                        <div class="form-group col-3">
-                            <label for="email" class="required">Email</label>
-                            <input name="email" id="email" type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group col-3">
-                            <label for="phone" class="required">Telefone</label>
-                            <input name="phone" id="phone" type="text" class="form-control" required>
+                            <%=obj.getSelectBox(connection, "sexo", "gender", isEditing && person != null ? person.getGenderId() : -1)%>
                         </div>
                     </div>
 
-                    <p class="mt-4 text-muted">Morada</p> 
+                    <div class="row d-flex justify-content-between">
+                        <div class="form-group col-4">
+                            <label for="phone1" class="required">Telefone principal</label>
+                            <input name="phone1" id="phone1" type="tel" value="" class="form-control" required>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="email1" class="required">Email principal</label>
+                            <input name="email1" id="email1" type="email" value="" class="form-control" required>
+                        </div>            
+                    </div>
 
-                    <div class="row mt-3">
+                    <div class="row d-flex justify-content-between">
+                        <div class="form-group col-4">
+                            <label for="phone2">Telefone secundário (opcional)</label>
+                            <input name="phone2" id="phone2" type="tel" value="" class="form-control">
+                        </div>   
+                        <div class="form-group col-4">
+                            <label for="email2">Email secundário (opcional)</label>
+                            <input name="email2" id="email2" type="email" value="" class="form-control">
+                        </div>                        
+                    </div>
+
+                    <p class="h5 my-2 text-center text-muted">Morada</p> 
+
+                    <div class="row mt-3" style="display: <%=isEditing ? "none" : "flex"%>">
                         <div class="form-group col-4">
                             <label for="country" class="required">Pais</label>
-                            <%=obj.getSelectBox(connection, "pais", "country")%>
+                            <%=obj.getSelectBox(connection, "pais", "country", -1)%>
                         </div>
                         <div class="form-group col-4">
                             <label for="province" class="required">Provincia</label>
@@ -76,26 +133,25 @@
                     <div class="row">
                         <div class="form-group  col-3">
                             <label for="commune" class="required">Comuna</label>
-                            <select id="commune" name="commune" class="form-control"> 
-                                <option>-- Selecione um municipio primeiro --</option>
-                            </select>
+                            <%=isEditing ? obj.getSelectBox(connection, "comuna", "commune", address != null ? address.getCommuneId() : -1)
+                                    : "<select id=\"commune\" name=\"commune\" class=\"form-control\"><option>--Selecione--</option></select>"%>
                         </div>
                         <div class="form-group col-3">
                             <label for="district">Bairro</label>
-                            <input name="district" id="district" type="text" class="form-control">
+                            <input name="district" id="district" type="text" value="<%=isEditing && person != null ? address.getDistrict() : ""%>" class="form-control">
                         </div>
                         <div class="form-group col-3">
                             <label for="street">Rua</label>
-                            <input name="street" id="street" type="text" class="form-control">
+                            <input name="street" id="street" type="text" value="<%=isEditing && person != null ? address.getStreet() : ""%>" class="form-control">
                         </div>
                         <div class="form-group col-3">
                             <label for="houseNum">Nº da casa</label>
-                            <input name="houseNum" id="houseNum" type="number" class="form-control">
+                            <input name="houseNum" id="houseNum" type="number" value="<%=isEditing && person != null ? address.getHouseNum() : ""%>" class="form-control">
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary my-2 float-right">
-                        √ Adicionar
+                        √  Confirmar
                     </button>
                 </form>
             </div>

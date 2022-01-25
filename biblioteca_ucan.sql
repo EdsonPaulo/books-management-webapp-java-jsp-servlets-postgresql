@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS pais CASCADE;
-
 CREATE TABLE pais (
     pk_pais SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
@@ -7,7 +6,6 @@ CREATE TABLE pais (
 );
 
 DROP TABLE IF EXISTS provincia CASCADE;
-
 CREATE TABLE provincia (
     pk_provincia SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
@@ -17,7 +15,6 @@ CREATE TABLE provincia (
 );
 
 DROP TABLE IF EXISTS municipio CASCADE;
-
 CREATE TABLE municipio (
     pk_municipio SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
@@ -27,7 +24,6 @@ CREATE TABLE municipio (
 );
 
 DROP TABLE IF EXISTS comuna CASCADE;
-
 CREATE TABLE comuna (
     pk_comuna SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
@@ -37,7 +33,6 @@ CREATE TABLE comuna (
 );
 
 DROP TABLE IF EXISTS morada CASCADE;
-
 CREATE TABLE morada (
     pk_morada SERIAL NOT NULL PRIMARY KEY,
     rua VARCHAR(50) NOT NULL,
@@ -48,26 +43,20 @@ CREATE TABLE morada (
     FOREIGN KEY (fk_comuna) REFERENCES comuna(pk_comuna) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS sexo CASCADE;
-
 CREATE TABLE sexo (
     pk_sexo SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(10) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS pessoa CASCADE;
-
 CREATE TABLE pessoa (
     pk_pessoa SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     sobrenome VARCHAR(50) NOT NULL,
     bi VARCHAR(50) NOT NULL,
-    telefone VARCHAR(14) NOT NULL,
     data_nasc DATE,
-    email VARCHAR(50),
     fk_morada INTEGER NOT NULL,
     fk_sexo INTEGER,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -75,9 +64,25 @@ CREATE TABLE pessoa (
     FOREIGN KEY (fk_sexo) REFERENCES sexo(pk_sexo) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS telefone_pessoa CASCADE;
+CREATE TABLE telefone_pessoa (
+    pk_telefone_pessoa SERIAL NOT NULL PRIMARY KEY,
+    numero VARCHAR(14) UNIQUE NOT NULL,
+    fk_pessoa INTEGER NOT NULL,
+    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fk_pessoa) REFERENCES pessoa(pk_pessoa) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS email_pessoa CASCADE;
+CREATE TABLE email_pessoa (
+    pk_email_pessoa SERIAL NOT NULL PRIMARY KEY,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    fk_pessoa INTEGER NOT NULL,
+    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fk_pessoa) REFERENCES pessoa(pk_pessoa) ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 DROP TABLE IF EXISTS leitor CASCADE;
-
 CREATE TABLE leitor (
     pk_leitor SERIAL NOT NULL PRIMARY KEY,
     fk_pessoa INTEGER NOT NULL,
@@ -85,9 +90,7 @@ CREATE TABLE leitor (
     FOREIGN KEY (fk_pessoa) REFERENCES pessoa(pk_pessoa) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS autor CASCADE;
-
 CREATE TABLE autor (
     pk_autor SERIAL NOT NULL PRIMARY KEY,
     fk_pessoa INTEGER NOT NULL,
@@ -95,23 +98,35 @@ CREATE TABLE autor (
     FOREIGN KEY (fk_pessoa) REFERENCES pessoa(pk_pessoa) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS editora CASCADE;
-
 CREATE TABLE editora (
     pk_editora SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
-    telefone VARCHAR(14) NOT NULL,
-    email VARCHAR(50) NOT NULL,
     fax VARCHAR(50),
     fk_morada INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fk_morada) REFERENCES morada(pk_morada) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS telefone_editora CASCADE;
+CREATE TABLE telefone_editora (
+    pk_telefone_editora SERIAL NOT NULL PRIMARY KEY,
+    numero VARCHAR(14) UNIQUE NOT NULL,
+    fk_editora INTEGER NOT NULL,
+    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fk_editora) REFERENCES editora(pk_editora) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS email_editora CASCADE;
+CREATE TABLE email_editora (
+    pk_email_editora SERIAL NOT NULL PRIMARY KEY,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    fk_editora INTEGER NOT NULL,
+    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fk_editora) REFERENCES editora(pk_editora) ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 DROP TABLE IF EXISTS localizacao_livro CASCADE;
-
 CREATE TABLE localizacao_livro (
     pk_localizacao_livro SERIAL NOT NULL PRIMARY KEY,
     num_corredor INTEGER NOT NULL,
@@ -120,45 +135,35 @@ CREATE TABLE localizacao_livro (
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS classificacao CASCADE;
-
 CREATE TABLE classificacao (
     pk_classificacao SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS estado CASCADE;
-
 CREATE TABLE estado (
     pk_estado SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS descritores CASCADE;
-
 CREATE TABLE descritores (
     pk_descritores SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS categoria CASCADE;
-
 CREATE TABLE categoria (
     pk_categoria SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
 DROP TABLE IF EXISTS livro CASCADE;
-
 CREATE TABLE livro (
     pk_livro SERIAL NOT NULL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
@@ -179,9 +184,7 @@ CREATE TABLE livro (
     FOREIGN KEY (fk_categoria) REFERENCES categoria(pk_categoria) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS requisicao CASCADE;
-
 CREATE TABLE requisicao (
     pk_requisicao SERIAL NOT NULL PRIMARY KEY,
     fk_livro INTEGER NOT NULL,
@@ -193,32 +196,17 @@ CREATE TABLE requisicao (
     FOREIGN KEY (fk_leitor) REFERENCES leitor(pk_leitor) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
 DROP TABLE IF EXISTS livro_autor CASCADE;
-
 CREATE TABLE livro_autor (
     pk_livro_autor SERIAL NOT NULL PRIMARY KEY,
     fk_livro INTEGER NOT NULL,
     fk_autor INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (fk_livro) REFERENCES livro(pk_livro) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (fk_livro) REFERENCES livro(pk_livro) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (fk_autor) REFERENCES autor(pk_autor) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
-DROP TABLE IF EXISTS livro_editora CASCADE;
-
-/*CREATE TABLE livro_editora(
-    pk_livro_editora SERIAL NOT NULL PRIMARY KEY,
-    fk_livro INTEGER NOT NULL,
-    fk_editora INTEGER NOT NULL,
-    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (fk_livro) REFERENCES livro(pk_livro) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (fk_editora) REFERENCES editora(pk_editora) ON UPDATE CASCADE ON DELETE CASCADE
-);*/
-
-
 DROP TABLE IF EXISTS livro_descritores CASCADE;
-
 CREATE TABLE livro_descritores (
     pk_livro_descritores SERIAL NOT NULL PRIMARY KEY,
     fk_livro INTEGER NOT NULL,

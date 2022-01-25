@@ -9,22 +9,20 @@ import java.time.LocalDateTime;
 public class PersonModel {
 
     private int personId, genderId, addressId;
-    private String name, surname, bi, phone, email;
+    private String name, surname, bi;
     private LocalDateTime birthDate, creationDate;
 
     public PersonModel() {
     }
 
-    public PersonModel(int personId, int addressId, int genderId, String name, String surname, String bi, String phone, LocalDateTime birthDate, String email, LocalDateTime creationDate) {
+    public PersonModel(int personId, int addressId, int genderId, String name, String surname, String bi, LocalDateTime birthDate, LocalDateTime creationDate) {
         this.personId = personId;
         this.addressId = addressId;
         this.genderId = genderId;
         this.name = name;
         this.surname = surname;
         this.bi = bi;
-        this.phone = phone;
         this.birthDate = birthDate;
-        this.email = email;
         this.creationDate = creationDate;
     }
 
@@ -76,28 +74,12 @@ public class PersonModel {
         this.bi = bi;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public LocalDateTime getBirthDate() {
         return birthDate;
     }
 
     public void setBirthDate(LocalDateTime birthdate) {
         this.birthDate = birthdate;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public LocalDateTime getCreationDate() {
@@ -110,7 +92,7 @@ public class PersonModel {
 
     @Override
     public String toString() {
-        return "PersonModel{" + "personId=" + personId + ", genderId=" + genderId + ", addressId=" + addressId + ", name=" + name + ", surname=" + surname + ", bi=" + bi + ", phone=" + phone + ", email=" + email + ", birthDate=" + birthDate + ", creationDate=" + creationDate + '}';
+        return "PersonModel{" + "personId=" + personId + ", genderId=" + genderId + ", addressId=" + addressId + ", name=" + name + ", surname=" + surname + ", bi=" + bi + ", birthDate=" + birthDate + ", creationDate=" + creationDate + '}';
     }
 
 }

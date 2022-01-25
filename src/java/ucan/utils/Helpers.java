@@ -36,11 +36,7 @@ public class Helpers {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.closeConnection();
-            }
-        }
+        }  
         return elementId;
     }
 }
