@@ -115,6 +115,19 @@ public class PersonServlet extends HttpServlet {
     private void processUpdateRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
      try {
+           System.out.println("action 1 ID: " + request.getParameter("action"));           
+           System.out.println("PHONE 1 ID: " + request.getParameter("phone1Id"));
+
+            System.out.println("PHONE 2 ID: " + request.getParameter("phone2Id"));
+                    
+                    System.out.println("EMAIL 1 ID: " + request.getParameter("email1Id"));
+                    System.out.println("EMAIL 2 ID: " + request.getParameter("email2Id"));
+                    
+                    System.out.println("PERSON ID: " + request.getParameter("personId"));
+                    System.out.println("ADDRESS ID: " + request.getParameter("addressId"));
+
+                    
+                    
             connection = new DBConnection();
             PersonModel person = new PersonModel();
             PersonDAO personDao = new PersonDAO();
@@ -126,7 +139,7 @@ public class PersonServlet extends HttpServlet {
             person.setGenderId(Integer.parseInt(request.getParameter("gender")));
 
             /**
-             * INSERT ADDRESS BEFORE CREATE PERSON
+             * FILL ADDRESS
              */
             AddressModel address = new AddressModel();
             AddressDAO addressDao = new AddressDAO();
@@ -136,59 +149,94 @@ public class PersonServlet extends HttpServlet {
             address.setDistrict(request.getParameter("district"));
             address.setCommuneId(Integer.parseInt(request.getParameter("commune")));
             
-            if("POST".equals(request.getMethod())) { 
+            /**
+             * FILL PHONE
+             */
+            boolean hasPhone2 = !request.getParameter("phone2").trim().isEmpty();
+            PersonPhoneDAO personPhoneDao = new PersonPhoneDAO();
+            PersonPhoneModel personPhone1 = new PersonPhoneModel();
+            PersonPhoneModel personPhone2 = new PersonPhoneModel();
+
+            personPhone1.setPhone(request.getParameter("phone1"));
+            if (hasPhone2) {
+                personPhone2.setPhone(request.getParameter("phone2"));
+            }
+            
+            /**
+             * FILL EMAIL
+             */
+            boolean hasEmail2 = !request.getParameter("email2").trim().isEmpty();
+            PersonEmailDAO personEmailDao = new PersonEmailDAO();
+            PersonEmailModel personEmail1 = new PersonEmailModel();
+            PersonEmailModel personEmail2 = new PersonEmailModel();
+            
+            personEmail1.setEmail(request.getParameter("email1"));
+            if (hasEmail2) {
+                personEmail2.setEmail(request.getParameter("email2"));
+            }
+            
+            if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) { 
+                // CREATE ADDRESS
                 addressDao.create(address, connection);
+                
+                // CREATE PERSON WITH THE ADDRESS ADDED ABOVE
                 person.setAddressId(Helpers.getIdOfLastRow("morada", connection));
                 personDao.create(person, connection);
                 
                 int personId = Helpers.getIdOfLastRow("pessoa", connection);
                 
-                /**
-                * INSERT EMAIL AFTER CREATE PERSON
-                */
-                PersonPhoneDAO personPhoneDao = new PersonPhoneDAO();
-                PersonPhoneModel personPhone = new PersonPhoneModel();
-                personPhone.setPersonId(personId);
-                personPhone.setPhone(request.getParameter("phone1"));
-                personPhoneDao.create(personPhone, connection);
-                
-                if(request.getParameter("phone2") != null){
-                    personPhone.setPhone(request.getParameter("phone2"));
-                    personPhoneDao.create(personPhone, connection);
+                // INSERT PHONE AFTER CREATE PERSON
+                personPhone1.setPersonId(personId);
+                personPhoneDao.create(personPhone1, connection);
+                if(hasPhone2){
+                    personPhone2.setPersonId(personId);
+                    personPhoneDao.create(personPhone2, connection);
                 }
                 
-                /**
-                * INSERT PHONE BEFORE CREATE PERSON
-                */
-                PersonEmailDAO personEmailDao = new PersonEmailDAO();
-                PersonEmailModel personEmail = new PersonEmailModel();
-                personEmail.setPersonId(personId);
-                personEmail.setEmail(request.getParameter("email1"));
-                personPhoneDao.create(personPhone, connection);
-                
-                if(request.getParameter("email2") != null){
-                    personEmail.setEmail(request.getParameter("email2"));
-                    personEmailDao.create(personEmail, connection);
+                // INSERT EMAIL AFTER CREATE PERSON
+                personEmail1.setPersonId(personId);
+                personEmailDao.create(personEmail1, connection);
+                if(hasEmail2){
+                    personEmail2.setPersonId(personId);
+                    personEmailDao.create(personEmail2, connection);
                 }
                 
                 /**
                  * SAVE PERSON AS AUTHOR OR READER
-                 */
+                */
                 if("AUTHOR".equals(request.getParameter("personType"))) {
-                    AuthorDAO authorDao = new AuthorDAO();
                     AuthorModel author = new AuthorModel();
                     author.setPersonId(personId);
-                    authorDao.create(author, connection);
+                    new AuthorDAO().create(author, connection);
                 } else {
-                    ReaderDAO readerDao = new ReaderDAO();
                     ReaderModel reader = new ReaderModel();
                     reader.setPersonId(personId);
-                    readerDao.create(reader, connection);
+                    new ReaderDAO().create(reader, connection);
                 }
             }
-            else
-                if("PUT".equals(request.getMethod())) { 
+            else { 
+                    // Update the person phone
+                    personPhone1.setPersonPhoneId(Integer.parseInt(request.getParameter("phone1Id")));
+                    personPhoneDao.update(personPhone1, connection);
+                    if(hasPhone2) {
+                        personPhone2.setPersonPhoneId(Integer.parseInt(request.getParameter("phone2Id")));
+                        personPhoneDao.update(personPhone2, connection);
+                    }
+                    
+                    // Update the person email
+                    personEmail1.setPersonEmailId(Integer.parseInt(request.getParameter("email1Id")));
+                    personEmailDao.update(personEmail1, connection);
+                    if(hasEmail2) {
+                        personEmail2.setPersonEmailId(Integer.parseInt(request.getParameter("email2Id")));
+                        personEmailDao.update(personEmail2, connection);
+                    }
+                    
+                    // Update the person address
+                    address.setAddressId(Integer.parseInt(request.getParameter("addressId")));
                     addressDao.update(address, connection);
+                    
+                    // Update the person
+                    person.setPersonId(Integer.parseInt(request.getParameter("personId")));
                     personDao.update(person, connection);
                 }
 
@@ -209,12 +257,6 @@ public class PersonServlet extends HttpServlet {
         processUpdateRequest(request, response);
     }
     
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processUpdateRequest(request, response);
-    }
-
     @Override
     public String getServletInfo() {
         return "Short description";

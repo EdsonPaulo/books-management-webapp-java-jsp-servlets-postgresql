@@ -37,17 +37,16 @@ public class PersonDAO {
     }
 
     public void update(PersonModel person, DBConnection connection) {
-        String sql = "UPDATE pessoa SET nome = ?, sobrenome = ?, bi = ?, data_nasc = ?, fk_morada = ?, fk_sexo = ? WHERE pk_pessoa = ?";
+        String sql = "UPDATE pessoa SET nome = ?, sobrenome = ?, bi = ?, data_nasc = ?, fk_sexo = ? WHERE pk_pessoa = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, person.getName());
             ps.setString(2, person.getSurname());
-            ps.setString(3, person.getSurname());
+            ps.setString(3, person.getBi());
             ps.setTimestamp(4, Timestamp.valueOf(person.getBirthDate()));
-            ps.setInt(5, person.getAddressId());
-            ps.setInt(6, person.getGenderId());
-            ps.setInt(7, person.getPersonId());
+            ps.setInt(5, person.getGenderId());
+            ps.setInt(6, person.getPersonId());
 
             ps.executeUpdate();
             ps.close();
@@ -135,7 +134,7 @@ public class PersonDAO {
 
     public Vector<String> getPersonEmails(int personId, DBConnection connection) {
         Vector<String> emails = new Vector<>();
-        String sql = "SELECT email FROM email_pessoa WHERE pk_pessoa = " + personId;
+        String sql = "SELECT email FROM email_pessoa WHERE fk_pessoa = " + personId;
         try {
             ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
 
@@ -152,7 +151,7 @@ public class PersonDAO {
 
     public Vector<String> getPersonPhones(int personId, DBConnection connection) {
         Vector<String> phones = new Vector<>();
-        String sql = "SELECT numero FROM telefone_pessoa WHERE pk_pessoa = " + personId;
+        String sql = "SELECT numero FROM telefone_pessoa WHERE fk_pessoa = " + personId;
         try {
             ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
 
@@ -166,4 +165,37 @@ public class PersonDAO {
         }
         return phones;
     }
+
+    public boolean isReader(int personId, DBConnection connection) {
+        boolean reader = false;
+        String sql = "SELECT COUNT(*) FROM pessoa INNER JOIN leitor "
+                + " ON pessoa.pk_pessoa = leitor.fk_pessoa WHERE pessoa.pk_pessoa = " + personId;
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+            while (resultSet.next()) {
+                reader = resultSet.getInt(1) > 0;
+            }
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reader;
+    }
+
+    public boolean isAuthor(int personId, DBConnection connection) {
+        boolean author = false;
+        String sql = "SELECT COUNT(*) FROM pessoa INNER JOIN autor "
+                + " ON pessoa.pk_pessoa = autor.fk_pessoa WHERE pessoa.pk_pessoa = " + personId;
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+            while (resultSet.next()) {
+                author = resultSet.getInt(1) > 0;
+            }
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return author;
+    }
+
 }

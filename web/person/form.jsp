@@ -1,5 +1,10 @@
 <%-- Document : person Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
 
+<%@page import="ucan.dao.PersonEmailDAO"%>
+<%@page import="ucan.models.PersonEmailModel"%>
+<%@page import="ucan.dao.PersonPhoneDAO"%>
+<%@page import="ucan.models.PersonPhoneModel"%>
+<%@page import="java.util.List"%>
 <%@page import="ucan.models.CountryModel"%>
 <%@page import="ucan.dao.CountryDAO"%>
 <%@page import="ucan.dao.CountryDAO"%>
@@ -25,20 +30,19 @@
         DBConnection connection = new DBConnection();
         Boolean isEditing = request.getParameter("id") != null;
 
+        PersonDAO personDao = new PersonDAO();
         PersonModel person = null;
-        PersonDAO personDao = null;
-
         AddressModel address = null;
-        AddressDAO addressDao = null;
+        List<PersonPhoneModel> personPhones = null;
+        List<PersonEmailModel> personEmails = null;
 
         if (isEditing) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
-                personDao = new PersonDAO();
                 person = personDao.getPersonById(id, connection);
-
-                addressDao = new AddressDAO();
-                address = addressDao.getAddressById(person.getAddressId(), connection);
+                address = new AddressDAO().getAddressById(person.getAddressId(), connection);
+                personPhones = new PersonPhoneDAO().getAllByPersonId(person.getPersonId(), connection);
+                personEmails = new PersonEmailDAO().getAllByPersonId(person.getPersonId(), connection);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -49,17 +53,25 @@
 
         <div class="h-100 container d-flex justify-content-center align-items-start">
             <div class="card p-5" style="width: 100%;">
-                <form class="form-container" 
-                      action="<%=request.getContextPath()%>/person-servlet" 
-                      method="<%= isEditing ? "PUT" : "POST"%>">
+                <form class="form-container" method="POST"
+                      action="<%=request.getContextPath()%>/person-servlet<%= isEditing ? "?action=edit" : ""%>">
+
+                    <input name="personId" value="<%=isEditing ? person.getPersonId() : ""%>" style="opacity: 0">
+                    <input name="addressId" value="<%=isEditing ? address.getAddressId() : ""%>" style="opacity: 0">
+
+                    <input name="phone1Id" style="opacity: 0" value="<%=isEditing && personPhones.size() > 0 ? personPhones.get(0).getPersonPhoneId() : ""%>"  >
+                    <input name="email1Id" style="opacity: 0" value="<%=isEditing && personEmails.size() > 0 ? personEmails.get(0).getPersonEmailId() : ""%>">
+
+                    <input name="phone2Id" style="opacity: 0" value="<%=isEditing && personPhones.size() > 1 ? personPhones.get(1).getPersonPhoneId() : ""%>">
+                    <input name="email2Id" style="opacity: 0" value="<%=isEditing && personEmails.size() > 1 ? personEmails.get(1).getPersonEmailId() : ""%>">
 
                     <div class="row">
                         <div class="form-group col-4">
                             <label for="personType" class="required">Tipo</label>
-                            <select id="personType" name="personType" class="form-control"> 
+                            <select id="personType" name="personType" class="form-control" disabled="<%=isEditing%>"> 
                                 <option>Selecione a funcão da pessoa</option>                                
-                                <option value="AUTHOR">1 - Autor</option>
-                                <option value="READER">2 - Leitor</option>
+                                <option value="AUTHOR" selected="<%=personDao.isAuthor(person.getPersonId(), connection)%>">1 - Autor</option>
+                                <option value="READER" selected="<%=personDao.isReader(person.getPersonId(), connection)%>">2 - Leitor</option>
                             </select>
                         </div> 
                         <div class="form-group col-4">
@@ -90,22 +102,22 @@
                     <div class="row d-flex justify-content-between">
                         <div class="form-group col-4">
                             <label for="phone1" class="required">Telefone principal</label>
-                            <input name="phone1" id="phone1" type="tel" value="" class="form-control" required>
+                            <input name="phone1" id="phone1" type="tel" value="<%=isEditing && personPhones.size() > 0 ? personPhones.get(0).getPhone() : ""%>"class="form-control" required>
                         </div>
                         <div class="form-group col-4">
                             <label for="email1" class="required">Email principal</label>
-                            <input name="email1" id="email1" type="email" value="" class="form-control" required>
+                            <input name="email1" id="email1" type="email" value="<%=isEditing && personEmails.size() > 0 ? personEmails.get(0).getEmail() : ""%>" class="form-control" required>
                         </div>            
                     </div>
 
                     <div class="row d-flex justify-content-between">
                         <div class="form-group col-4">
                             <label for="phone2">Telefone secundário (opcional)</label>
-                            <input name="phone2" id="phone2" type="tel" value="" class="form-control">
+                            <input name="phone2" id="phone2" type="tel" value="<%=isEditing && personPhones.size() > 1 ? personPhones.get(1).getPhone() : ""%>"class="form-control">
                         </div>   
                         <div class="form-group col-4">
                             <label for="email2">Email secundário (opcional)</label>
-                            <input name="email2" id="email2" type="email" value="" class="form-control">
+                            <input name="email2" id="email2" type="email" value="<%=isEditing && personEmails.size() > 1 ? personEmails.get(1).getEmail() : ""%>" class="form-control">
                         </div>                        
                     </div>
 

@@ -1,5 +1,7 @@
 <%-- Document : person Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
 
+<%@page import="java.util.List"%>
+<%@page import="ucan.dao.PersonDAO"%>
 <%@page import="ucan.utils.Helpers"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.time.LocalDate"%>
@@ -16,14 +18,13 @@
     <%
         DBConnection connection = null;
         try {
-            String query = "SELECT pessoa.pk_pessoa, pessoa.nome, pessoa.sobrenome, sexo.nome AS genero,"
-                    + "pessoa.bi, telefone_pessoa.numero, email_pessoa.email, pessoa.data_nasc FROM pessoa "
-                    + "INNER JOIN telefone_pessoa ON pessoa.pk_pessoa = telefone_pessoa.fk_pessoa "
-                    + "INNER JOIN email_pessoa ON pessoa.pk_pessoa = email_pessoa.fk_pessoa "
+            String query = "SELECT pessoa.pk_pessoa AS id, pessoa.nome AS name, pessoa.sobrenome AS surname, "
+                    + "sexo.nome AS gender, pessoa.bi AS bi, pessoa.data_nasc AS nasc FROM pessoa "
                     + "INNER JOIN sexo ON pessoa.fk_sexo = sexo.pk_sexo;";
 
             connection = new DBConnection();
             ResultSet resultSet = connection.getConnection().createStatement().executeQuery(query);
+            PersonDAO personDao = new PersonDAO();
     %>
 
     <body>
@@ -37,44 +38,46 @@
                 <table class="table table-striped table-sm">
                     <thead>
                         <tr>
+                            <th scope="col">Tipo</th>
                             <th scope="col">ID</th>
                             <th scope="col">Nome</th>                            
                             <th scope="col">Sobrenome</th>
                             <th scope="col">Sexo</th>
-                            <th scope="col">BI</th>
-                            <th scope="col">Telefone</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Data de nasc.</th>
-                            <th scope="col"></th>
+                            <th scope="col">Bilhete de Identidade</th>
+                            <th scope="col">Data de nascimento</th>
                             <th scope="col">Accões</th>                            
-                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <%
                             StringBuilder htmlBuilder = new StringBuilder();
+                             if (!resultSet.isBeforeFirst()) {
+                                htmlBuilder.append("<tr><td colspan=\"8\"> <h6 class=\"my-5 text-muted text-center\">Sem dados!</h6></tr></td>");
+                             }
+                             
                             while (resultSet.next()) {
                                 htmlBuilder.append("<tr>");
-                                htmlBuilder.append("<th scope=\"row\">0" + resultSet.getInt(1) + "</th>");
-                                htmlBuilder.append("<td>" + resultSet.getString(2) + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString(3) + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString(4) + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString(5) + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString(6) + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString(7) + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getTimestamp(8).toLocalDateTime().toLocalDate() + "</td>");
+                                htmlBuilder.append("<th scope=\"row\">" + (personDao.isAuthor(resultSet.getInt("id"), connection) ? "Autor" : "Leitor") + "</th>");
+                                htmlBuilder.append("<th scope=\"row\">0" + resultSet.getInt("id") + "</th>");
+                                htmlBuilder.append("<td>" + resultSet.getString("name") + "</td>");
+                                htmlBuilder.append("<td>" + resultSet.getString("surname") + "</td>");
+                                htmlBuilder.append("<td>" + resultSet.getString("gender") + "</td>");
+                                htmlBuilder.append("<td>" + resultSet.getString("bi") + "</td>");
+                                htmlBuilder.append("<td>" + resultSet.getTimestamp("nasc").toLocalDateTime().toLocalDate() + "</td>");
 
                                 htmlBuilder.append("<td><a class=\"btn btn-secondary btn-sm text-white\" href=\"" + request.getContextPath() + "/person/view.jsp?id="
-                                        + resultSet.getInt(1) + "\">Visualizar</a></td>");
+                                        + resultSet.getInt("id") + "\">Visualizar</a>");
 
-                                htmlBuilder.append("<td><a class=\"btn btn-warning btn-sm text-white\" href=\"" + request.getContextPath() + "/person/form.jsp?id="
-                                        + resultSet.getInt(1) + "\">Editar</a></td>");
+                                htmlBuilder.append(" <a class=\"btn btn-warning btn-sm text-white mx-2\" href=\"" + request.getContextPath() + "/person/form.jsp?id="
+                                        + resultSet.getInt("id") + "\">Editar</a>");
 
-                                htmlBuilder.append("<td><a class=\"btn btn-danger btn-sm text-white\" href=\"" + request.getContextPath() + "/person-servlet?id="
-                                        + resultSet.getInt(1) + "&action=delete\">Remover</a></td>");
+                                htmlBuilder.append("<a class=\"btn btn-danger btn-sm text-white\" href=\"" + request.getContextPath() + "/person-servlet?id="
+                                        + resultSet.getInt("id") + "&action=delete\">Remover</a></td>");
 
                                 htmlBuilder.append("</tr>");
                             }
+
+                           
                         %>
                         <%= htmlBuilder%>
                     </tbody>

@@ -29,12 +29,11 @@ public class PersonEmailDAO {
     }
 
     public void update(PersonEmailModel personEmail, DBConnection connection) {
-        String sql = "UPDATE email_pessoa SET email = ?, fk_pessoa = ? WHERE pk_email_pessoa = ?";
+        String sql = "UPDATE email_pessoa SET email = ? WHERE pk_email_pessoa = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, personEmail.getEmail());
-            ps.setInt(2, personEmail.getPersonId());
-            ps.setInt(3, personEmail.getPersonEmailId());
+            ps.setInt(2, personEmail.getPersonEmailId());
 
             ps.executeUpdate();
             ps.close();

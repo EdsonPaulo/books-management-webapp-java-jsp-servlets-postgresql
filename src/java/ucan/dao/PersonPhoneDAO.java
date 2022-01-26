@@ -29,12 +29,11 @@ public class PersonPhoneDAO {
     }
 
     public void update(PersonPhoneModel personPhone, DBConnection connection) {
-        String sql = "UPDATE telefone_pessoa SET numero = ?, fk_pessoa = ? WHERE pk_telefone_pessoa = ?";
+        String sql = "UPDATE telefone_pessoa SET numero = ? WHERE pk_telefone_pessoa = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
             ps.setString(1, personPhone.getPhone());
-            ps.setInt(2, personPhone.getPersonId());
-            ps.setInt(3, personPhone.getPersonPhoneId());
+            ps.setInt(2, personPhone.getPersonPhoneId());
 
             ps.executeUpdate();
             ps.close();
