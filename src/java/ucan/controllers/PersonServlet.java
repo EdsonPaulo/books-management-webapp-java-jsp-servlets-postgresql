@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import ucan.utils.Helpers;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +14,6 @@ import ucan.conection.DBConnection;
 import ucan.dao.AddressDAO;
 import ucan.dao.AuthorDAO;
 import ucan.dao.CommuneDAO;
-import ucan.dao.CountryDAO;
 import ucan.dao.MunicipalityDAO;
 import ucan.dao.PersonDAO;
 import ucan.dao.PersonEmailDAO;
@@ -25,7 +23,6 @@ import ucan.dao.ReaderDAO;
 import ucan.models.AddressModel;
 import ucan.models.AuthorModel;
 import ucan.models.CommuneModel;
-import ucan.models.CountryModel;
 import ucan.models.MunicipalityModel;
 import ucan.models.PersonEmailModel;
 import ucan.models.PersonModel;
@@ -50,7 +47,6 @@ public class PersonServlet extends HttpServlet {
             connection = new DBConnection();
 
             if (request.getParameter("operation") != null) {
-                CountryDAO countryDao = new CountryDAO();
                 ProvinceDAO provinceDao = new ProvinceDAO();
                 MunicipalityDAO muniDao = new MunicipalityDAO();
                 CommuneDAO communeDao = new CommuneDAO();
@@ -60,31 +56,26 @@ public class PersonServlet extends HttpServlet {
                 response.setContentType("text/html");
                 String op = request.getParameter("operation");
 
-                if (op.equals("country")) {
-                    List<CountryModel> clist = countryDao.getAll(connection);
-                    response.getWriter().write(json.toJson(clist));
-                } else {
-                    int id = Integer.parseInt(request.getParameter("id"));
+                int id = Integer.parseInt(request.getParameter("id"));
 
-                    switch (op) {
-                        case "province":
-                            List<ProvinceModel> provinceList = provinceDao.getProvincesByCountryId(id, connection);
-                            writer.write(json.toJson(provinceList));
-                            break;
-                            
-                        case "municipality":
-                            List<MunicipalityModel> muniList = muniDao.getMunicipalitiesByProvinceId(id, connection);
-                            writer.write(json.toJson(muniList));
-                            break;
-                            
-                        case "commune":
-                            List<CommuneModel> communeList = communeDao.getCommunesByMunicipalityId(id, connection);
-                            writer.write(json.toJson(communeList));
-                            break;
-                            
-                        default:
-                            break;
-                    }
+                switch (op) {
+                    case "province":
+                        List<ProvinceModel> provinceList = provinceDao.getProvincesByCountryId(id, connection);
+                        writer.write(json.toJson(provinceList));
+                        break;
+
+                    case "municipality":
+                        List<MunicipalityModel> muniList = muniDao.getMunicipalitiesByProvinceId(id, connection);
+                        writer.write(json.toJson(muniList));
+                        break;
+
+                    case "commune":
+                        List<CommuneModel> communeList = communeDao.getCommunesByMunicipalityId(id, connection);
+                        writer.write(json.toJson(communeList));
+                        break;
+
+                    default:
+                        break;
                 }
             }
 
@@ -93,14 +84,9 @@ public class PersonServlet extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("id"));
                 String action = request.getParameter("action");
 
-                switch (action) {
-                    case "delete":
-                        personDao.delete(id, connection);
-                        response.sendRedirect(request.getContextPath() + "/person/list.jsp");
-                        break;
-                        
-                    default:
-                        break;
+                if (action == "delete") {
+                    personDao.delete(id, connection);
+                    response.sendRedirect(request.getContextPath() + "/person/list.jsp");
                 }
             }
         } catch (IOException | NumberFormatException e) {
@@ -112,22 +98,11 @@ public class PersonServlet extends HttpServlet {
         }
     }
     
-    private void processUpdateRequest(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-     try {
-           System.out.println("action 1 ID: " + request.getParameter("action"));           
-           System.out.println("PHONE 1 ID: " + request.getParameter("phone1Id"));
-
-            System.out.println("PHONE 2 ID: " + request.getParameter("phone2Id"));
-                    
-                    System.out.println("EMAIL 1 ID: " + request.getParameter("email1Id"));
-                    System.out.println("EMAIL 2 ID: " + request.getParameter("email2Id"));
-                    
-                    System.out.println("PERSON ID: " + request.getParameter("personId"));
-                    System.out.println("ADDRESS ID: " + request.getParameter("addressId"));
-
-                    
-                    
+  
+        try {
             connection = new DBConnection();
             PersonModel person = new PersonModel();
             PersonDAO personDao = new PersonDAO();
@@ -174,8 +149,8 @@ public class PersonServlet extends HttpServlet {
             if (hasEmail2) {
                 personEmail2.setEmail(request.getParameter("email2"));
             }
-            
-            if (request.getParameter("action") == null || request.getParameter("action").isEmpty()) { 
+                        
+            if (request.getParameter("edit") == null) { 
                 // CREATE ADDRESS
                 addressDao.create(address, connection);
                 
@@ -214,31 +189,46 @@ public class PersonServlet extends HttpServlet {
                     new ReaderDAO().create(reader, connection);
                 }
             }
-            else { 
-                    // Update the person phone
-                    personPhone1.setPersonPhoneId(Integer.parseInt(request.getParameter("phone1Id")));
-                    personPhoneDao.update(personPhone1, connection);
-                    if(hasPhone2) {
+            else {             
+                
+                int personId = Integer.parseInt(request.getParameter("personId"));
+                
+                // Update the person phone
+                personPhone1.setPersonPhoneId(Integer.parseInt(request.getParameter("phone1Id")));
+                personPhoneDao.update(personPhone1, connection);
+                if(hasPhone2) {
+                    if(request.getParameter("phone2Id") == null || request.getParameter("phone2Id").isEmpty()) {
+                        personPhone2.setPersonId(personId);
+                        personPhoneDao.create(personPhone2, connection);
+                    }
+                    else {
                         personPhone2.setPersonPhoneId(Integer.parseInt(request.getParameter("phone2Id")));
                         personPhoneDao.update(personPhone2, connection);
                     }
-                    
-                    // Update the person email
-                    personEmail1.setPersonEmailId(Integer.parseInt(request.getParameter("email1Id")));
-                    personEmailDao.update(personEmail1, connection);
-                    if(hasEmail2) {
+                }
+
+                // Update the person email
+                personEmail1.setPersonEmailId(Integer.parseInt(request.getParameter("email1Id")));
+                personEmailDao.update(personEmail1, connection);
+                if(hasEmail2) {
+                    if(request.getParameter("email2Id") == null || request.getParameter("email2Id").isEmpty()) {
+                        personEmail2.setPersonId(personId);
+                        personEmailDao.create(personEmail2, connection);
+                    }
+                    else {
                         personEmail2.setPersonEmailId(Integer.parseInt(request.getParameter("email2Id")));
                         personEmailDao.update(personEmail2, connection);
                     }
-                    
-                    // Update the person address
-                    address.setAddressId(Integer.parseInt(request.getParameter("addressId")));
-                    addressDao.update(address, connection);
-                    
-                    // Update the person
-                    person.setPersonId(Integer.parseInt(request.getParameter("personId")));
-                    personDao.update(person, connection);
                 }
+
+                // Update the person address
+                address.setAddressId(Integer.parseInt(request.getParameter("addressId")));
+                addressDao.update(address, connection);
+
+                // Update the person
+                person.setPersonId(personId);
+                personDao.update(person, connection);
+            }
 
            response.sendRedirect(request.getContextPath() + "/person/list.jsp");
 
@@ -251,11 +241,6 @@ public class PersonServlet extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processUpdateRequest(request, response);
-    }
     
     @Override
     public String getServletInfo() {

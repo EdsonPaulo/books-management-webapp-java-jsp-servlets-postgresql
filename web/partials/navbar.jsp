@@ -23,7 +23,7 @@
         <div class="dropdown-menu">
             <h6 class="dropdown-header">Pessoa</h6>
             <a class="dropdown-item"  href="<%=request.getContextPath()%>/person/list.jsp">Listar pessoas</a>
-            <a class="dropdown-item" href="<%=request.getContextPath()%>/person/form.jsp">Adicionar pessoa</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/person/new.jsp">Adicionar pessoa</a>
             <div class="dropdown-divider"></div>
 
             <h6 class="dropdown-header">Leitor</h6>

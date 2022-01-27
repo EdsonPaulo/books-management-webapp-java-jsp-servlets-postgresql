@@ -50,7 +50,7 @@
 
         <a href="<%=request.getContextPath()%>/person-servlet?action=delete&id=<%= id%>" class="btn btn-danger btn-sm m-4 float-right">X Eliminar</a>
 
-        <a href="<%=request.getContextPath()%>/person/form.jsp?id=<%= id%>" class="btn btn-warning btn-sm mt-4 float-right"> Editar</a>
+        <a href="<%=request.getContextPath()%>/person/edit.jsp?id=<%= id%>" class="btn btn-warning btn-sm mt-4 float-right"> Editar</a>
 
         <div class="h-100 container d-flex justify-content-center align-items-start">
             <div class="card p-5 d-flex flex-row flex-wrap" style="width: 100%;">
