@@ -12,37 +12,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ucan.conection.DBConnection;
 import ucan.dao.AddressDAO;
-import ucan.dao.AuthorDAO;
 import ucan.dao.CommuneDAO;
 import ucan.dao.MunicipalityDAO;
-import ucan.dao.PersonDAO;
-import ucan.dao.PersonEmailDAO;
-import ucan.dao.PersonPhoneDAO;
+import ucan.dao.PublisherDAO;
+import ucan.dao.PublisherEmailDAO;
+import ucan.dao.PublisherPhoneDAO;
 import ucan.dao.ProvinceDAO;
-import ucan.dao.ReaderDAO;
 import ucan.models.AddressModel;
-import ucan.models.AuthorModel;
 import ucan.models.CommuneModel;
 import ucan.models.MunicipalityModel;
-import ucan.models.PersonEmailModel;
-import ucan.models.PersonModel;
-import ucan.models.PersonPhoneModel;
+import ucan.models.PublisherEmailModel;
+import ucan.models.PublisherModel;
+import ucan.models.PublisherPhoneModel;
 import ucan.models.ProvinceModel;
-import ucan.models.ReaderModel;
 
 /**
  *
  * @author edsonpaulo
  */
-@WebServlet(name = "PersonServlet", urlPatterns = {"/person-servlet"})
-public class PersonServlet extends HttpServlet {
+@WebServlet(name = "PublisherServlet", urlPatterns = {"/publisher-servlet"})
+public class PublisherServlet extends HttpServlet {
 
     private DBConnection connection;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         try {
             connection = new DBConnection();
 
@@ -80,12 +75,12 @@ public class PersonServlet extends HttpServlet {
             }
 
             if (request.getParameter("action") != null) {
-                PersonDAO personDao = new PersonDAO();
+                PublisherDAO publisherDao = new PublisherDAO();
                 int id = Integer.parseInt(request.getParameter("id"));
 
                 if (request.getParameter("action").equals("delete")) {
-                    personDao.delete(id, connection);
-                    response.sendRedirect(request.getContextPath() + "/person/list.jsp");
+                    publisherDao.delete(id, connection);
+                    response.sendRedirect(request.getContextPath() + "/publisher/list.jsp");
                 }
             }
         } catch (IOException | NumberFormatException e) {
@@ -103,14 +98,12 @@ public class PersonServlet extends HttpServlet {
   
         try {
             connection = new DBConnection();
-            PersonModel person = new PersonModel();
-            PersonDAO personDao = new PersonDAO();
+            PublisherModel publisher = new PublisherModel();
+            PublisherDAO publisherDao = new PublisherDAO();
 
-            person.setName(request.getParameter("name"));
-            person.setSurname(request.getParameter("surname"));
-            person.setBi(request.getParameter("bi"));
-            person.setBirthDate(Helpers.stringToDateTime(request.getParameter("birthDate"), true));
-            person.setGenderId(Integer.parseInt(request.getParameter("gender")));
+            publisher.setName(request.getParameter("name"));
+            publisher.setNif(request.getParameter("nif"));            
+            publisher.setFax(request.getParameter("fax"));
 
             /**
              * FILL ADDRESS
@@ -126,29 +119,29 @@ public class PersonServlet extends HttpServlet {
             /**
              * FILL PHONE
              */
-            PersonPhoneDAO personPhoneDao = new PersonPhoneDAO();
-            PersonPhoneModel personPhone1 = new PersonPhoneModel();
-            PersonPhoneModel personPhone2 = new PersonPhoneModel();
+            PublisherPhoneDAO publisherPhoneDao = new PublisherPhoneDAO();
+            PublisherPhoneModel publisherPhone1 = new PublisherPhoneModel();
+            PublisherPhoneModel publisherPhone2 = new PublisherPhoneModel();
 
-            personPhone1.setPhone(request.getParameter("phone1"));
+            publisherPhone1.setPhone(request.getParameter("phone1"));
             
             boolean hasPhone2 = !request.getParameter("phone2").trim().isEmpty();
             if (hasPhone2) {
-                personPhone2.setPhone(request.getParameter("phone2"));
+                publisherPhone2.setPhone(request.getParameter("phone2"));
             }
             
             /**
              * FILL EMAIL
              */
-            PersonEmailDAO personEmailDao = new PersonEmailDAO();
-            PersonEmailModel personEmail1 = new PersonEmailModel();
-            PersonEmailModel personEmail2 = new PersonEmailModel();
+            PublisherEmailDAO publisherEmailDao = new PublisherEmailDAO();
+            PublisherEmailModel publisherEmail1 = new PublisherEmailModel();
+            PublisherEmailModel publisherEmail2 = new PublisherEmailModel();
             
-            personEmail1.setEmail(request.getParameter("email1"));
+            publisherEmail1.setEmail(request.getParameter("email1"));
             
             boolean hasEmail2 = !request.getParameter("email2").trim().isEmpty();
             if (hasEmail2) {
-                personEmail2.setEmail(request.getParameter("email2"));
+                publisherEmail2.setEmail(request.getParameter("email2"));
             }
                         
             if (request.getParameter("edit") == null) {
@@ -156,90 +149,77 @@ public class PersonServlet extends HttpServlet {
                 // CREATE ADDRESS
                 addressDao.create(address, connection);
                 
-                // CREATE PERSON WITH THE ADDRESS ADDED ABOVE
-                person.setAddressId(Helpers.getIdOfLastRow("morada", connection));
-                personDao.create(person, connection);
+                // CREATE PUBLISHER WITH THE ADDRESS ADDED ABOVE
+                publisher.setAddressId(Helpers.getIdOfLastRow("morada", connection));
+                publisherDao.create(publisher, connection);
                 
-                int personId = Helpers.getIdOfLastRow("pessoa", connection);
+                int publisherId = Helpers.getIdOfLastRow("editora", connection);
                 
                 // INSERT PHONE AFTER CREATE PERSON
-                personPhone1.setPersonId(personId);
-                personPhoneDao.create(personPhone1, connection);
+                publisherPhone1.setPublisherId(publisherId);
+                publisherPhoneDao.create(publisherPhone1, connection);
                 
                 // CREATE PHONE 2 IF IT EXISTS
                 if(hasPhone2){
-                    personPhone2.setPersonId(personId);
-                    personPhoneDao.create(personPhone2, connection);
+                    publisherPhone2.setPublisherId(publisherId);
+                    publisherPhoneDao.create(publisherPhone2, connection);
                 }
                 
                 // INSERT EMAIL AFTER CREATE PERSON
-                personEmail1.setPersonId(personId);
-                personEmailDao.create(personEmail1, connection);
+                publisherEmail1.setPublisherId(publisherId);
+                publisherEmailDao.create(publisherEmail1, connection);
                 
                 
                 // CREATE EMAIL 2 IF IT EXISTS
                 if(hasEmail2){
-                    personEmail2.setPersonId(personId);
-                    personEmailDao.create(personEmail2, connection);
-                }
-                
-                /**
-                 * SAVE PERSON AS AUTHOR OR READER
-                */
-                if("AUTHOR".equals(request.getParameter("personType"))) {
-                    AuthorModel author = new AuthorModel();
-                    author.setPersonId(personId);
-                    new AuthorDAO().create(author, connection);
-                } else {
-                    ReaderModel reader = new ReaderModel();
-                    reader.setPersonId(personId);
-                    new ReaderDAO().create(reader, connection);
+                    publisherEmail2.setPublisherId(publisherId);
+                    publisherEmailDao.create(publisherEmail2, connection);
                 }
             }
             else {             
                 // ***** EDIT MODE ***/
-                int personId = Integer.parseInt(request.getParameter("personId"));
+                int publisherId = Integer.parseInt(request.getParameter("publisherId"));
                 
-                // Update the person phone
-                personPhone1.setPersonPhoneId(Integer.parseInt(request.getParameter("phone1Id")));
-                personPhoneDao.update(personPhone1, connection);
+                // Update the publisher phone
+                publisherPhone1.setPublisherPhoneId(Integer.parseInt(request.getParameter("phone1Id")));
+                publisherPhoneDao.update(publisherPhone1, connection);
                 
                 if(hasPhone2) {
                     if(request.getParameter("phone2Id") == null || request.getParameter("phone2Id").isEmpty()) {
-                        personPhone2.setPersonId(personId);
-                        personPhoneDao.create(personPhone2, connection);
+                        publisherPhone2.setPublisherId(publisherId);
+                        publisherPhoneDao.create(publisherPhone2, connection);
                     }
                     else {
-                        personPhone2.setPersonPhoneId(Integer.parseInt(request.getParameter("phone2Id")));
-                        personPhoneDao.update(personPhone2, connection);
+                        publisherPhone2.setPublisherPhoneId(Integer.parseInt(request.getParameter("phone2Id")));
+                        publisherPhoneDao.update(publisherPhone2, connection);
                     }
                 }
 
-                // Update the person email
-                personEmail1.setPersonEmailId(Integer.parseInt(request.getParameter("email1Id")));
-                personEmailDao.update(personEmail1, connection);
+                // Update the publisher email
+                publisherEmail1.setPublisherEmailId(Integer.parseInt(request.getParameter("email1Id")));
+                publisherEmailDao.update(publisherEmail1, connection);
                 
                 if(hasEmail2) {
                     if(request.getParameter("email2Id") == null || request.getParameter("email2Id").isEmpty()) {
-                        personEmail2.setPersonId(personId);
-                        personEmailDao.create(personEmail2, connection);
+                        publisherEmail2.setPublisherId(publisherId);
+                        publisherEmailDao.create(publisherEmail2, connection);
                     }
                     else {
-                        personEmail2.setPersonEmailId(Integer.parseInt(request.getParameter("email2Id")));
-                        personEmailDao.update(personEmail2, connection);
+                        publisherEmail2.setPublisherEmailId(Integer.parseInt(request.getParameter("email2Id")));
+                        publisherEmailDao.update(publisherEmail2, connection);
                     }
                 }
 
-                // Update the person address
+                // Update the publisher address
                 address.setAddressId(Integer.parseInt(request.getParameter("addressId")));
                 addressDao.update(address, connection);
 
-                // Update the person
-                person.setPersonId(personId);
-                personDao.update(person, connection);
+                // Update the publisher
+                publisher.setPublisherId(publisherId);
+                publisherDao.update(publisher, connection);
             }
 
-           response.sendRedirect(request.getContextPath() + "/person/list.jsp");
+           response.sendRedirect(request.getContextPath() + "/publisher/list.jsp");
 
         } catch (IOException | NumberFormatException ex) {
             ex.printStackTrace();

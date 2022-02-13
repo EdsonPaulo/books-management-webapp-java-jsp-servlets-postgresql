@@ -40,6 +40,16 @@
 
     <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle text-left" data-toggle="dropdown">
+            Editoras
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/publisher/list.jsp">Listar editoras</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/publisher/new.jsp">Adicionar editora</a>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle text-left" data-toggle="dropdown">
             Empréstimo
         </button>
         <div class="dropdown-menu">

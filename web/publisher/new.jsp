@@ -1,4 +1,4 @@
-<%-- Document : person/new Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
+<%-- Document : publisher/new Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
 
 <%@page import="ucan.conection.DBConnection"%>
 <%@page import="ucan.utils.HtmlObj" %>
@@ -11,47 +11,28 @@
         DBConnection connection = new DBConnection();
     %>
     <body>
-        <a href="<%=request.getContextPath()%>/person/list.jsp" class="btn btn-primary btn-sm m-4"><< Voltar</a>
+        <a href="<%=request.getContextPath()%>/publisher/list.jsp" class="btn btn-primary btn-sm m-4"><< Voltar</a>
 
         <div class="h-100 container d-flex justify-content-center align-items-start">
             <div class="card px-5 py-3" style="width: 100%;">
 
-                <h5 class="text-center mb-3">Nova Pessoa</h5>
+                <h5 class="text-center mb-3">Nova Editora</h5>
 
                     <form class="form-container" method="POST"
-                          action="<%=request.getContextPath()%>/person-servlet">
+                          action="<%=request.getContextPath()%>/publisher-servlet">
 
                         <div class="row">
-                            <div class="form-group col-4">
-                                <label for="personType" class="required">Tipo</label>
-                                <select id="personType" name="personType" class="form-control"> 
-                                    <option>Selecione a funcão da pessoa</option>                                
-                                    <option value="AUTHOR" >1 - Autor</option>
-                                    <option value="READER">2 - Leitor</option>
-                                </select>
-                            </div> 
                             <div class="form-group col-4">
                                 <label for="name" class="required">Nome</label>
                                 <input name="name" id="name" type="text" class="form-control" required>
                             </div>
                             <div class="form-group  col-4">
-                                <label for="surname" class="required">Sobrenome</label>
-                                <input name="surname" id="surname" type="text" class="form-control" required>
-                            </div> 
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-4">
-                                <label for="bi" class="required">BI</label>
-                                <input name="bi" id="bi" type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group col-4">
-                                <label for="birthDate" class="required">Data Nascimento</label>
-                                <input name="birthDate" id="birthDate" type="date" class="form-control" required>
+                                <label for="nif" class="required">NIF</label>
+                                <input name="nif" id="nif" type="text" class="form-control" required>
                             </div> 
                             <div class="form-group col-4">
-                                <label for="gender" class="required">Genero</label>
-                                <%=obj.getSelectBox(connection, "sexo", "gender", -1)%>
+                                <label for="fax" class="required">Fax</label>
+                                <input name="fax" id="fax" type="text" class="form-control" required>
                             </div>
                         </div>
 
@@ -63,21 +44,21 @@
                             <div class="form-group col-4">
                                 <label for="phone2">Telefone secundário (opcional)</label>
                                 <input name="phone2" id="phone2" type="tel" class="form-control">
-                            </div>       
+                            </div>   
                         </div>
 
                         <div class="row">
                             <div class="form-group col-4">
                                 <label for="email1" class="required">Email principal</label>
                                 <input name="email1" id="email1" type="email" class="form-control" required>
-                            </div>   
+                            </div>  
                             <div class="form-group col-4">
                                 <label for="email2">Email secundário (opcional)</label>
                                 <input name="email2" id="email2" type="email" class="form-control">
                             </div>                        
                         </div>
 
-                        <p class="h5 my-2 text-center text-muted">Morada</p> 
+                        <p class="h6 my-2 text-center text-muted">Morada</p> 
 
                         <div class="row mt-3">
                             <div class="form-group col-4">
@@ -139,7 +120,7 @@
         function fetchList(operation, id) {
             const selectElement = document.getElementById(operation);
 
-            fetch(getContextPath() + '/person-servlet?' + new URLSearchParams({operation, id}), {method: 'GET'})
+            fetch(getContextPath() + '/publisher-servlet?' + new URLSearchParams({operation, id}), {method: 'GET'})
                     .then(response => response.json())
                     .then(data => {
                         data.forEach((item) => {

@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import ucan.models.PublisherModel;
 import ucan.conection.DBConnection;
 
@@ -15,13 +16,14 @@ public class PublisherDAO {
     }
 
     public void create(PublisherModel publisher, DBConnection connection) {
-        String sql = "INSERT INTO editora(nome, fax, fk_morada) values(?,?,?)";
+        String sql = "INSERT INTO editora(nome, nif, fax, fk_morada) values(?,?,?,?)";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, publisher.getName());
-            ps.setString(4, publisher.getFax());
-            ps.setInt(3, publisher.getAddressId());
+            ps.setString(2, publisher.getNif());
+            ps.setString(3, publisher.getFax());
+            ps.setInt(4, publisher.getAddressId());
 
             ps.executeUpdate();
             ps.close();
@@ -32,14 +34,15 @@ public class PublisherDAO {
     }
 
     public void update(PublisherModel publisher, DBConnection connection) {
-        String sql = "UPDATE editora SET name = ?, fax = ?, fk_morada = ? WHERE pk_editora = ?";
+        String sql = "UPDATE editora SET name = ?, nif = ?, fax = ?, fk_morada = ? WHERE pk_editora = ?";
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement(sql);
 
             ps.setString(1, publisher.getName());
-            ps.setString(4, publisher.getFax());
-            ps.setInt(5, publisher.getAddressId());
-            ps.setInt(6, publisher.getPublisherId());
+            ps.setString(2, publisher.getNif());
+            ps.setString(3, publisher.getFax());
+            ps.setInt(4, publisher.getAddressId());
+            ps.setInt(5, publisher.getPublisherId());
 
             ps.executeUpdate();
             ps.close();
@@ -75,9 +78,10 @@ public class PublisherDAO {
                 PublisherModel publisher = new PublisherModel();
                 publisher.setPublisherId(resultSet.getInt(1));
                 publisher.setName(resultSet.getString(2));
-                publisher.setFax(resultSet.getString(3));
-                publisher.setAddressId(resultSet.getInt(4));
-                publisher.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
+                publisher.setNif(resultSet.getString(3));
+                publisher.setFax(resultSet.getString(4));
+                publisher.setAddressId(resultSet.getInt(5));
+                publisher.setCreationDate(resultSet.getTimestamp(6).toLocalDateTime());
 
                 publisherList.add(publisher);
             }
@@ -104,9 +108,10 @@ public class PublisherDAO {
             while (resultSet.next()) {
                 publisher.setPublisherId(resultSet.getInt(1));
                 publisher.setName(resultSet.getString(2));
-                publisher.setFax(resultSet.getString(3));
-                publisher.setAddressId(resultSet.getInt(4));
-                publisher.setCreationDate(resultSet.getTimestamp(5).toLocalDateTime());
+                publisher.setNif(resultSet.getString(3));
+                publisher.setFax(resultSet.getString(4));
+                publisher.setAddressId(resultSet.getInt(5));
+                publisher.setCreationDate(resultSet.getTimestamp(6).toLocalDateTime());
             }
 
             ps.close();
@@ -118,4 +123,39 @@ public class PublisherDAO {
         }
         return null;
     }
+
+    public Vector<String> getPublisherEmails(int publisherId, DBConnection connection) {
+        Vector<String> emails = new Vector<>();
+        String sql = "SELECT email FROM email_editora WHERE fk_editora = " + publisherId;
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+
+            while (resultSet.next()) {
+                emails.add(resultSet.getString(1));
+            }
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return emails;
+    }
+
+    public Vector<String> getPublisherPhones(int publisherId, DBConnection connection) {
+        Vector<String> phones = new Vector<>();
+        String sql = "SELECT numero FROM telefone_editora WHERE fk_editora = " + publisherId;
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+
+            while (resultSet.next()) {
+                phones.add(resultSet.getString(1));
+            }
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return phones;
+    }
+
 }

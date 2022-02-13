@@ -32,7 +32,7 @@
             </div>
 
             <div class="row">
-                <%=HtmlObj.generateHomeSectionLink("Editoras", request.getContextPath() + "/reader/list.jsp")%>
+                <%=HtmlObj.generateHomeSectionLink("Editoras", request.getContextPath() + "/publisher/list.jsp")%>
                 
                 <%=HtmlObj.generateHomeSectionLink("Livros", request.getContextPath() + "/book/list.jsp")%>
                 

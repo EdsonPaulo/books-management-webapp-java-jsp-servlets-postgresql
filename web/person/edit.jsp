@@ -1,4 +1,4 @@
-<%-- Document : person Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
+<%-- Document : person/edit Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
 
 <%@page import="ucan.dao.PersonEmailDAO"%>
 <%@page import="ucan.models.PersonEmailModel"%>
@@ -53,7 +53,10 @@
         <a href="<%=request.getContextPath()%>/person/list.jsp" class="btn btn-primary btn-sm m-4"><< Voltar</a>
 
         <div class="h-100 container d-flex justify-content-center align-items-start">
-            <div class="card p-5" style="width: 100%;">
+            <div class="card px-5 py-3" style="width: 100%;">
+                
+                <h5 class="text-center mb-3">Editar de Pessoas</h5>
+
                 <form class="form-container" method="POST"
                       action="<%=request.getContextPath() + "/person-servlet?edit=true"
                               + "&personId=" + person.getPersonId()
@@ -83,7 +86,7 @@
                         </div> 
                     </div>
 
-                    <div class="row d-flex justify-content-between">
+                    <div class="row">
                         <div class="form-group col-4">
                             <label for="bi" class="required">BI</label>
                             <input name="bi" id="bi" value="<%=person.getBi()%>" type="text" class="form-control" required>
@@ -98,22 +101,23 @@
                         </div>
                     </div>
 
-                    <div class="row d-flex justify-content-between">
+                    <div class="row">
                         <div class="form-group col-4">
                             <label for="phone1" class="required">Telefone principal</label>
                             <input name="phone1" id="phone1" type="tel" value="<%= personPhones.size() > 0 ? personPhones.get(0).getPhone() : ""%>" class="form-control" required>
                         </div>
                         <div class="form-group col-4">
-                            <label for="email1" class="required">Email principal</label>
-                            <input name="email1" id="email1" type="email" value="<%= personEmails.size() > 0 ? personEmails.get(0).getEmail() : ""%>" class="form-control" required>
-                        </div>            
-                    </div>
-
-                    <div class="row d-flex justify-content-between">
-                        <div class="form-group col-4">
                             <label for="phone2">Telefone secundário (opcional)</label>
                             <input name="phone2" id="phone2" type="tel" value="<%= personPhones.size() > 1 ? personPhones.get(1).getPhone() : ""%>" class="form-control">
-                        </div>   
+                        </div>  
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label for="email1" class="required">Email principal</label>
+                            <input name="email1" id="email1" type="email" value="<%= personEmails.size() > 0 ? personEmails.get(0).getEmail() : ""%>" class="form-control" required>
+                        </div>    
                         <div class="form-group col-4">
                             <label for="email2">Email secundário (opcional)</label>
                             <input name="email2" id="email2" type="email" value="<%= personEmails.size() > 1 ? personEmails.get(1).getEmail() : ""%>" class="form-control">

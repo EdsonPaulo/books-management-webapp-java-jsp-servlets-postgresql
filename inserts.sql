@@ -499,5 +499,7 @@ INSERT INTO comuna(nome, fk_municipio) VALUES ('Bindo',69);
 INSERT INTO comuna(nome, fk_municipio) VALUES ('Luinga',69);
 INSERT INTO comuna(nome, fk_municipio) VALUES ('Maua',69);
 INSERT INTO comuna(nome, fk_municipio) VALUES ('Tango',69);
-
-/*Parei na linha 280 em comunas*/
+ 
+/*Adicionando sexo*/
+INSERT INTO sexo(nome) VALUES ('Masculino');
+INSERT INTO sexo(nome) VALUES ('Feminino');
