@@ -11,7 +11,7 @@ public class BookModel {
     private int bookId;
     private int numPages, editionNum, releaseYear;
     private String isbn, name;
-    private int publisherId, categoryId, classificationId, locationId, statusId;
+    private int publisherId, categoryId, locationId, statusId;
     private LocalDateTime creationDate;
 
     public BookModel() {
@@ -82,14 +82,6 @@ public class BookModel {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public int getClassificationId() {
-        return classificationId;
-    }
-
-    public void setClassificationId(int classificationId) {
-        this.classificationId = classificationId;
     }
 
     public int getLocationId() {

@@ -136,13 +136,6 @@ CREATE TABLE localizacao_livro (
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS classificacao CASCADE;
-CREATE TABLE classificacao (
-    pk_classificacao SERIAL NOT NULL PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL,
-    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
 DROP TABLE IF EXISTS estado CASCADE;
 CREATE TABLE estado (
     pk_estado SERIAL NOT NULL PRIMARY KEY,
@@ -174,7 +167,6 @@ CREATE TABLE livro (
     ano_lancamento INTEGER,
     fk_editora INTEGER NOT NULL,
     fk_estado INTEGER,
-    fk_classificacao INTEGER,
     fk_localizacao INTEGER NOT NULL,
     fk_categoria INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

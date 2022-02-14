@@ -41,7 +41,17 @@ main {
     overflow-y: auto;
 }
 
-label.required:after { 
-   content: "*";
-   color: red;
+label.required:after {
+    content: "*";
+    color: red;
 }
+
+.bootstrap-select>.dropdown-toggle.bs-placeholder, 
+.bootstrap-select>.dropdown-toggle.bs-placeholder:active, 
+.bootstrap-select>.dropdown-toggle.bs-placeholder:focus, 
+.bootstrap-select>.dropdown-toggle.bs-placeholder:hover {
+    color: #444 !important;
+    background: #fff !important;
+    border: 1px solid #ccc;
+}
+

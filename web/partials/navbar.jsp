@@ -6,15 +6,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <div class="navbar px-5 justify-content-around bg-primary">
-    <div class="btn-group">
-        <button type="button" class="btn btn-primary dropdown-toggle text-left" data-toggle="dropdown">
-            Livro
-        </button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="<%=request.getContextPath()%>/#">Listar livros</a>
-            <a class="dropdown-item" href="<%=request.getContextPath()%>/#">Adicionar livro</a>
-        </div>
-    </div>
 
     <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle text-left" data-toggle="dropdown">
@@ -31,7 +22,6 @@
             <a class="dropdown-item" href="<%=request.getContextPath()%>/#">Adicionar leitor</a>
             <div class="dropdown-divider"></div>
 
-
             <h6 class="dropdown-header">Autor</h6>
             <a class="dropdown-item" href="<%=request.getContextPath()%>/#">Listar autores</a>
             <a class="dropdown-item" href="<%=request.getContextPath()%>/#">Adicionar autor</a>
@@ -45,6 +35,16 @@
         <div class="dropdown-menu">
             <a class="dropdown-item" href="<%=request.getContextPath()%>/publisher/list.jsp">Listar editoras</a>
             <a class="dropdown-item" href="<%=request.getContextPath()%>/publisher/new.jsp">Adicionar editora</a>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle text-left" data-toggle="dropdown">
+            Livro
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/book/list.jsp">Listar livros</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/book/new.jsp">Adicionar livro</a>
         </div>
     </div>
 
