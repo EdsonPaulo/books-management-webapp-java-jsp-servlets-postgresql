@@ -1,5 +1,48 @@
+/*Adicionando categorias*/
+INSERT INTO categoria(nome) VALUES ('Generalidades');
+INSERT INTO categoria(nome) VALUES ('Filosofia');
+INSERT INTO categoria(nome) VALUES ('Religiao');
+INSERT INTO categoria(nome) VALUES ('Psicologia');
+INSERT INTO categoria(nome) VALUES ('Historia');
+INSERT INTO categoria(nome) VALUES ('Geografia');
+INSERT INTO categoria(nome) VALUES ('Ciencias e Matematica');
+INSERT INTO categoria(nome) VALUES ('Direito');
+INSERT INTO categoria(nome) VALUES ('Musica');
+INSERT INTO categoria(nome) VALUES ('Fantasia');
+INSERT INTO categoria(nome) VALUES ('Drama');
+INSERT INTO categoria(nome) VALUES ('Romance');
+INSERT INTO categoria(nome) VALUES ('Tecnologia');
+
+/*Adicionando categorias*/
+INSERT INTO descritores(nome) VALUES ('Bibiliografia');
+INSERT INTO descritores(nome) VALUES ('Accao');
+INSERT INTO descritores(nome) VALUES ('Super-herois');
+INSERT INTO descritores(nome) VALUES ('Inteligencia Artificial');
+INSERT INTO descritores(nome) VALUES ('Redes de computadores');
+INSERT INTO descritores(nome) VALUES ('Mangah');
+INSERT INTO descritores(nome) VALUES ('Banda desenhada');
+INSERT INTO descritores(nome) VALUES ('Programacao');
+INSERT INTO descritores(nome) VALUES ('Hardware');
+INSERT INTO descritores(nome) VALUES ('How To');
+
+/*Adicionando estado do livro*/
+INSERT INTO estado(nome) VALUES ('Disponivel');
+INSERT INTO estado(nome) VALUES ('Alugado');
+INSERT INTO estado(nome) VALUES ('Fora de estoque');
+INSERT INTO estado(nome) VALUES ('Brevemente');
+
+INSERT INTO localizacao_livro(nome, num_prateleira) VALUES ('P5-01', 5);
+INSERT INTO localizacao_livro(nome, num_prateleira) VALUES ('P1-01', 1);
+INSERT INTO localizacao_livro(nome, num_prateleira) VALUES ('P5-02', 5);
+
+/*Adicionando sexo*/
+INSERT INTO sexo(nome) VALUES ('Masculino');
+INSERT INTO sexo(nome) VALUES ('Feminino');
+
+/*Adicionando pais*/
 INSERT INTO pais(nome) VALUES ('Angola');
 
+/*Adicionando provincias*/
 INSERT INTO provincia(nome, fk_pais) VALUES ('Luanda', 1);
 INSERT INTO provincia(nome, fk_pais) VALUES ('Bengo', 1);
 INSERT INTO provincia(nome, fk_pais) VALUES ('Benguela', 1);
@@ -500,6 +543,4 @@ INSERT INTO comuna(nome, fk_municipio) VALUES ('Luinga',69);
 INSERT INTO comuna(nome, fk_municipio) VALUES ('Maua',69);
 INSERT INTO comuna(nome, fk_municipio) VALUES ('Tango',69);
  
-/*Adicionando sexo*/
-INSERT INTO sexo(nome) VALUES ('Masculino');
-INSERT INTO sexo(nome) VALUES ('Feminino');
+

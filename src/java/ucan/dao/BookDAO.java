@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import ucan.models.BookModel;
 import ucan.conection.DBConnection;
 
@@ -140,5 +141,46 @@ public class BookDAO {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public Vector<String> getBookAuthors(int bookId, DBConnection connection) {
+        Vector<String> authors = new Vector<>();
+        String sql = "SELECT pessoa.nome FROM livro_autor"
+                + " INNER JOIN autor ON livro_autor.fk_autor = autor.pk_autor "
+                + " INNER JOIN livro ON livro_autor.fk_livro = livro.pk_livro "
+                + " INNER JOIN pessoa ON autor.fk_pessoa = pessoa.pk_pessoa WHERE livro_autor.fk_livro = " + bookId
+                + ";";
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+
+            while (resultSet.next()) {
+                authors.add(resultSet.getString(1));
+            }
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return authors;
+    }
+
+    public Vector<String> getBookTags(int bookId, DBConnection connection) {
+        Vector<String> tags = new Vector<>();
+        String sql = "SELECT descritores.nome FROM livro_descritores"
+                + " INNER JOIN descritores ON livro_descritores.fk_descritores = descritores.pk_descritores "
+                + " INNER JOIN livro ON livro_descritores.fk_livro = livro.pk_livro WHERE livro_descritores.fk_livro = " + bookId
+                + ";";
+        try {
+            ResultSet resultSet = connection.getConnection().prepareStatement(sql).executeQuery();
+
+            while (resultSet.next()) {
+                tags.add(resultSet.getString(1));
+            }
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tags;
     }
 }

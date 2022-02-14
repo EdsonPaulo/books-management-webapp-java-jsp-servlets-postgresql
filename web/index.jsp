@@ -36,7 +36,7 @@
                 
                 <%=HtmlObj.generateHomeSectionLink("Livros", request.getContextPath() + "/book/list.jsp")%>
                 
-                <%=HtmlObj.generateHomeSectionLink("Empréstimos de livros", request.getContextPath() + "/publisher/list.jsp")%>
+                <%=HtmlObj.generateHomeSectionLink("Empréstimos de livros", request.getContextPath() + "/book-request/list.jsp")%>
             </div>
         </div>
     </div>

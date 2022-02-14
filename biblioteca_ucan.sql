@@ -127,11 +127,10 @@ CREATE TABLE email_editora (
     FOREIGN KEY (fk_editora) REFERENCES editora(pk_editora) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS localizacao_livro CASCADE;
+DROP TABLE IF EXISTS localizacao_livro CASCADE; 
 CREATE TABLE localizacao_livro (
     pk_localizacao_livro SERIAL NOT NULL PRIMARY KEY,
-    num_corredor INTEGER NOT NULL,
-    num_armario INTEGER NOT NULL,
+    nome VARCHAR(10) NOT NULL UNIQUE, 
     num_prateleira INTEGER NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -172,7 +171,6 @@ CREATE TABLE livro (
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (fk_editora) REFERENCES editora(pk_editora) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY( fk_estado ) REFERENCES estado(pk_estado) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (fk_classificacao) REFERENCES classificacao(pk_classificacao) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_localizacao) REFERENCES localizacao_livro(pk_localizacao_livro) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (fk_categoria) REFERENCES categoria(pk_categoria) ON UPDATE CASCADE ON DELETE CASCADE
 );
