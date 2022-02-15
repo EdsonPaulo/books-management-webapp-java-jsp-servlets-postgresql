@@ -49,6 +49,32 @@ public class HtmlObj {
         htmlCombo.append("</select>");
         return htmlCombo.toString();
     }
+    
+     public String getSelectBoxWithTableJoin(DBConnection conn, String tableName1, String tableName2, String fieldName, int optionSelected) {
+        StringBuilder htmlCombo = new StringBuilder();
+        String query = "SELECT pk_" + tableName1 + ", nome FROM " + tableName1 + " INNER JOIN " + tableName2 + " ON fk_" + tableName2 + " = pk_" + tableName2 + ";";
+
+        htmlCombo.append("<select name=\"")
+                .append(fieldName)
+                .append("\" id=\"").append(fieldName)
+                .append("\" class=\"form-control\" >");
+        htmlCombo.append("<option value=\"\">Selecione</option>\n");
+
+        try {
+            ResultSet resultSet = conn.getConnection().createStatement().executeQuery(query);
+
+            while (resultSet.next()) {
+                htmlCombo.append("<option value=\"" + resultSet.getInt(1) + "\" ")
+                        .append(resultSet.getInt(1) == optionSelected ? "selected>" : ">")
+                        .append(resultSet.getString(2)).append("</option>");
+            }
+            resultSet.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        htmlCombo.append("</select>");
+        return htmlCombo.toString();
+    }
 
     // Check if an array includes a item
     private boolean containElement(int[] collections, int element) {

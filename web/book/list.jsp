@@ -32,7 +32,7 @@
         <%@ include file="../partials/navbar.jsp" %>  
 
         <a href="<%=request.getContextPath()%>" class="btn btn-primary btn-sm m-4"><< Voltar</a>
-        <a href="<%=request.getContextPath()%>/book/new.jsp" class="btn btn-primary m-4 float-right">+ Adicionar nova livro</a>
+        <a href="<%=request.getContextPath()%>/book/new.jsp" class="btn btn-primary m-4 float-right">+ Adicionar novo livro</a>
 
         <div class="h-100 container-fluid d-flex justify-content-center align-items-start">
             <div class="card px-5 py-3 table-responsive-lg" style="width: 100%;">

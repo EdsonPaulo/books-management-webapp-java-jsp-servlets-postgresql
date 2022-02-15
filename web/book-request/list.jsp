@@ -18,11 +18,11 @@
     <%
         DBConnection connection = null;
         try {
-            String query = "SELECT livro.pk_livro AS id, livro.nome AS name, livro.isbn AS isbn, livro.num_edicao AS editionNum, "
-                    + "livro.ano_lancamento AS releaseYear, categoria.nome AS category, editora.nome AS publisher, estado.nome AS status FROM livro "
-                    + "INNER JOIN categoria ON livro.fk_categoria = categoria.pk_categoria "                    
-                    + "INNER JOIN estado ON livro.fk_estado = estado.pk_estado "                    
-                    + "INNER JOIN editora ON livro.fk_editora = editora.pk_editora;";
+            String query = "SELECT requisicao.pk_requisicao AS id, livro.nome AS book, livro.num_edicao AS editionNum, "
+                    + "pessoa.nome AS reader, pessoa.sobrenome AS surname, requisicao.data_requisicao AS requestDate, requisicao.data_entrega AS returnDate FROM requisicao "
+                    + " INNER JOIN livro ON requisicao.fk_livro = livro.pk_livro "
+                    + " INNER JOIN leitor ON requisicao.fk_leitor = leitor.pk_leitor "
+                    + " INNER JOIN pessoa ON leitor.fk_pessoa = pessoa.pk_pessoa;";
 
             connection = new DBConnection();
             ResultSet resultSet = connection.getConnection().createStatement().executeQuery(query);
@@ -32,23 +32,21 @@
         <%@ include file="../partials/navbar.jsp" %>  
 
         <a href="<%=request.getContextPath()%>" class="btn btn-primary btn-sm m-4"><< Voltar</a>
-        <a href="<%=request.getContextPath()%>/book/new.jsp" class="btn btn-primary m-4 float-right">+ Adicionar nova livro</a>
+        <a href="<%=request.getContextPath()%>/book-request/new.jsp" class="btn btn-primary m-4 float-right">+ Adicionar nova requisição</a>
 
         <div class="h-100 container-fluid d-flex justify-content-center align-items-start">
             <div class="card px-5 py-3 table-responsive-lg" style="width: 100%;">
 
-                <h5 class="text-center mb-3">Lista de Livros</h5>
+                <h5 class="text-center mb-3">Requisições de Livros</h5>
 
                 <table class="table table-striped table-sm">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Título</th>                            
-                            <th scope="col">ISBN</th>
-                            <th scope="col">Categoria</th>
-                            <th scope="col">Ano</th>
-                            <th scope="col">Editora</th>                            
-                            <th scope="col">Estado</th>
+                            <th scope="col">Livro</th>                            
+                            <th scope="col">Leitor/Cliente</th>
+                            <th scope="col">Data da requisição</th>
+                            <th scope="col">Data limite de entrega</th>
                             <th scope="col">Accões</th>                            
                         </tr>
                     </thead>
@@ -62,21 +60,19 @@
                             while (resultSet.next()) {
                                 htmlBuilder.append("<tr>");
                                 htmlBuilder.append("<th scope=\"row\">0" + resultSet.getInt("id") + "</th>");
-                                htmlBuilder.append("<td>" + resultSet.getString("name"));
+                                htmlBuilder.append("<td>" + resultSet.getString("book"));
                                 htmlBuilder.append(" - Edição " + resultSet.getInt("editionNum") + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString("isbn") + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString("category") + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString("releaseYear") + "</td>");
-                                htmlBuilder.append("<td>" + resultSet.getString("publisher") + "</td>");                                
-                                htmlBuilder.append("<td>" + resultSet.getString("status") + "</td>");
+                                htmlBuilder.append("<td>" + resultSet.getString("reader") + " " + resultSet.getString("surname") + "</td>");
+                                htmlBuilder.append("<td>" + resultSet.getTimestamp("requestDate").toLocalDateTime() + "</td>");
+                                htmlBuilder.append("<td>" + resultSet.getTimestamp("returnDate").toLocalDateTime() + "</td>");
 
-                                htmlBuilder.append("<td><a class=\"btn btn-secondary btn-sm text-white\" href=\"" + request.getContextPath() + "/book/view.jsp?id="
+                                htmlBuilder.append("<td><a class=\"btn btn-secondary btn-sm text-white\" href=\"" + request.getContextPath() + "/book-request/view.jsp?id="
                                         + resultSet.getInt("id") + "\">Visualizar</a>");
 
-                                htmlBuilder.append(" <a class=\"btn btn-warning btn-sm text-white mx-2\" href=\"" + request.getContextPath() + "/book/edit.jsp?id="
+                                htmlBuilder.append(" <a class=\"btn btn-warning btn-sm text-white mx-2\" href=\"" + request.getContextPath() + "/book-request/edit.jsp?id="
                                         + resultSet.getInt("id") + "\">Editar</a>");
 
-                                htmlBuilder.append("<a class=\"btn btn-danger btn-sm text-white\" href=\"" + request.getContextPath() + "/book-servlet?id="
+                                htmlBuilder.append("<a class=\"btn btn-danger btn-sm text-white\" href=\"" + request.getContextPath() + "/book-request-servlet?id="
                                         + resultSet.getInt("id") + "&action=delete\">Remover</a></td>");
 
                                 htmlBuilder.append("</tr>");

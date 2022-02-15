@@ -53,8 +53,8 @@
             Empréstimo
         </button>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="<%=request.getContextPath()%>/#">Listar empréstimos</a>
-            <a class="dropdown-item" href="<%=request.getContextPath()%>/#">Adicionar empréstimo</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/book-request/list.jsp">Listar requisição</a>
+            <a class="dropdown-item" href="<%=request.getContextPath()%>/book-request/new.jsp">Adicionar requisição</a>
         </div>
     </div>
 
