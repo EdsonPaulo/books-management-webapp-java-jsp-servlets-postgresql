@@ -26,17 +26,15 @@
             <div class="row">
                 <%=HtmlObj.generateHomeSectionLink("Pessoas", request.getContextPath() + "/person/list.jsp")%>
 
-                <%=HtmlObj.generateHomeSectionLink("Autores", request.getContextPath() + "/author/list.jsp")%>
+                <%=HtmlObj.generateHomeSectionLink("Editoras", request.getContextPath() + "/publisher/list.jsp")%>
 
-                <%=HtmlObj.generateHomeSectionLink("Leitores", request.getContextPath() + "/reader/list.jsp")%>
+                <%=HtmlObj.generateHomeSectionLink("Livros", request.getContextPath() + "/book/list.jsp")%>
             </div>
 
             <div class="row">
-                <%=HtmlObj.generateHomeSectionLink("Editoras", request.getContextPath() + "/publisher/list.jsp")%>
-                
-                <%=HtmlObj.generateHomeSectionLink("Livros", request.getContextPath() + "/book/list.jsp")%>
-                
-                <%=HtmlObj.generateHomeSectionLink("Empréstimos de livros", request.getContextPath() + "/book-request/list.jsp")%>
+                <%=HtmlObj.generateHomeSectionLink("Requisição de livros", request.getContextPath() + "/book-request/list.jsp")%>
+            
+                <%=HtmlObj.generateHomeSectionLink("Defesa (Form)", request.getContextPath() + "/defesa/form.jsp")%>
             </div>
         </div>
     </div>
