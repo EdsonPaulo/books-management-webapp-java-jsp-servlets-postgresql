@@ -58,12 +58,10 @@ public class BookRequestServlet extends HttpServlet {
             bookRequest.setRequestDate(Helpers.stringToDateTime(request.getParameter("requestDate"), true));
             bookRequest.setReturnDate(Helpers.stringToDateTime(request.getParameter("returnDate"), true));
 
-            bookRequestDao.create(bookRequest, connection);
-            
             if (request.getParameter("edit") == null) {
-
+                bookRequestDao.create(bookRequest, connection);
             } else {
-
+                bookRequestDao.update(bookRequest, connection);
             }
 
             response.sendRedirect(request.getContextPath() + "/book-request/list.jsp");

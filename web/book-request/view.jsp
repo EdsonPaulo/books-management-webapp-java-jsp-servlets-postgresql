@@ -1,5 +1,7 @@
 <%-- Document : book-request/view Created on : 08/01/2022, 23:38:26 Author : edsonpaulo --%>
 
+<%@page import="ucan.dao.PersonDAO"%>
+<%@page import="ucan.dao.BookDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="ucan.utils.Helpers"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -18,10 +20,10 @@
         DBConnection connection = null;
         try {
             String queryBook = "SELECT requisicao.pk_requisicao AS id, requisicao.data_requisicao AS requestDate, requisicao.data_entrega AS returnDate, "
-                    + " livro.nome AS book, livro.isbn, livro.num_edicao AS editionNum, "
+                    + " livro.pk_livro AS bookId, livro.nome AS book, livro.isbn, livro.num_edicao AS editionNum, "
                     + " livro.ano_lancamento AS releaseYear, categoria.nome AS category, editora.nome AS publisher, "
                     + " localizacao_livro.nome AS location, localizacao_livro.num_prateleira AS rackNum, "
-                    + " pessoa.nome AS reader, pessoa.sobrenome AS surname, pessoa.bi, "
+                    + " pessoa.pk_pessoa AS personId, pessoa.nome AS reader, pessoa.sobrenome AS surname, pessoa.bi, "
                     + " morada.num_casa AS house, morada.rua AS street, morada.bairro AS district, comuna.nome AS commune FROM requisicao"
                     + " INNER JOIN livro ON requisicao.fk_livro = livro.pk_livro "
                     + " INNER JOIN leitor ON requisicao.fk_leitor = leitor.pk_leitor "
@@ -36,7 +38,8 @@
 
             connection = new DBConnection();
             ResultSet resultSet = connection.getConnection().createStatement().executeQuery(queryBook);
-
+            BookDAO bookDao = new BookDAO();            
+            PersonDAO personDao = new PersonDAO();
     %>
 
     <body>
@@ -67,7 +70,18 @@
                         htmlBuilder.append("<div class=\"mr-4 mb-3\"><h6>Editora</h6> <h5>" + resultSet.getString("publisher") + "</h5></div>");
                         htmlBuilder.append("<div class=\"mr-4 mb-3\"><h6>Nº da prateleira: </h6><h5>" + resultSet.getString("rackNum") + "</h5></div>");
                         htmlBuilder.append("<div class=\"mr-4 mb-3\"><h6>Chave na prateleira: </h6> <h5>" + resultSet.getString("location") + "</h5></div>");
-                        htmlBuilder.append("</div>");
+
+                        htmlBuilder.append("<div class=\"mr-4 mb-3\"><h6>Descritores: </h6><h5>");
+                        for (String tag : bookDao.getBookTags(resultSet.getInt("bookId"), connection)) {
+                            htmlBuilder.append("<span class=\"mr-2\"> * " + tag + "</span><br>");
+                        }
+                        htmlBuilder.append("</h5></div>");
+
+                        htmlBuilder.append("<div class=\"mr-4 mb-3\"><h6>Autores </h6><h5>");
+                        for (String tag : bookDao.getBookAuthors(resultSet.getInt("bookId"), connection)) {
+                            htmlBuilder.append("<span class=\"mr-2\"> * " + tag + "</span><br>");
+                        }
+                        htmlBuilder.append("</h5></div></div>");
 
                         htmlBuilder.append("<h6 class=\"text-muted\">DETALHES DO LEITOR/CLIENTE</h6>");
                         htmlBuilder.append("<div class=\"mb-4 d-flex flex-row flex-wrap\">");
@@ -80,7 +94,17 @@
                                 + resultSet.getString("commune")
                                 + "</h5></div>");
 
-                        htmlBuilder.append("</div>");
+                        htmlBuilder.append("<div class=\"mr-4 mb-3\"><h6>Telefone(s) </h6><h5>");
+                        for (String phone : personDao.getPersonPhones(resultSet.getInt("personId"), connection)) {
+                            htmlBuilder.append("<span class=\"mr-2\"> * " + phone + "</span><br>");
+                        }
+                        htmlBuilder.append("</h5></div>");
+
+                        htmlBuilder.append("<div class=\"mr-4 mb-3\"><h6>Email(s) </h6><h5>");
+                        for (String email : personDao.getPersonEmails(resultSet.getInt("personId"), connection)) {
+                            htmlBuilder.append("<span class=\"mr-2\"> * " + email + "</span><br>");
+                        }
+                        htmlBuilder.append("</h5></div></div>");
                     }
                 %>
                 <%= htmlBuilder%>
