@@ -1,3 +1,6 @@
+/*
+* DB NAME: biblioteca_ucan
+*/
 DROP TABLE IF EXISTS pais CASCADE;
 CREATE TABLE pais (
     pk_pais SERIAL NOT NULL PRIMARY KEY,

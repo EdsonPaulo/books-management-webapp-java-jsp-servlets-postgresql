@@ -13,7 +13,7 @@ public class DBConnection {
     private final String JDBC_DRIVER = "org.postgresql.Driver";
     private final String DB_URL = "jdbc:postgresql://localhost:5432/biblioteca_ucan";
     private final String DB_USER = "postgres";
-    private final String DB_PASSWORD = "edson942682194";
+    private final String DB_PASSWORD = "YOUR_DB_PASSWORD_HERE";
 
     private Connection connection = null;
 
